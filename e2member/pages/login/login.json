@@ -1,0 +1,9 @@
+{
+    "usingComponents": {
+      "custom-toast": "../../components/custom-toast/custom-toast"
+    },
+    "navigationBarTitleText": "",
+    "navigationBarBackgroundColor": "#397cd5",
+    "navigationBarTextStyle": "black"
+  }
+  

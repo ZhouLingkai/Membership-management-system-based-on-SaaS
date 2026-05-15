@@ -1,0 +1,220 @@
+<!--pages/oss-test/oss-test.wxml-->
+  <!-- 测试前提检查 -->
+  <view class="section">
+    <view class="section-title">1. 测试前提检查</view>
+    <view class="check-list">
+      <view class="check-item {{isLogin ? 'success' : 'error'}}">
+        <text class="check-icon">{{isLogin ? '✓' : '✗'}}</text>
+        <text>登录状态: {{isLogin ? '已登录' : '未登录'}}</text>
+      </view>
+      <view class="check-item {{hasToken ? 'success' : 'error'}}">
+        <text class="check-icon">{{hasToken ? '✓' : '✗'}}</text>
+        <text>普通令牌: {{hasToken ? '已获取' : '未获取'}}</text>
+      </view>
+      <view class="check-item {{stsStatus}}">
+        <text class="check-icon">{{stsStatus === 'success' ? '✓' : (stsStatus === 'error' ? '✗' : '○')}}</text>
+        <text>STS凭证: {{stsMessage}}</text>
+      </view>
+    </view>
+    
+    <!-- pathType 配置 -->
+    <view class="path-type-config">
+      <view class="config-label">pathType (路径类型):</view>
+      <input class="path-type-input" 
+             placeholder="输入pathType，如: merchant" 
+             value="{{pathType}}" 
+             bindinput="onPathTypeInput" />
+      
+      <!-- 快速选择按钮 -->
+      <view class="path-type-tags">
+        <view class="tag {{pathType === item ? 'active' : ''}}" 
+              wx:for="{{validPathTypes}}" 
+              wx:key="*this"
+              data-type="{{item}}"
+              bindtap="selectPathType">
+          {{item}}
+        </view>
+        <view class="tag error" data-type="invalid_test" bindtap="selectPathType">
+          ❌invalid
+        </view>
+      </view>
+      
+      <view class="path-type-hint">
+        <text>有效值: merchant, user, member, card, employee, resource</text>
+        <text>无效值将回退到 merchant</text>
+      </view>
+    </view>
+    
+    <view class="btn-row">
+      <button class="test-btn" bindtap="testStsCredentials" disabled="{{!isLogin}}">
+        获取STS凭证
+      </button>
+      <button class="clear-btn" bindtap="clearStsCache">
+        清除缓存
+      </button>
+    </view>
+    
+    <!-- STS凭证详情 -->
+    <view class="sts-info" wx:if="{{stsCredentials}}">
+      <view class="info-row">
+        <text class="label">Bucket:</text>
+        <text class="value">{{stsCredentials.bucket}}</text>
+      </view>
+      <view class="info-row">
+        <text class="label">Region:</text>
+        <text class="value">{{stsCredentials.region}}</text>
+      </view>
+      <view class="info-row">
+        <text class="label">Endpoint:</text>
+        <text class="value">{{stsCredentials.endpoint}}</text>
+      </view>
+      <view class="info-row">
+        <text class="label">PathPrefix:</text>
+        <text class="value">{{stsCredentials.pathPrefix}}</text>
+      </view>
+      <view class="info-row">
+        <text class="label">AccessKeyId:</text>
+        <text class="value">{{stsCredentials.accessKeyId}}</text>
+      </view>
+      <view class="info-row">
+        <text class="label">过期时间:</text>
+        <text class="value">{{stsCredentials.expiration}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 图片上传模块 -->
+  <view class="section">
+    <view class="section-title">2. 图片上传测试</view>
+    
+    <!-- 选择图片区域 -->
+    <view class="upload-area" bindtap="chooseImage">
+      <view wx:if="{{!localImagePath}}" class="upload-placeholder">
+        <text class="upload-icon">+</text>
+        <text class="upload-text">点击选择图片</text>
+      </view>
+      <image wx:else class="preview-image" src="{{localImagePath}}" mode="aspectFit" bindtap="previewLocalImage" catchtap="stopPropagation"/>
+    </view>
+    
+    <!-- 本地图片信息 -->
+    <view class="image-info" wx:if="{{localImagePath}}">
+      <view class="info-row">
+        <text class="label">文件大小:</text>
+        <text class="value">{{imageSize}}</text>
+      </view>
+      <view class="info-row">
+        <text class="label">生成文件名:</text>
+        <text class="value">{{generatedFileName}}</text>
+      </view>
+      <view class="info-row">
+        <text class="label">完整路径:</text>
+        <text class="value">{{fullObjectName}}</text>
+      </view>
+    </view>
+    
+    <!-- 上传按钮 -->
+    <button 
+      class="upload-btn {{uploadStatus === 'uploading' ? 'disabled' : ''}}" 
+      bindtap="uploadToOss" 
+      disabled="{{!localImagePath || !stsCredentials || uploadStatus === 'uploading'}}"
+    >
+      {{uploadStatus === 'uploading' ? '上传中 ' + uploadProgress + '%' : '上传到OSS'}}
+    </button>
+    
+    <!-- 上传进度条 -->
+    <view class="progress-bar" wx:if="{{uploadStatus === 'uploading'}}">
+      <view class="progress-inner" style="width: {{uploadProgress}}%"></view>
+    </view>
+    
+    <!-- 上传结果 -->
+    <view class="upload-result {{uploadStatus}}" wx:if="{{uploadMessage}}">
+      <text>{{uploadMessage}}</text>
+    </view>
+  </view>
+
+  <!-- OSS图片展示模块 -->
+  <view class="section" wx:if="{{ossObjectName}}">
+    <view class="section-title">3. OSS图片展示（{{countdown > 0 ? countdown + '秒后显示' : '已加载'}}）</view>
+    
+    <view class="oss-display" wx:if="{{showOssImage}}">
+      <!-- 存储信息 -->
+      <view class="storage-info">
+        <view class="info-row">
+          <text class="label">数据库存储值:</text>
+          <text class="value copyable" bindtap="copyText" data-text="{{ossObjectName}}">{{ossObjectName}}</text>
+        </view>
+      </view>
+      
+      <!-- 缩略图 -->
+      <view class="oss-thumbnail">
+        <text class="sub-title">缩略图（点击查看大图）:</text>
+        <image 
+          class="thumbnail-image" 
+          src="{{ossSignedUrl}}" 
+          mode="aspectFill" 
+          bindtap="previewOssImage"
+          binderror="onImageError"
+        />
+      </view>
+      
+      <!-- 签名URL信息 -->
+      <view class="url-info">
+        <text class="sub-title">签名URL:</text>
+        <text class="url-text" bindtap="copyText" data-text="{{ossSignedUrl}}">{{ossSignedUrl}}</text>
+      </view>
+    </view>
+    
+    <view class="loading-hint" wx:else>
+      <text>正在生成签名URL...</text>
+    </view>
+  </view>
+
+  <!-- 清除测试数据 -->
+  <view class="section" wx:if="{{ossObjectName}}">
+    <button class="clear-btn" bindtap="clearTestData">清除测试数据</button>
+  </view>
+
+  <!-- 手动测试签名URL -->
+  <view class="section">
+    <view class="section-title">4. 手动测试签名URL（调试用）</view>
+    <view class="manual-test">
+      <view class="config-label">输入ObjectName（不带开头/）:</view>
+      <input class="path-type-input" 
+             placeholder="如: card/xxx/mask_123.png" 
+             value="{{manualObjectName}}" 
+             bindinput="onManualObjectNameInput" />
+      <view class="path-type-hint">
+        <text>cardMask字段格式: /card/xxx/mask.png</text>
+        <text>此处输入时去掉开头的/</text>
+      </view>
+      <button class="test-btn" bindtap="testManualSignedUrl" disabled="{{!manualObjectName}}">
+        生成签名URL
+      </button>
+      
+      <!-- 测试结果 -->
+      <view class="manual-result" wx:if="{{manualSignedUrl}}">
+        <view class="info-row">
+          <text class="label">推断的pathType:</text>
+          <text class="value">{{manualPathType}}</text>
+        </view>
+        <view class="info-row">
+          <text class="label">签名URL:</text>
+          <text class="value url-text" bindtap="copyText" data-text="{{manualSignedUrl}}">{{manualSignedUrl}}</text>
+        </view>
+        <image 
+          class="thumbnail-image" 
+          src="{{manualSignedUrl}}" 
+          mode="aspectFit" 
+          bindtap="previewManualImage"
+          binderror="onManualImageError"
+          wx:if="{{manualSignedUrl}}"
+        />
+        <view class="manual-error" wx:if="{{manualError}}">
+          <text style="color: red;">{{manualError}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+<!-- 自定义Toast -->
+<custom-toast id="customToast" />

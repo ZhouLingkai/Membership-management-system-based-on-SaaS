@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "卡种管理",
+  "enablePullDownRefresh": true,
+  "backgroundTextStyle": "dark",
+  "usingComponents": {
+    "custom-toast": "/components/custom-toast/custom-toast",
+    "card-display": "/components/card-display/card-display"
+  }
+}

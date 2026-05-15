@@ -1,0 +1,105 @@
+/* components/custom-toast/custom-toast.wxss */
+
+.custom-toast {
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  pointer-events: none;
+}
+
+/* 从顶部滑下动画 */
+.custom-toast.slide-animation {
+  top: 0;
+  padding-top: 20rpx;
+}
+
+.custom-toast.slide-animation.show {
+  animation: slideDown 0.3s ease-out forwards;
+}
+
+.custom-toast.slide-animation:not(.show) {
+  animation: slideUp 0.3s ease-out forwards;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+}
+
+/* 从中间淡入动画 */
+.custom-toast.fade-animation {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.custom-toast.fade-animation.show {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+.custom-toast.fade-animation:not(.show) {
+  animation: fadeOut 0.3s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50%) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-50%) scale(1);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(-50%) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-50%) scale(0.9);
+  }
+}
+
+.toast-content {
+  padding: 32rpx;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  line-height: 1.5;
+  text-align: center;
+  color: #ffffff;
+  max-width: 80%;
+  word-wrap: break-word;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.15);
+}
+
+.toast-content.success {
+  background-color: #00b42a;
+}
+
+.toast-content.danger {
+  background-color: #f53f3f;
+}
+

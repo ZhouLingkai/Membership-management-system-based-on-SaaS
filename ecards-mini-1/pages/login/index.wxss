@@ -1,0 +1,387 @@
+/* pages/login/index.wxss */
+
+.login-container {
+    min-height: 100vh;
+    /* 上半蓝色渐变，下半白色 */
+    background: linear-gradient(to bottom, #3a7bd5 0%, #00d2ff 80%);
+    padding: 60rpx 30rpx;
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+  }
+  
+
+/* 顶部宣传区域 */
+
+.header-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.header-section {
+    margin-top: 40rpx;
+    margin-bottom: 60rpx;
+    text-align: center;
+    color: #ffffff;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .header-text .title {
+    font-size: 65rpx;
+    font-weight: 700;
+    background: linear-gradient(135deg, #ffffff 10%, #d6ecff 100%);
+    margin-bottom: 10rpx;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  .header-text .subtitle {
+    font-size: 30rpx;
+    opacity: 0.9;
+  }
+/* 卡片容器 */
+.card-container {
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 20rpx 30rpx 30rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+}
+
+/* 切换按钮 */
+/* .tab-bar {
+  display: flex;
+  border-bottom: 2rpx solid #f0f0f0;
+  margin-bottom: 40rpx;
+}
+
+.tab-item {
+  flex: 1;
+  text-align: center;
+  padding: 24rpx 0;
+  font-size: 32rpx;
+  color: #666666;
+  position: relative;
+  transition: color 0.3s;
+}
+
+.tab-item.active {
+  color: #134697;
+  font-weight: 600;
+} */
+
+/* .tab-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60rpx;
+  height: 4rpx;
+  background: #134697;
+  border-radius: 2rpx;
+} */
+/* Tab 栏整体样式 */
+.tab-bar {
+    position: relative;
+    display: flex;
+    border-bottom: 2rpx solid #f0f0f0;
+    margin-bottom: 30rpx;
+  }
+  
+  /* Tab 文字样式 */
+  .tab-item {
+    flex: 1;
+    text-align: center;
+    padding: 24rpx 0;
+    font-size: 36rpx;
+    color: #666666;
+    transition: color 0.3s;
+  }
+  
+  .tab-item.active {
+    color: #134697;
+    font-weight: 600;
+  }
+  
+  /* 底部滑动蓝条 */
+  .tab-indicator {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 50%; /* 两个tab，一半宽度 */
+    height: 4rpx;
+    background: linear-gradient(135deg, #267cc8 0%, #3197e4 100%);
+    border-radius: 2rpx;
+    transition: transform 0.3s ease;
+  }
+  
+  /* 根据 currentTab 切换位移 */
+  .tab-indicator.login {
+    transform: translateX(0%);
+  }
+  
+  .tab-indicator.register {
+    transform: translateX(100%);
+  }
+/* 表单容器 */
+.form-container {
+    opacity: 0;
+    transform: translateX(30rpx);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+  
+  .form-container.show {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  
+  .form-container.hide {
+    opacity: 0;
+    transform: translateY(20rpx);
+    max-height: 0;
+  }
+
+/* 输入组 */
+.input-group {
+  margin-bottom: 32rpx;
+}
+
+.input-wrapper {
+  position: relative;
+  background: #f8f9fa;
+  border-radius: 16rpx;
+  padding: 24rpx 30rpx;
+  border: 2rpx solid transparent;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+.input-wrapper:focus-within {
+  border-color: #3197e4;
+  background: #ffffff;
+}
+/* 密码输入框整体布局 */
+.password-wrapper {
+    position: relative;
+  }
+  
+  /* 小眼睛图标区域 */
+  .eye-icon {
+    position: absolute;
+    right: 30rpx;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40rpx;
+    height: 40rpx;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 99;
+  }
+  
+  .eye-icon image {
+    width: 40rpx;
+    height: 40rpx;
+    opacity: 1;
+    transition: opacity 0.2s;
+  }
+  
+  .eye-icon:active image {
+    opacity: 1;
+  }
+.input-field {
+  width: 100%;
+  font-size: 30rpx;
+  color: #333333;
+  line-height: 1.5;
+}
+
+.input-field::placeholder {
+  color: #999999;
+}
+/* 密码强度容器 */
+.password-strength {
+    margin-top: 20rpx;
+  }
+  
+  /* 四个横条 */
+  .strength-bars {
+    width: 96%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    gap: 12rpx;
+    margin-bottom: 12rpx;
+  }
+  
+  .strength-bars .bar {
+    flex: 1;
+    height: 14rpx;
+    border-radius: 8rpx;
+    background: #e0e0e0;
+    transition: background-color 0.3s, width 0.3s;
+  }
+  
+  /* 各强度颜色（粗条） */
+  .bar.danger.filled {
+    background: #ff4d4f; /* 大红 */
+  }
+  
+  .bar.weak.filled {
+    background: #ffcc66; /* 淡黄 */
+  }
+  
+  .bar.medium.filled {
+    background: #99e599; /* 淡绿 */
+  }
+  
+  .bar.strong.filled {
+    background: #33cc66; /* 绿色 */
+  }
+  
+  /* 文案说明 */
+  .strength-text text {
+    margin: 0 auto;
+    padding: 0 15rpx;
+    font-size: 24rpx;
+    color: #666;
+    line-height: 1.6;
+  }
+  
+/* 验证码输入组 */
+.verify-code-wrapper {
+  display: flex;
+  align-items: center;
+  padding: 0;
+  background: transparent;
+}
+
+.verify-code-input {
+  flex: 3;
+  padding: 24rpx 30rpx;
+  background: #f8f9fa;
+  border-radius: 16rpx 0 0 16rpx;
+}
+
+.verify-code-btn {
+ flex: 2;
+  padding: 24rpx 30rpx;
+  background: #267cc8;
+  color: #ffffff;
+  font-size: 28rpx;
+  border-radius: 0 16rpx 16rpx 0;
+  border: none;
+  white-space: nowrap;
+  transition: background-color 0.2s;
+}
+
+.verify-code-btn:not(.disabled):active {
+  background: #1e5fa0;
+  transform: scale(0.98);
+}
+
+.verify-code-btn.disabled {
+  background: #cccccc;
+  color: #999999;
+}
+
+/* 表单底部 */
+.form-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40rpx;
+}
+
+.checkbox-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+}
+
+.checkbox-text {
+  font-size: 26rpx;
+  color: #666666;
+  margin-left: 8rpx;
+}
+
+.forgot-password {
+  font-size: 26rpx;
+  color: #267cc8;
+}
+
+.forgot-password:active {
+  opacity: 0.7;
+}
+
+/* 复选框主题色 */
+checkbox .wx-checkbox-input {
+  width: 36rpx !important;
+  height: 36rpx !important;
+}
+
+checkbox .wx-checkbox-input.wx-checkbox-input-checked {
+  background-color: #3197e4 !important;
+  border-color: #3197e4 !important;
+}
+
+checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
+  color: #ffffff !important;
+}
+
+/* 提交按钮 */
+.submit-btn {
+  width: 100%;
+  padding: 28rpx 0;
+  background: linear-gradient(135deg, #267cc8 0%, #3197e4 100%);
+  color: #ffffff;
+  font-size: 32rpx;
+  font-weight: 600;
+  border-radius: 16rpx;
+  border: none;
+  box-shadow: 0 4rpx 12rpx rgba(38, 124, 200, 0.3);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.submit-btn:not([disabled]):active {
+  transform: scale(0.98);
+  box-shadow: 0 2rpx 8rpx rgba(38, 124, 200, 0.2);
+}
+
+.submit-btn[disabled] {
+  background: #cccccc;
+  box-shadow: none;
+  opacity: 0.6;
+}
+
+/* 找回密码表单头部 */
+.reset-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20rpx;
+  margin-bottom: 40rpx;
+  padding-bottom: 20rpx;
+  border-bottom: 2rpx solid #f0f0f0;
+}
+
+.reset-title {
+    margin-left: 20rpx;
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #123;
+}
+
+.reset-back {
+  font-size: 28rpx;
+  color: #267cc8;
+}
+
+.reset-back:active {
+  opacity: 0.7;
+}
+

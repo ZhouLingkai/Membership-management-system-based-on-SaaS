@@ -1,0 +1,331 @@
+<!--pages/advanced-reservation/advanced-reservation.wxml-->
+<view class="page-container">
+  <!-- 店铺信息卡片 -->
+  <view class="store-card">
+    <view class="store-header">
+      <text class="store-icon">🏪</text>
+      <view class="store-info">
+        <text class="store-name">{{storeName || '未知店铺'}}</text>
+        <text class="page-subtitle">预约系统管理</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载中 -->
+  <view wx:if="{{templateLoading}}" class="loading-state">
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 加载失败 -->
+  <view wx:elif="{{templateError}}" class="error-card">
+    <text class="error-icon">⚠️</text>
+    <text class="error-text">{{templateError}}</text>
+    <button class="refresh-btn" bindtap="refreshTemplate" disabled="{{refreshCooldown}}">
+      {{refreshCooldown ? '冷却中...' : '点击刷新'}}
+    </button>
+  </view>
+
+  <!-- 未创建模板 -->
+  <view wx:elif="{{!templateData}}" class="empty-card">
+    <text class="empty-icon">📅</text>
+    <text class="empty-text">暂未创建预约模板</text>
+    <text class="empty-hint">创建模板后，即可开始使用预约系统</text>
+    <button class="create-btn" bindtap="goToCreate">创建预约模板</button>
+  </view>
+
+  <!-- 已创建模板 -->
+  <view wx:else class="content">
+    <!-- Tab切换 -->
+    <view class="tab-bar">
+      <view class="tab-item {{activeTab === 'template' ? 'active' : ''}}" bindtap="switchTab" data-tab="template">
+        <text>预约模板</text>
+      </view>
+      <view class="tab-item {{activeTab === 'resources' ? 'active' : ''}}" bindtap="switchTab" data-tab="resources">
+        <text>资源管理</text>
+      </view>
+    </view>
+
+    <!-- 预约模板Tab -->
+    <view wx:if="{{activeTab === 'template'}}" class="template-content">
+      <!-- 基本信息 -->
+      <view class="info-card">
+        <view class="card-title">基本信息</view>
+        <view class="info-row">
+          <text class="label">生效开始</text>
+          <text class="value">{{templateData.effectiveStartTime}}</text>
+        </view>
+        <view class="info-row">
+          <text class="label">生效结束</text>
+          <text class="value">{{templateData.effectiveEndTime || '长期有效'}}</text>
+        </view>
+        <view class="info-row">
+          <text class="label">资源自定义禁止</text>
+          <text class="value">{{templateData.customizeForbidden === 1 ? '支持' : '不支持'}}</text>
+        </view>
+      </view>
+
+      <!-- 可预约时间段 -->
+      <view class="info-card editable" bindtap="openEditModal" data-field="reservationTimeList">
+        <view class="card-header">
+          <text class="card-title">可预约时间段-最小单位</text>
+          <text class="edit-arrow">›</text>
+        </view>
+        <view class="time-list">
+          <view class="time-tag" wx:for="{{templateData.reservationTimeList}}" wx:key="index">
+            {{item}}
+          </view>
+        </view>
+      </view>
+
+      <!-- 取消规则 -->
+      <view class="info-card editable" bindtap="openEditModal" data-field="cancelRule">
+        <view class="card-header">
+          <text class="card-title">取消扣费规则</text>
+          <text class="edit-arrow">›</text>
+        </view>
+        <view class="rule-list" wx:if="{{displayCancelRules.length > 0}}">
+          <view class="rule-item" wx:for="{{displayCancelRules}}" wx:key="index">
+            {{item}}
+          </view>
+        </view>
+        <view class="empty-hint-inline" wx:else>暂无取消规则</view>
+      </view>
+
+      <!-- 提前预约天数 -->
+      <view class="info-card editable" bindtap="openEditModal" data-field="advanceDays">
+        <view class="card-header">
+          <text class="card-title">提前预约天数</text>
+          <text class="edit-arrow">›</text>
+        </view>
+        <view class="value-display">{{templateData.advanceDays}}天</view>
+      </view>
+
+      <!-- 禁止预约日期 -->
+      <view class="info-card editable" bindtap="openEditModal" data-field="forbiddenDays">
+        <view class="card-header">
+          <text class="card-title">禁止预约日期</text>
+          <text class="edit-arrow">›</text>
+        </view>
+        <view class="forbidden-list" wx:if="{{templateData.forbiddenDays.length > 0}}">
+          <view class="forbidden-tag" wx:for="{{templateData.forbiddenDays}}" wx:key="index">
+            {{item}}
+          </view>
+        </view>
+        <view class="empty-hint-inline" wx:else>暂无禁止日期</view>
+      </view>
+    </view>
+
+    <!-- 资源管理Tab -->
+    <view wx:if="{{activeTab === 'resources'}}" class="resources-content">
+      <!-- 创建资源按钮 -->
+      <view class="create-resource-btn" bindtap="goToCreateResource">
+        <text class="create-resource-icon">+</text>
+        <text>创建资源</text>
+      </view>
+
+      <view wx:if="{{resourceLoading && resourceList.length === 0}}" class="loading-state">
+        <text class="loading-text">加载中...</text>
+      </view>
+
+      <view wx:elif="{{resourceList.length === 0}}" class="empty-card small">
+        <text class="empty-icon">📦</text>
+        <text class="empty-text">暂无资源</text>
+        <text class="empty-hint">请先创建预约资源</text>
+      </view>
+
+      <view wx:else class="resource-list">
+        <view class="resource-card" wx:for="{{resourceList}}" wx:key="id">
+          <view class="resource-col-l">
+                <!-- 第一行：资源名 + 眼睛图标 + 状态 -->
+                <view class="resource-row-1">
+                    <view class="resource-name-area">
+                    <text class="resource-name">{{item.resourceName}}</text>
+                    <image 
+                        wx:if="{{item.resourceImg}}" 
+                        class="eye-icon" 
+                        src="/assets/icons/eye-open.png" 
+                        mode="aspectFit"
+                        catchtap="showResourceImage"
+                        data-resource="{{item}}"
+                    ></image>
+                    </view>
+                    <view class="resource-status {{item.isReservable === 1 ? 'active' : 'inactive'}}">
+                    {{item.isReservable === 1 ? '可预约' : '已停用'}}
+                    </view>
+                </view>
+                <!-- 第二行：单价（仅余额卡） + 编辑按钮 -->
+                <view class="resource-row-2">
+                    <text class="resource-price" wx:if="{{item.supportCardTypes === 1}}">单价：{{item.unitPrice}}元</text>
+                    <text class="resource-price" wx:else></text>
+                    
+                </view>
+                <!-- 第三行：资源描述 -->
+                <view class="resource-row-3" wx:if="{{item.resourceDesc}}">
+                    <text class="resource-desc">{{item.resourceDesc}}</text>
+                </view>
+            </view>
+            <view class="resource-col-r">
+                <view class="edit-btn" catchtap="goToEditResource" data-resource="{{item}}">编辑</view>
+          </view>
+          </view>
+          
+          
+
+        <view wx:if="{{resourceHasMore}}" class="load-more" bindtap="loadMoreResources">
+          <text>{{resourceLoading ? '加载中...' : '加载更多'}}</text>
+        </view>
+        <view wx:else class="load-more">
+          <text class="load-more-end">— 已加载全部 —</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 资源图片展示弹窗 -->
+  <view wx:if="{{showResourceImageModal}}" class="resource-image-modal-mask" catchtap="hideResourceImageModal">
+    <view class="resource-image-modal" catchtap="stopPropagation">
+      <image class="resource-image-preview" src="{{currentResourceImage}}" mode="aspectFit"></image>
+    </view>
+  </view>
+
+  <!-- 修改弹窗 -->
+  <view wx:if="{{showEditModal}}" class="modal-overlay" catchtap="closeEditModal">
+    <view class="modal-container" catchtap="stopPropagation">
+      <view class="modal-header">
+        <text class="modal-title">修改配置</text>
+        <view class="modal-close" catchtap="closeEditModal">
+          <text>✕</text>
+        </view>
+      </view>
+
+      <!-- Tab切换 -->
+      <view class="modal-tabs">
+        <view class="modal-tab {{editTab === 'reservationTimeList' ? 'active' : ''}}" catchtap="switchEditTab" data-tab="reservationTimeList">
+          时间段
+        </view>
+        <view class="modal-tab {{editTab === 'cancelRule' ? 'active' : ''}}" catchtap="switchEditTab" data-tab="cancelRule">
+          取消规则
+        </view>
+        <view class="modal-tab {{editTab === 'advanceDays' ? 'active' : ''}}" catchtap="switchEditTab" data-tab="advanceDays">
+          提前天数
+        </view>
+        <view class="modal-tab {{editTab === 'forbiddenDays' ? 'active' : ''}}" catchtap="switchEditTab" data-tab="forbiddenDays">
+          禁止日期
+        </view>
+      </view>
+
+      <scroll-view class="modal-body" scroll-y enhanced show-scrollbar="{{false}}" catchtap="stopPropagation">
+        <!-- 时间段编辑 -->
+        <view wx:if="{{editTab === 'reservationTimeList'}}" class="edit-panel">
+          <view class="panel-section">
+            <text class="panel-title">快速生成</text>
+            <view class="form-item">
+              <text class="form-label">单位时间（分钟）</text>
+              <input class="form-input" type="number" value="{{editData.unitTime}}" bindinput="onEditUnitTimeInput" placeholder="30-240" />
+            </view>
+            <view class="form-item">
+              <text class="form-label">休息时长（分钟）</text>
+              <input class="form-input" type="number" value="{{editData.restTime}}" bindinput="onEditRestTimeInput" placeholder="0-60" />
+            </view>
+            <view class="form-item">
+              <text class="form-label">营业时间</text>
+              <view class="time-range">
+                <picker mode="time" value="{{editData.startTime}}" bindchange="onEditStartTimeChange">
+                  <view class="time-picker">{{editData.startTime || '08:00'}}</view>
+                </picker>
+                <text class="time-sep">-</text>
+                <picker mode="time" value="{{editData.endTime}}" bindchange="onEditEndTimeChange">
+                  <view class="time-picker">{{editData.endTime || '22:00'}}</view>
+                </picker>
+              </view>
+            </view>
+            <button class="generate-btn" catchtap="generateEditTimeSlots">一键生成</button>
+          </view>
+
+          <view class="panel-section" wx:if="{{editData.reservationTimeList.length > 0}}">
+            <text class="panel-title">当前时间段（点击可修改）</text>
+            <view class="time-slot-list">
+              <view class="time-slot-item" wx:for="{{editData.reservationTimeList}}" wx:key="index">
+                <text class="slot-text" catchtap="modifyEditTimeSlot" data-index="{{index}}">{{item}}</text>
+                <text class="slot-delete" catchtap="deleteEditTimeSlot" data-index="{{index}}">×</text>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 取消规则编辑 -->
+        <view wx:if="{{editTab === 'cancelRule'}}" class="edit-panel">
+          <view class="panel-section">
+            <text class="panel-title">当前规则</text>
+            <view class="rule-edit-list" wx:if="{{editData.cancelRuleParsed.length > 0}}">
+              <view class="rule-edit-card" wx:for="{{editData.cancelRuleParsed}}" wx:key="index">
+                <view class="rule-edit-row">
+                  <text class="rule-label">预约开始时间前</text>
+                  <input class="rule-input" type="number" value="{{item.minutes}}" data-index="{{index}}" data-field="minutes" bindinput="onRuleInputChange" />
+                  <text class="rule-label">分钟内取消</text>
+                </view>
+                <view class="rule-edit-row">
+                  <text class="rule-label">扣除</text>
+                  <input class="rule-input" type="digit" value="{{item.value}}" data-index="{{index}}" data-field="value" bindinput="onRuleInputChange" />
+                  <text class="rule-label">{{item.type === 'percent' ? '%' : '元'}}违约金</text>
+                  <text class="rule-type-switch" catchtap="toggleRuleType" data-index="{{index}}">切换</text>
+                </view>
+                <text class="rule-delete-btn" catchtap="deleteEditCancelRule" data-index="{{index}}">删除</text>
+              </view>
+            </view>
+            <view class="empty-hint-inline" wx:else>暂无取消规则</view>
+            <button class="add-btn" catchtap="addEditCancelRule">添加取消规则</button>
+          </view>
+        </view>
+
+        <!-- 提前天数编辑 -->
+        <view wx:if="{{editTab === 'advanceDays'}}" class="edit-panel">
+          <view class="panel-section">
+            <text class="panel-title">提前预约天数</text>
+            <picker mode="selector" range="{{[1,2,3,4,5,6,7]}}" value="{{editData.advanceDays - 1}}" bindchange="onEditAdvanceDaysChange">
+              <view class="picker-display">{{editData.advanceDays}}天</view>
+            </picker>
+            <text class="form-hint">前端限制最多提前7天预约</text>
+          </view>
+        </view>
+
+        <!-- 禁止日期编辑 -->
+        <view wx:if="{{editTab === 'forbiddenDays'}}" class="edit-panel">
+          <view class="panel-section">
+            <text class="panel-title">选择星期</text>
+            <checkbox-group bindchange="onEditWeekDayChange">
+              <view class="checkbox-list">
+                <label class="checkbox-item" wx:for="{{['周一','周二','周三','周四','周五','周六','周日']}}" wx:key="index">
+                  <checkbox value="{{item}}" checked="{{editData.weekDays.indexOf(item) !== -1}}" color="#1976d2" />
+                  <text>{{item}}</text>
+                </label>
+              </view>
+            </checkbox-group>
+          </view>
+
+          <view class="panel-section">
+            <text class="panel-title">具体日期</text>
+            <view class="date-list" wx:if="{{editData.specificDates.length > 0}}">
+              <view class="date-tag" wx:for="{{editData.specificDates}}" wx:key="index">
+                <text>{{item}}</text>
+                <text class="date-delete" catchtap="deleteEditSpecificDate" data-index="{{index}}">×</text>
+              </view>
+            </view>
+            <view class="empty-hint-inline" wx:else>暂无具体日期</view>
+            <picker mode="date" bindchange="onAddSpecificDate">
+              <button class="add-btn">添加日期</button>
+            </picker>
+          </view>
+        </view>
+      </scroll-view>
+
+      <view class="modal-footer">
+        <button class="cancel-btn" catchtap="closeEditModal">取消</button>
+        <button class="submit-btn" catchtap="submitEdit">确定</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 自定义Toast -->
+  <custom-toast id="customToast" />
+</view>

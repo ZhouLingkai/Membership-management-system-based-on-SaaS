@@ -1,0 +1,69 @@
+<!--pages/profile/profile.wxml-->
+<!-- 用户基本信息卡片 -->
+<view class="user-info-card card" bindtap="handleUserInfoTap">
+    <view class="user-avatar">
+        <image class="avatar-img" src="{{isLogin && avatarUrl ? avatarUrl : '/assets/images/default-avatar.png'}}" mode="aspectFill"></image>
+    </view>
+    <view class="user-details">
+        <view class="user-name">{{isLogin ? (userInfo.nickname || '用户') : '未登录'}}</view>
+        <view class="user-status">{{getUserStatusText()}}</view>
+    </view>
+    <view class="arrow-icon">></view>
+</view>
+
+<!-- 商家升级卡片 -->
+<view class="merchant-upgrade-card card" bindtap="handleUpgradeTap">
+    <!-- 上半部分：商务合作 + 升级按钮 -->
+    <view class="upgrade-header">
+        <view class="upgrade-text">
+            <text class="upgrade-title">商务合作</text>
+        </view>
+        <view class="upgrade-button">
+            <button class="upgrade-btn">升级为商家</button>
+        </view>
+    </view>
+
+    <!-- 分割线 -->
+    <view class="divider"></view>
+
+    <!-- 下半部分：特权展示 -->
+    <view class="privileges-grid">
+        <view class="privilege-item" wx:for="{{privileges}}" wx:key="index">
+            <image class="privilege-icon" src="{{item.icon}}" mode="aspectFit"></image>
+            <text class="privilege-text">{{item.text}}</text>
+        </view>
+    </view>
+</view>
+
+<!-- 推荐功能卡片 -->
+<view class="recommend-card card">
+    <view class="recommend-header">
+        <text class="recommend-title">推荐功能</text>
+    </view>
+    <view class="recommend-grid">
+        <view class="recommend-item" wx:for="{{recommendFeatures}}" wx:key="index" bindtap="handleRecommendTap" data-type="{{item.type}}">
+            <image class="recommend-icon" src="{{item.icon}}" mode="aspectFit"></image>
+            <text class="recommend-text">{{item.text}}</text>
+        </view>
+    </view>
+</view>
+
+<!-- 开发测试入口（仅开发环境显示） -->
+<view class="dev-tools-card card" wx:if="{{isLogin}}">
+    <view class="recommend-header">
+        <text class="recommend-title">开发测试</text>
+    </view>
+    <view class="recommend-grid">
+        <view class="recommend-item" bindtap="goToOssTest">
+            <text class="dev-icon">🔧</text>
+            <text class="recommend-text">OSS测试</text>
+        </view>
+        
+    </view>
+</view>
+<view class="recommend-item" bindtap="goToSubpackageIndex">
+            <text class="dev-icon">📦</text>
+            <text class="recommend-text">分包测试</text>
+        </view>
+<!-- 自定义消息组件 -->
+<custom-toast id="customToast" message="{{toastMessage}}" type="{{toastType}}" animation-type="{{toastAnimationType}}" show="{{showToast}}" />

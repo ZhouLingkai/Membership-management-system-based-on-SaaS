@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "修改卡种信息",
+  "usingComponents": {
+    "custom-toast": "/components/custom-toast/custom-toast",
+    "card-display": "/components/card-display/card-display"
+  }
+}

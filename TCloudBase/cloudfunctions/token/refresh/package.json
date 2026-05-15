@@ -1,0 +1,11 @@
+{
+  "name": "token-refresh",
+  "version": "1.0.0",
+  "description": "令牌刷新",
+  "main": "index.js",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@cloudbase/node-sdk": "^3.18.1"
+  }
+}

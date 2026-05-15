@@ -1,0 +1,3209 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>会员管理系统 - 测试页面</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-group .checkbox-group {
+            display: flex;
+            align-items: center;
+        }
+
+        .form-group .checkbox-group input {
+            width: auto;
+            margin-right: 8px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-right: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .result {
+            background: #f5f5f5;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .result h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .result pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .success {
+            color: #4caf50;
+            font-weight: bold;
+        }
+
+        .error {
+            color: #f44336;
+            font-weight: bold;
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        .info-box h4 {
+            color: #1976d2;
+            margin-bottom: 8px;
+        }
+
+        .info-box p {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        /* 侧边栏样式 */
+        .layout-wrapper {
+            display: flex;
+            min-height: calc(100vh - 40px);
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(180deg, #4a5568 0%, #2d3748 100%);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            margin-right: 20px;
+            position: sticky;
+            top: 20px;
+            height: fit-content;
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .sidebar-header {
+            color: white;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .sidebar-header h3 {
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+
+        .platform-selector {
+            margin-top: 10px;
+        }
+
+        .platform-selector select {
+            width: 100%;
+            padding: 8px;
+            border-radius: 6px;
+            border: none;
+            background: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .sidebar-nav {
+            list-style: none;
+        }
+
+        .sidebar-nav li {
+            margin-bottom: 8px;
+        }
+
+        .sidebar-nav a {
+            display: block;
+            padding: 12px 15px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .sidebar-nav a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .sidebar-nav a.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .sidebar-nav a i {
+            margin-right: 10px;
+        }
+
+        .content-area {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .page-header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .page-header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="layout-wrapper">
+        <!-- 侧边栏 -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h3>📋 测试导航</h3>
+                <div class="platform-selector">
+                    <label style="color: rgba(255,255,255,0.8); font-size: 13px; margin-bottom: 5px; display: block;">平台选择</label>
+                    <select id="globalPlatform">
+                        <option value="WEB">WEB</option>
+                        <option value="MINI_PROGRAM">MINI_PROGRAM</option>
+                    </select>
+                </div>
+            </div>
+            
+            <nav>
+                <ul class="sidebar-nav">
+                    <li><a href="#" onclick="switchSection('auth-section')" class="nav-link active" data-section="auth-section">
+                        🔐 注册登录令牌
+                    </a></li>
+                    <li><a href="#" onclick="switchSection('user-section')" class="nav-link" data-section="user-section">
+                        👤 用户基础功能
+                    </a></li>
+                    <li><a href="#" onclick="switchSection('merchant-section')" class="nav-link" data-section="merchant-section">
+                        🏪 商户升级
+                    </a></li>
+                    <li><a href="#" onclick="switchSection('staff-section')" class="nav-link" data-section="staff-section">
+                        💼 员工工作
+                    </a></li>
+                    <li><a href="#" onclick="switchSection('cardtype-section')" class="nav-link" data-section="cardtype-section">
+                        🎴 会员卡种管理
+                    </a></li>
+                    <li><a href="#" onclick="switchSection('membercard-section')" class="nav-link" data-section="membercard-section">
+                        💳 会员卡管理
+                    </a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- 内容区域 -->
+        <main class="content-area">
+            <div class="page-header">
+                <h1>🎫 会员管理系统测试平台</h1>
+                <p>测试各模块功能接口</p>
+            </div>
+
+            <!-- 注册登录令牌模块 -->
+            <section id="auth-section" class="content-section active">
+                <div class="card">
+                    <h2>⚙️ 配置信息</h2>
+                    <div class="info-box">
+                        <h4>重要提示</h4>
+                        <p>
+                            <strong>Device-Id:</strong> <span id="deviceIdDisplay">device_test_12345</span><br>
+                            <strong>AES密钥:</strong> 已硬编码（与后端一致）<br>
+                            <strong>验证码:</strong> 后端控制台打印（6位数字）<br>
+                            <strong>测试邀请码:</strong> 注册后获得，可用于测试邀请功能
+                        </p>
+                    </div>
+                </div>
+
+        <div class="grid">
+            <!-- 1. 获取验证码 -->
+            <div class="card">
+                <h2>📱 1. 获取验证码</h2>
+                <div class="form-group">
+                    <label>手机号</label>
+                    <input type="text" id="phoneForCode" placeholder="13800137001" value="13800137001">
+                </div>
+                <button class="btn" onclick="getVerifyCode()">获取验证码</button>
+                <div class="result" id="codeResult"></div>
+            </div>
+
+            <!-- 2. 用户注册 -->
+            <div class="card">
+                <h2>📝 2. 用户注册</h2>
+                <div class="form-group">
+                    <label>手机号</label>
+                    <input type="text" id="phoneForReg" placeholder="13800137001" value="13800137001">
+                </div>
+                <div class="form-group">
+                    <label>密码</label>
+                    <input type="password" id="passwordForReg" placeholder="至少8位" value="zhouge666">
+                </div>
+                <div class="form-group">
+                    <label>验证码</label>
+                    <input type="text" id="verifyCodeForReg" placeholder="6位数字" maxlength="6">
+                </div>
+                <div class="form-group">
+                    <label>昵称</label>
+                    <input type="text" id="nicknameForReg" placeholder="请输入昵称" value="测试用户">
+                </div>
+                <div class="form-group">
+                    <label>邀请码（可选）</label>
+                    <input type="text" id="invitedCode" placeholder="留空或填写邀请码">
+                </div>
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="rememberMeForReg" checked>
+                    <label for="rememberMeForReg">记住登录（7天）</label>
+                </div>
+                <button class="btn" onclick="register()">注册</button>
+                <div class="result" id="regResult"></div>
+            </div>
+
+            <!-- 3. 用户登录 -->
+            <div class="card">
+                <h2>🔐 3. 用户登录</h2>
+                <div class="form-group">
+                    <label>手机号</label>
+                    <input type="text" id="phoneForLogin" placeholder="13800137001" value="13800137001">
+                </div>
+                <div class="form-group">
+                    <label>密码</label>
+                    <input type="password" id="passwordForLogin" placeholder="密码" value="zhouge666">
+                </div>
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="rememberMeForLogin" checked>
+                    <label for="rememberMeForLogin">记住登录（7天）</label>
+                </div>
+                <button class="btn" onclick="login()">登录</button>
+                <div class="result" id="loginResult"></div>
+            </div>
+
+            <!-- 4. 刷新令牌 -->
+            <div class="card">
+                <h2>🔄 4. 刷新令牌</h2>
+                <div class="form-group">
+                    <label>旧令牌（自动填充）</label>
+                    <input type="text" id="oldToken" placeholder="Bearer xxx" readonly>
+                </div>
+                <div class="form-group">
+                    <label>令牌类型</label>
+                    <select id="tokenType">
+                        <option value="1">普通令牌</option>
+                        <option value="3">工作令牌</option>
+                    </select>
+                </div>
+                <button class="btn" onclick="refreshToken()">刷新令牌</button>
+                <div class="result" id="refreshResult"></div>
+            </div>
+
+            <!-- 5. 获取特权令牌 -->
+            <div class="card">
+                <h2>⭐ 5. 获取特权令牌</h2>
+                <div class="form-group">
+                    <label>普通令牌（自动填充）</label>
+                    <input type="text" id="normalTokenForPrivilege" placeholder="Bearer xxx" readonly>
+                </div>
+                <div class="form-group">
+                    <label>目标操作权限</label>
+                    <select id="targetOperate">
+                        <option value="CARD_CREATE">CARD_CREATE - 办卡</option>
+                        <option value="RECHARGE">RECHARGE - 充值</option>
+                        <option value="CONSUME">CONSUME - 消费</option>
+                        <option value="STAFF_BIND">STAFF_BIND - 绑定员工</option>
+                        <option value="APPOINTMENT">APPOINTMENT - 预约结果展示</option>
+                        <option value="QUERY_MCARD">QUERY_MCARD - 查询会员卡</option>
+                        <option value="ALL">全部权限</option>
+                    </select>
+                </div>
+                <button class="btn btn-secondary" onclick="getPrivilegeToken()">获取特权令牌</button>
+                <div class="result" id="privilegeResult"></div>
+            </div>
+
+            <!-- 6. 自动登录 -->
+            <div class="card">
+                <h2>🔓 6. 自动登录</h2>
+                <div class="form-group">
+                    <label>自动登录令牌（自动填充或手动输入）</label>
+                    <textarea id="autoLoginTokenInput" placeholder="Bearer eyJhbGc..." rows="3" readonly></textarea>
+                </div>
+                <div class="form-group">
+                    <input type="checkbox" id="manualAutoLoginToken">
+                    <label for="manualAutoLoginToken">手动输入令牌（取消只读）</label>
+                </div>
+                <button class="btn" onclick="testAutoLogin()">自动登录</button>
+                <div class="result" id="autoLoginResult"></div>
+            </div>
+
+            <!-- 7. 注销令牌 -->
+            <div class="card">
+                <h2>🚪 7. 注销令牌</h2>
+                <div class="form-group">
+                    <label>令牌（自动填充）</label>
+                    <input type="text" id="tokenForRevoke" placeholder="Bearer xxx" readonly>
+                </div>
+                <button class="btn btn-secondary" onclick="revokeToken()">注销令牌</button>
+                <div class="result" id="revokeResult"></div>
+            </div>
+
+            <!-- 用户主动退出 -->
+            <div class="card">
+                <h2>🚪 8. 用户主动退出</h2>
+                <div class="form-group">
+                    <label>用户ID（自动填充）</label>
+                    <input type="text" id="userIdForLogout" placeholder="从登录/注册响应获取" readonly>
+                </div>
+                <div class="form-group">
+                    <label>自动登录令牌（可选）</label>
+                    <textarea id="autoLoginTokenForLogout" placeholder="留空或填写自动登录令牌" rows="2" readonly></textarea>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="logoutAllDevices">
+                        全设备退出（勾选后将注销所有设备的令牌）
+                    </label>
+                </div>
+                <button class="btn btn-secondary" onclick="userLogout()">用户退出</button>
+                <div class="result" id="logoutResult"></div>
+            </div>
+        </div>
+            </section>
+
+            <!-- 用户基础功能模块 -->
+            <section id="user-section" class="content-section">
+        <div class="grid">
+            <!-- 8. 用户信息查询 -->
+            <div class="card">
+                <h2>👤 用户信息查询</h2>
+                <div class="form-group">
+                    <label>用户ID（自动填充）</label>
+                    <input type="text" id="userIdForQuery" placeholder="从登录/注册响应获取" readonly>
+                </div>
+                <button class="btn" onclick="getUserInfo()">查询用户信息</button>
+                <div class="result" id="userInfoResult"></div>
+            </div>
+
+            <!-- 9. 用户信息修改 -->
+            <div class="card">
+                <h2>✏️ 用户信息修改</h2>
+                <div class="form-group">
+                    <label>用户ID（自动填充）</label>
+                    <input type="text" id="userIdForUpdate" placeholder="从登录/注册响应获取" readonly>
+                </div>
+                <div class="form-group">
+                    <label>昵称（可选）</label>
+                    <input type="text" id="nicknameForUpdate" placeholder="留空则不修改">
+                </div>
+                <div class="form-group">
+                    <label>头像URL（可选）</label>
+                    <input type="text" id="avatarForUpdate" placeholder="留空则不修改">
+                </div>
+                <div class="form-group">
+                    <label>会员头像URL（可选）</label>
+                    <input type="text" id="memberAvatarForUpdate" placeholder="留空则不修改">
+                </div>
+                <button class="btn" onclick="updateUserInfo()">修改用户信息</button>
+                <div class="result" id="updateUserInfoResult"></div>
+            </div>
+
+            <!-- 密码重置（通过验证码） -->
+            <div class="card">
+                <h2>🔑 密码重置（通过验证码）</h2>
+                <div class="form-group">
+                    <label>手机号</label>
+                    <input type="text" id="phoneForReset" placeholder="13800137001" value="13800137001">
+                </div>
+                <div class="form-group">
+                    <label>验证码</label>
+                    <input type="text" id="verifyCodeForReset" placeholder="6位数字" maxlength="6">
+                </div>
+                <div class="form-group">
+                    <label>新密码</label>
+                    <input type="password" id="newPasswordForReset" placeholder="至少8位" value="87654321">
+                </div>
+                <button class="btn" onclick="resetPassword()">重置密码</button>
+                <div class="result" id="resetPasswordResult"></div>
+            </div>
+
+            <!-- 12. 用户密码修改（通过旧密码） -->
+            <div class="card">
+                <h2>🔐 12. 用户密码修改（通过旧密码）</h2>
+                <div class="form-group">
+                    <label>用户ID（自动填充）</label>
+                    <input type="text" id="userIdForPwdUpdate" placeholder="从登录/注册响应获取" readonly>
+                </div>
+                <div class="form-group">
+                    <label>原密码</label>
+                    <input type="password" id="oldPassword" placeholder="输入原密码">
+                </div>
+                <div class="form-group">
+                    <label>新密码（至少8位）</label>
+                    <input type="password" id="newPassword" placeholder="输入新密码">
+                </div>
+                <div class="form-group">
+                    <label>确认新密码</label>
+                    <input type="password" id="confirmPassword" placeholder="再次输入新密码">
+                </div>
+                <button class="btn" onclick="updateUserPassword()">修改密码</button>
+                <div class="result" id="updateUserPwdResult"></div>
+            </div>
+        </div>
+            </section>
+
+            <!-- 商户升级模块 -->
+            <section id="merchant-section" class="content-section">
+        <div class="grid">
+            <!-- 商户升级（免认证通道） -->
+            <div class="card">
+                <h2>🏪 商户升级（免认证通道）</h2>
+                <div class="form-group">
+                    <label>用户ID（从登录响应中获取）</label>
+                    <input type="text" id="userIdForFreeMerchant" placeholder="自动填充">
+                </div>
+                <div class="form-group">
+                    <label>商户名称</label>
+                    <input type="text" id="merchantNameFree" placeholder="XX连锁便利店" value="测试商户">
+                </div>
+                <div class="form-group">
+                    <label>二级密码（至少8位）</label>
+                    <input type="password" id="sndPswdFree" placeholder="设置二级密码" value="zhouge666">
+                </div>
+                <button class="btn" onclick="registerMerchantFree()">申请商户（免认证）</button>
+                <div class="result" id="freeMerchantResult"></div>
+            </div>
+
+            <!-- 商户升级（直接认证通道） -->
+            <div class="card">
+                <h2>🏪 商户升级（直接认证通道）</h2>
+                <div class="form-group">
+                    <label>用户ID（从登录响应中获取）</label>
+                    <input type="text" id="userIdForDirectMerchant" placeholder="自动填充">
+                </div>
+                <div class="form-group">
+                    <label>店铺规模</label>
+                    <input type="number" id="numStoresDirect" placeholder="预计店铺数量" value="3" min="1">
+                </div>
+                <div class="form-group">
+                    <label>会员规模</label>
+                    <input type="text" id="numMembersDirect" placeholder="例如：500-1000" value="500-1000">
+                </div>
+                <div class="form-group">
+                    <label>第一家店铺名称</label>
+                    <input type="text" id="storeNameDirect" placeholder="XX便利店第一分店" value="测试店铺">
+                </div>
+                <div class="form-group">
+                    <label>门头店照（支持JPG/PNG，自动压缩至5MB以内）</label>
+                    <input type="file" id="storePhotosDirect" accept="image/jpeg,image/png,image/jpg">
+                    <input type="hidden" id="storePhotosUrl">
+                    <div id="storePhotosPreview" class="preview-container"></div>
+                </div>
+                <div class="form-group">
+                    <label>营业执照（支持JPG/PNG，自动压缩至5MB以内）</label>
+                    <input type="file" id="businessLicenseDirect" accept="image/jpeg,image/png,image/jpg">
+                    <input type="hidden" id="businessLicenseUrl">
+                    <div id="businessLicensePreview" class="preview-container"></div>
+                </div>
+                <button class="btn" onclick="registerMerchantDirect()">申请商户（直接认证）</button>
+                <div class="result" id="directMerchantResult"></div>
+            </div>
+
+            <!-- 商户资质审核结果查询 -->
+            <div class="card">
+                <h2>📋 商户资质审核结果查询</h2>
+                <div class="form-group">
+                    <label>用户ID（从登录响应中获取）</label>
+                    <input type="text" id="userIdForAuditQuery" placeholder="自动填充">
+                </div>
+                <button class="btn" onclick="getQualificationAuditStatus()">查询审核结果</button>
+                <div class="result" id="auditQueryResult"></div>
+            </div>
+        </div>
+            </section>
+
+            <!-- 员工工作模块 -->
+            <section id="staff-section" class="content-section">
+        <div class="grid">
+            <div id="staffModule">
+                <!-- 13. 查询用户工作关系 -->
+                <div class="card">
+                    <h2>👔 13. 查询用户工作关系</h2>
+                    <div class="info-box">
+                        <h4>接口说明</h4>
+                        <p>
+                            <strong>URL:</strong> GET /api/v1/users/work-relations<br>
+                            <strong>权限:</strong> 员工用户（需要普通令牌）<br>
+                            <strong>说明:</strong> 查询当前用户的所有在职工作关系，用于选择店铺获取工作令牌
+                        </p>
+                    </div>
+                    <div class="form-group">
+                        <label>用户ID（自动填充）</label>
+                        <input type="text" id="userIdForWorkRelations" placeholder="user-id-xxx" readonly style="background-color: #f0f0f0;">
+                    </div>
+                    <button class="btn" onclick="getUserWorkRelations()">查询工作关系</button>
+                    <div class="result" id="workRelationsResult"></div>
+                    
+                    <!-- 工作关系列表（选择店铺获取工作令牌） -->
+                    <div id="workRelationsList" style="margin-top: 20px; display: none;">
+                        <h3 style="color: #667eea;">选择店铺获取工作令牌</h3>
+                        <div id="workRelationsCards"></div>
+                    </div>
+                </div>
+
+                <!-- 13.5. 获取工作令牌（独立测试模块） -->
+                <div class="card" style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border: 2px solid #2196f3;">
+                    <h2>🎫 13.5. 获取工作令牌（快速测试）</h2>
+                    <div class="info-box" style="background-color: #e3f2fd; border-left: 4px solid #2196f3;">
+                        <h4>💡 使用说明</h4>
+                        <p style="color: #1976d2;">
+                            <strong>这是一个快速测试模块！</strong><br>
+                            • 如果你已经知道店铺ID，可以直接在此获取工作令牌<br>
+                            • 如果不知道店铺ID，请先使用上方"查询工作关系"功能
+                        </p>
+                    </div>
+                    <div class="info-box">
+                        <h4>接口说明</h4>
+                        <p>
+                            <strong>URL:</strong> POST /api/v1/tokens/work<br>
+                            <strong>权限:</strong> 员工用户（需要普通令牌）<br>
+                            <strong>说明:</strong> 为指定店铺获取工作令牌
+                        </p>
+                    </div>
+                    <div class="form-group">
+                        <label>用户ID（自动填充）</label>
+                        <input type="text" id="userIdForWorkToken" placeholder="user-id-xxx" readonly style="background-color: #f0f0f0;">
+                        <small style="color: #666;">登录后自动填充当前用户ID</small>
+                    </div>
+                    <div class="form-group">
+                        <label>店铺ID <span style="color: red;">*</span></label>
+                        <input type="text" id="storeIdForWorkToken" placeholder="store-id-xxx" required>
+                        <small style="color: #666;">输入要工作的店铺ID，可从上方工作关系列表复制</small>
+                    </div>
+                    <button class="btn" onclick="getWorkTokenDirect()" style="background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%); font-size: 16px; padding: 12px 40px;">
+                        🚀 获取工作令牌
+                    </button>
+                    <div class="result" id="workTokenDirectResult"></div>
+                </div>
+
+                <!-- 13.6. 员工信息查询（列表） -->
+                <div class="card">
+                    <h2>📋 13.6. 员工信息查询（列表）</h2>
+                    <div class="info-box">
+                        <h4>接口说明</h4>
+                        <p>
+                            <strong>URL:</strong> GET /api/v1/staffs<br>
+                            <strong>权限:</strong> 店长（需要工作令牌）<br>
+                            <strong>说明:</strong> 分页查询店铺员工列表，支持角色和姓名筛选
+                        </p>
+                    </div>
+                    <div class="form-group">
+                        <label>店铺ID（从工作令牌自动获取）</label>
+                        <input type="text" id="storeIdForStaffList" placeholder="store-id-xxx" readonly style="background-color: #f0f0f0;">
+                        <small style="color: #666;">获取工作令牌后自动填充</small>
+                    </div>
+                    <div class="form-group">
+                        <label>角色筛选（可选）</label>
+                        <select id="staffRoleFilter">
+                            <option value="">全部</option>
+                            <option value="STAFF">店员</option>
+                            <option value="STORE_MANAGER">店长</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>姓名筛选（可选）</label>
+                        <input type="text" id="staffNameFilter" placeholder="模糊搜索员工姓名">
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div class="form-group">
+                            <label>页码</label>
+                            <input type="number" id="staffListPageNum" value="1" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label>每页条数</label>
+                            <input type="number" id="staffListPageSize" value="10" min="1" max="50">
+                        </div>
+                    </div>
+                    <button class="btn" onclick="getStaffListAsEmployee()">查询员工列表</button>
+                    <div class="result" id="staffListResult"></div>
+                </div>
+
+                <!-- 14. 员工详情查询（自查） -->
+                <div class="card">
+                    <h2>👤 14. 员工详情查询（自查）</h2>
+                    <div class="info-box">
+                        <h4>接口说明</h4>
+                        <p>
+                            <strong>URL:</strong> GET /api/v1/staffs/{staffId}<br>
+                            <strong>权限:</strong> 员工用户（需要普通令牌）<br>
+                            <strong>说明:</strong> 员工查询自己的信息（不包含权限配置）
+                        </p>
+                    </div>
+                    <div class="form-group">
+                        <label>员工ID（自己的用户ID）</label>
+                        <input type="text" id="staffIdForSelfQuery" placeholder="自动填充或手动输入user-id-xxx" style="background-color: #f9f9f9;">
+                        <small style="color: #666;">登录后自动填充，也可以手动输入</small>
+                    </div>
+                    <div class="form-group">
+                        <label>店铺ID</label>
+                        <input type="text" id="storeIdForSelfQuery" placeholder="store-id-xxx">
+                        <small style="color: #666;">从工作关系列表中选择</small>
+                    </div>
+                    <button class="btn" onclick="getStaffSelfDetail()">查询自己信息</button>
+                    <div class="result" id="staffSelfDetailResult"></div>
+                </div>
+
+                <!-- 15. 当前工作令牌信息 -->
+                <div class="card">
+                    <h2>🎫 15. 当前工作令牌</h2>
+                    <div class="form-group">
+                        <label>工作令牌</label>
+                        <textarea id="currentWorkToken" readonly style="background-color: #f0f0f0; min-height: 80px;" placeholder="请先获取工作令牌..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>当前工作店铺</label>
+                        <input type="text" id="currentWorkStore" readonly style="background-color: #f0f0f0;" placeholder="未选择">
+                    </div>
+                    <div class="form-group">
+                        <label>当前角色</label>
+                        <input type="text" id="currentWorkRole" readonly style="background-color: #f0f0f0;" placeholder="未选择">
+                    </div>
+                </div>
+
+                <!-- 16. 员工信息修改（仅店长可用） -->
+                <div class="card" id="staffInfoUpdateCard">
+                    <h2>✏️ 16. 员工信息修改（店长功能）</h2>
+                    <div class="info-box" style="background-color: #fff3cd; border-left: 4px solid #ffc107;">
+                        <h4>⚠️ 权限要求</h4>
+                        <p style="color: #856404;">
+                            <strong>此功能仅限店长使用！</strong><br>
+                            请先以店长身份获取工作令牌才能使用此功能
+                        </p>
+                    </div>
+                    <div class="info-box">
+                        <h4>接口说明</h4>
+                        <p>
+                            <strong>URL:</strong> PUT /api/v1/staffs/{staffId}<br>
+                            <strong>权限:</strong> 店长（需要工作令牌）<br>
+                            <strong>说明:</strong> 店长可以修改店员的姓名和备注（不能修改其他店长）
+                        </p>
+                    </div>
+                    <div class="form-group">
+                        <label>员工ID <span style="color: red;">*</span></label>
+                        <input type="text" id="staffIdForInfoUpdate" placeholder="user-id-xxx" required>
+                    </div>
+                    <div class="form-group">
+                        <label>员工姓名（可选）</label>
+                        <input type="text" id="staffNameForUpdate" placeholder="留空则不修改">
+                    </div>
+                    <div class="form-group">
+                        <label>备注（可选）</label>
+                        <textarea id="staffRemarkForUpdate" rows="2" placeholder="留空则不修改"></textarea>
+                    </div>
+                    <button class="btn" onclick="updateStaffInfoAsManager()">修改员工信息</button>
+                    <div class="result" id="staffInfoUpdateResult"></div>
+                </div>
+
+                <!-- 17. 员工权限修改（仅店长可用） -->
+                <div class="card" id="staffPermissionCard">
+                    <h2>🔐 17. 员工权限修改（店长功能）</h2>
+                    <div class="info-box" style="background-color: #fff3cd; border-left: 4px solid #ffc107;">
+                        <h4>⚠️ 权限要求</h4>
+                        <p style="color: #856404;">
+                            <strong>此功能仅限店长使用！</strong><br>
+                            请先以店长身份获取工作令牌才能使用此功能
+                        </p>
+                    </div>
+                    <div class="info-box">
+                        <h4>接口说明</h4>
+                        <p>
+                            <strong>URL:</strong> PUT /api/v1/staffs/{staffId}/permission<br>
+                            <strong>权限:</strong> 店长（需要工作令牌）<br>
+                            <strong>说明:</strong> 店长可以修改店员权限（不能修改其他店长权限）<br>
+                            <strong style="color: red;">注意:</strong> 权限修改后，员工的工作令牌会失效
+                        </p>
+                    </div>
+                    <div class="form-group">
+                        <label>员工ID <span style="color: red;">*</span></label>
+                        <input type="text" id="staffIdForPermUpdate" placeholder="user-id-xxx" required>
+                    </div>
+                    <div class="form-group">
+                        <label>新权限配置（JSON） <span style="color: red;">*</span></label>
+                        <textarea id="newPermJsonForStaff" rows="3" placeholder='{"employee": ["member_card_create", "transaction_recharge"]}' required></textarea>
+                        <small style="color: #666;">店员权限示例：{"employee": ["member_card_create", "transaction_recharge"]}</small><br>
+                        <small style="color: #666;">空权限示例：{"employee": []}</small><br>
+                        <small style="color: red;">注意：只能修改店员权限，不能修改店长权限</small>
+                    </div>
+                    <button class="btn" onclick="updateStaffPermissionAsManager()">修改员工权限</button>
+                    <div class="result" id="staffPermUpdateResult"></div>
+                </div>
+
+                <!-- 功能说明卡片 -->
+                <div class="card" style="background-color: #fff3cd; border-left: 4px solid #ffc107;">
+                    <h2>ℹ️ 员工管理功能说明</h2>
+                    <div style="padding: 15px;">
+                        <h4 style="color: #856404;">📌 您当前可用的功能：</h4>
+                        <ul style="color: #856404; line-height: 1.8;">
+                            <li><strong>普通员工：</strong>查询工作关系、查询自己信息、获取工作令牌</li>
+                            <li><strong>店长：</strong>以上功能 + 修改店员权限</li>
+                        </ul>
+                        
+                        <h4 style="color: #856404; margin-top: 20px;">🔒 需要商家权限的功能：</h4>
+                        <ul style="color: #856404; line-height: 1.8;">
+                            <li><strong>员工信息修改：</strong>修改员工姓名、备注（商家/店长可用）</li>
+                            <li><strong>员工角色调整：</strong>调整员工角色（店员 ↔ 店长）（仅商家可用）</li>
+                            <li><strong>员工解绑：</strong>解除员工与店铺的绑定关系（仅商家可用）</li>
+                        </ul>
+                        
+                        <p style="margin-top: 20px; padding: 10px; background-color: #fff; border-radius: 4px;">
+                            <strong>💡 提示：</strong>如需使用商家功能，请使用 <code>test_merchant.html</code> 测试页面
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+            </section>
+
+            <!-- 会员卡种管理模块 -->
+            <section id="cardtype-section" class="content-section">
+        <div class="grid">
+                <!-- 1. 会员卡种列表查询 -->
+                <div class="card">
+                    <h2>📋 1. 会员卡种列表查询</h2>
+                    <div class="info-box">
+                        <h4>接口说明</h4>
+                        <p>
+                            <strong>URL:</strong> GET /api/v1/member-card-types/list-query<br>
+                            <strong>权限:</strong> 任意有效令牌<br>
+                            <strong>说明:</strong> 查询指定店铺下所有可用的会员卡种，支持分页和筛选
+                        </p>
+                    </div>
+                    <div class="form-group">
+                        <label>店铺ID</label>
+                        <input type="text" id="storeIdForCardTypeList" placeholder="输入店铺ID">
+                    </div>
+                    <div class="form-group">
+                        <label>卡种类型（可选）</label>
+                        <select id="cardTtypeFilter">
+                            <option value="">全部类型</option>
+                            <option value="1">1-余额卡</option>
+                            <option value="2">2-次数卡</option>
+                            <option value="3">3-时效卡</option>
+                            <option value="4">4-积分卡</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>卡种名称（模糊查询，可选）</label>
+                        <input type="text" id="cardTypeNameFilter" placeholder="输入卡种名称">
+                    </div>
+                    <div class="grid">
+                        <div class="form-group">
+                            <label>页码</label>
+                            <input type="number" id="cardTypePageNum" value="1" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label>每页条数</label>
+                            <input type="number" id="cardTypePageSize" value="10" min="1" max="50">
+                        </div>
+                    </div>
+                    <button class="btn" onclick="listCardTypes()">查询卡种列表</button>
+                    <div class="result" id="cardTypeListResult"></div>
+                </div>
+
+                <!-- 2. 会员卡种详情查询 -->
+                <div class="card">
+                    <h2>🔍 2. 会员卡种详情查询</h2>
+                    <div class="info-box">
+                        <h4>接口说明</h4>
+                        <p>
+                            <strong>URL:</strong> GET /api/v1/member-card-types/detail-query<br>
+                            <strong>权限:</strong> 任意有效令牌<br>
+                            <strong>说明:</strong> 查询指定卡种的完整配置信息，包含完整的预设充值/消费项目
+                        </p>
+                    </div>
+                    <div class="form-group">
+                        <label>卡种ID</label>
+                        <input type="number" id="cardTypeIdForDetail" placeholder="输入卡种ID">
+                    </div>
+                    <div class="form-group">
+                        <label>店铺ID</label>
+                        <input type="text" id="storeIdForCardTypeDetail" placeholder="输入店铺ID">
+                    </div>
+                    <button class="btn" onclick="getCardTypeDetail()">查询卡种详情</button>
+                    <div class="result" id="cardTypeDetailResult"></div>
+                </div>
+
+                <!-- 3. 会员卡种修改设置 -->
+                <div class="card">
+                    <h2>✏️ 3. 会员卡种修改设置</h2>
+                    <div class="info-box">
+                        <h4>接口说明</h4>
+                        <p>
+                            <strong>URL:</strong> POST /api/v1/member-card-types/set<br>
+                            <strong>权限:</strong> 商家（普通令牌）或店长（工作令牌）<br>
+                            <strong>说明:</strong> 修改会员卡种配置信息，卡种类型不可修改
+                        </p>
+                    </div>
+                    <div class="form-group">
+                        <label>卡种ID</label>
+                        <input type="number" id="cardTypeIdForUpdate" placeholder="输入卡种ID">
+                    </div>
+                    <div class="form-group">
+                        <label>店铺ID</label>
+                        <input type="text" id="storeIdForCardTypeUpdate" placeholder="输入店铺ID">
+                    </div>
+                    <div class="form-group">
+                        <label>使用令牌类型 <span style="color: red;">*</span></label>
+                        <select id="updateCardTypeTokenType">
+                            <option value="normal">普通令牌（商家）</option>
+                            <option value="work">工作令牌（店长）</option>
+                        </select>
+                        <small style="color: #666; font-size: 12px;">商家使用普通令牌，店长使用工作令牌</small>
+                    </div>
+                    <div class="form-group">
+                        <label>新卡种名称（可选）</label>
+                        <input type="text" id="newCardTypeName" placeholder="输入新卡种名称，不填则不修改">
+                    </div>
+                    <div class="form-group">
+                        <label>新卡种描述（可选）</label>
+                        <input type="text" id="newCardTypeDesc" placeholder="输入新卡种描述，不填则不修改">
+                    </div>
+                    <div class="form-group">
+                        <label>新自动消息通知类型（可选）</label>
+                        <select id="newAutoNotify">
+                            <option value="">不修改</option>
+                            <option value="0">0-关闭</option>
+                            <option value="1">1-短信通知</option>
+                            <option value="2">2-订阅通知</option>
+                            <option value="3">3-程序内推送</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>新跨店通用设置（可选）</label>
+                        <select id="newCrossStore">
+                            <option value="">不修改</option>
+                            <option value="0">0-仅本店铺</option>
+                            <option value="1">1-同商家跨店通用</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>新预设充值项目（可选，JSON格式）</label>
+                        <textarea id="newPresetRecharge" rows="3" placeholder='例如：[{"itemName":"充值100元","itemDesc":"送10元","amount":100}]' style="font-family: monospace;"></textarea>
+                        <small style="color: #666; font-size: 12px;">不填则不修改；积分卡不支持修改此字段</small>
+                    </div>
+                    <div class="form-group">
+                        <label>新预设消费项目（可选，JSON格式）</label>
+                        <textarea id="newPresetCost" rows="3" placeholder='例如：[{"itemName":"普通消费","itemDesc":"每次扣除1元","amount":1}]' style="font-family: monospace;"></textarea>
+                        <small style="color: #666; font-size: 12px;">不填则不修改；积分卡不支持修改此字段</small>
+                    </div>
+                    <button class="btn" onclick="updateCardType()">修改卡种</button>
+                    <div class="result" id="cardTypeUpdateResult"></div>
+                </div>
+        </div>
+            </section>
+
+            <!-- 会员卡管理模块 -->
+            <section id="membercard-section" class="content-section">
+                <!-- 获取工作令牌模块 -->
+                <div class="card" style="background-color: #e8f5e9; border-left: 4px solid #4CAF50;">
+                    <h2>🎫 工作令牌管理</h2>
+                    <div class="info-box">
+                        <p>
+                            <strong>使用说明：</strong><br>
+                            1. 输入您要操作的店铺ID<br>
+                            2. 点击"获取工作令牌"按钮<br>
+                            3. 获取成功后，令牌将自动应用到下方所有会员卡操作中
+                        </p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>店铺ID</label>
+                        <input type="text" id="memberCardWorkStoreId" placeholder="输入店铺ID（如：123e4567-e89b-12d3-a456-426614174000）">
+                    </div>
+                    
+                    <button class="btn btn-primary" onclick="getMemberCardWorkToken()">获取工作令牌</button>
+                    
+                    <div class="form-group" style="margin-top: 15px;">
+                        <label>当前工作令牌（已获取）</label>
+                        <textarea id="memberCardCurrentWorkToken" readonly style="background-color: #f0f0f0; min-height: 60px;" placeholder="未获取工作令牌..."></textarea>
+                    </div>
+                    
+                    <div class="result" id="memberCardWorkTokenResult"></div>
+                </div>
+
+        <div class="grid">
+                <!-- 1. 会员卡办理（手机号快速办理） -->
+                <div class="card">
+                    <h2>✨ 1. 会员卡办理（手机号快速办理）</h2>
+                    <div class="info-box">
+                        <h4>接口说明</h4>
+                        <p>
+                            <strong>URL:</strong> POST /api/v1/member-cards/create-by-phone<br>
+                            <strong>权限:</strong> 店长/店员（工作令牌）<br>
+                            <strong>说明:</strong> 通过手机号快速办理会员卡，如果手机号未注册则状态为未激活
+                        </p>
+                    </div>
+                    <div class="form-group">
+                        <label>店铺ID</label>
+                        <input type="text" id="storeIdForPhoneCard" placeholder="输入店铺ID">
+                    </div>
+                    <div class="form-group">
+                        <label>卡种ID</label>
+                        <input type="text" id="cardTypeIdForPhoneCard" placeholder="输入卡种ID">
+                    </div>
+                    <div class="form-group">
+                        <label>会员手机号（将被AES加密）</label>
+                        <input type="text" id="memberPhoneForPhoneCard" placeholder="输入手机号">
+                    </div>
+                    <div class="form-group">
+                        <label>会员姓名（可选）</label>
+                        <input type="text" id="memberNameForPhoneCard" placeholder="输入会员姓名">
+                    </div>
+                    <div class="form-group">
+                        <label>初始余额（可选，默认0.00）</label>
+                        <input type="number" id="initialBalanceForPhoneCard" placeholder="0.00" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label>初始次数（可选，默认0）</label>
+                        <input type="number" id="initialTimesForPhoneCard" placeholder="0">
+                    </div>
+                    <div class="form-group">
+                        <label>初始积分（可选，默认0）</label>
+                        <input type="number" id="initialPointsForPhoneCard" placeholder="0">
+                    </div>
+                    <button class="btn" onclick="createStaffMemberCardByPhone()">办理会员卡</button>
+                    <div class="result" id="createStaffMemberCardByPhoneResult"></div>
+                </div>
+
+                <!-- 2. 会员卡办理（线下扫码办理） -->
+                <div class="card">
+                    <h2>📷 2. 会员卡办理（线下扫码办理）</h2>
+                    <div class="info-box">
+                        <h4>接口说明</h4>
+                        <p>
+                            <strong>URL:</strong> POST /api/v1/member-cards/create-by-scan<br>
+                            <strong>权限:</strong> 店长/店员（工作令牌）<br>
+                            <strong>说明:</strong> 通过扫描用户二维码办理会员卡，需要提供特权令牌
+                        </p>
+                    </div>
+                    <div class="form-group">
+                        <label>店铺ID</label>
+                        <input type="text" id="storeIdForScanCard" placeholder="输入店铺ID">
+                    </div>
+                    <div class="form-group">
+                        <label>卡种ID</label>
+                        <input type="text" id="cardTypeIdForScanCard" placeholder="输入卡种ID">
+                    </div>
+                    <div class="form-group">
+                        <label>特权令牌（一次性二维码令牌）</label>
+                        <input type="text" id="privilegeTokenForScanCard" placeholder="输入特权令牌">
+                    </div>
+                    <div class="form-group">
+                        <label>会员姓名（可选）</label>
+                        <input type="text" id="memberNameForScanCard" placeholder="输入会员姓名">
+                    </div>
+                    <div class="form-group">
+                        <label>初始余额（可选，默认0.00）</label>
+                        <input type="number" id="initialBalanceForScanCard" placeholder="0.00" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label>初始次数（可选，默认0）</label>
+                        <input type="number" id="initialTimesForScanCard" placeholder="0">
+                    </div>
+                    <div class="form-group">
+                        <label>初始积分（可选，默认0）</label>
+                        <input type="number" id="initialPointsForScanCard" placeholder="0">
+                    </div>
+                    <button class="btn" onclick="createStaffMemberCardByScan()">办理会员卡</button>
+                    <div class="result" id="createStaffMemberCardByScanResult"></div>
+                </div>
+
+                <!-- 3. 查询店铺会员卡列表 -->
+                <div class="card">
+                    <h2>🏪 3. 查询店铺会员卡列表</h2>
+                    <div class="info-box">
+                        <h4>接口说明</h4>
+                        <p>
+                            <strong>URL:</strong> GET /api/v1/member-cards/store-list<br>
+                            <strong>权限:</strong> 店长（工作令牌）<br>
+                            <strong>说明:</strong> 查询指定店铺的会员卡，支持查询本店卡或跨店卡
+                        </p>
+                    </div>
+                    <div class="form-group">
+                        <label>店铺ID</label>
+                        <input type="text" id="storeIdForStoreList" placeholder="输入店铺ID">
+                    </div>
+                    <div class="form-group">
+                        <label>查询范围</label>
+                        <select id="cardScopeForStoreList">
+                            <option value="local">local-本店卡</option>
+                            <option value="cross_store">cross_store-跨店卡</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>卡种ID筛选（可选）</label>
+                        <input type="text" id="cardTypeIdFilterForStoreList" placeholder="输入卡种ID">
+                    </div>
+                    <div class="form-group">
+                        <label>卡种类型筛选（可选）</label>
+                        <select id="cardTtypeFilterForStoreList">
+                            <option value="">全部类型</option>
+                            <option value="1">1-余额卡</option>
+                            <option value="2">2-次数卡</option>
+                            <option value="3">3-时效卡</option>
+                            <option value="4">4-积分卡</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>状态筛选（可选）</label>
+                        <select id="statusFilterForStoreList">
+                            <option value="">全部状态</option>
+                            <option value="0">0-未激活</option>
+                            <option value="1">1-正常</option>
+                            <option value="2">2-已过期</option>
+                            <option value="3">3-已冻结</option>
+                            <option value="4">4-已注销</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>手机号筛选（可选）</label>
+                        <input type="text" id="phoneFilterForStoreList" placeholder="手机号模糊查询">
+                    </div>
+                    <div class="form-group">
+                        <label>会员姓名筛选（可选）</label>
+                        <input type="text" id="nameFilterForStoreList" placeholder="姓名模糊查询">
+                    </div>
+                    <div class="grid">
+                        <div class="form-group">
+                            <label>页码</label>
+                            <input type="number" id="pageNumForStoreList" value="1" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label>每页条数</label>
+                            <input type="number" id="pageSizeForStoreList" value="10" min="1" max="50">
+                        </div>
+                    </div>
+                    <button class="btn" onclick="queryStaffStoreCardList()">查询列表</button>
+                    <div class="result" id="queryStaffStoreCardListResult"></div>
+                </div>
+
+                <!-- 5. 商家会员统计 -->
+                <div class="card">
+                    <h2>📊 5. 商家会员统计</h2>
+                    <div class="info-box">
+                        <h4>接口说明</h4>
+                        <p>
+                            <strong>URL:</strong> GET /api/v1/member-cards/merchant-statistics<br>
+                            <strong>权限:</strong> 商家（普通令牌）<br>
+                            <strong>说明:</strong> 查询商家名下所有会员卡的统计数据
+                        </p>
+                    </div>
+                    <button class="btn" onclick="getMerchantStatistics()">查询统计</button>
+                    <div class="result" id="merchantStatisticsResult"></div>
+                </div>
+
+                <!-- 6. 店铺会员统计 -->
+                <div class="card">
+                    <h2>📊 6. 店铺会员统计</h2>
+                    <div class="info-box">
+                        <h4>接口说明</h4>
+                        <p>
+                            <strong>URL:</strong> GET /api/v1/member-cards/store-statistics<br>
+                            <strong>权限:</strong> 店长/店员（工作令牌）<br>
+                            <strong>说明:</strong> 查询指定店铺的会员统计数据（包含本店卡和跨店卡）
+                        </p>
+                    </div>
+                    <div class="form-group">
+                        <label>店铺ID</label>
+                        <input type="text" id="storeIdForStatistics" placeholder="输入店铺ID">
+                    </div>
+                    <button class="btn" onclick="getStoreStatistics()">查询统计</button>
+                    <div class="result" id="storeStatisticsResult"></div>
+                </div>
+
+                <!-- 7. 我的会员卡列表 -->
+                <div class="card">
+                    <h2>💳 7. 我的会员卡列表</h2>
+                    <div class="info-box">
+                        <h4>接口说明</h4>
+                        <p>
+                            <strong>URL:</strong> GET /api/v1/member-cards/my-list<br>
+                            <strong>权限:</strong> 任意用户（普通令牌）<br>
+                            <strong>说明:</strong> 查询当前用户自己的会员卡列表
+                        </p>
+                    </div>
+                    <div class="form-group">
+                        <label>状态筛选（可选）</label>
+                        <select id="myListStatus">
+                            <option value="">全部状态</option>
+                            <option value="0">0-未激活</option>
+                            <option value="1">1-正常</option>
+                            <option value="2">2-已过期</option>
+                            <option value="3">3-已冻结</option>
+                            <option value="4">4-已注销</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>店铺ID筛选（可选）</label>
+                        <input type="text" id="myListStoreId" placeholder="输入店铺ID">
+                    </div>
+                    <div class="form-group">
+                        <label>商家ID筛选（可选）</label>
+                        <input type="text" id="myListMerchantId" placeholder="输入商家ID">
+                    </div>
+                    <div class="form-group">
+                        <label>卡种类型筛选（可选）</label>
+                        <select id="myListCardTtype">
+                            <option value="">全部类型</option>
+                            <option value="1">1-余额卡</option>
+                            <option value="2">2-次数卡</option>
+                            <option value="3">3-时效卡</option>
+                            <option value="4">4-积分卡</option>
+                        </select>
+                    </div>
+                    <div class="grid">
+                        <div class="form-group">
+                            <label>页码</label>
+                            <input type="number" id="myListPageNum" value="1" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label>每页条数</label>
+                            <input type="number" id="myListPageSize" value="10" min="1" max="100">
+                        </div>
+                    </div>
+                    <button class="btn" onclick="getMyCardList()">查询我的卡</button>
+                    <div class="result" id="myCardListResult"></div>
+                </div>
+
+                <!-- 8. 通过手机号查询会员卡 -->
+                <div class="card">
+                    <h2>📱 8. 通过手机号查询会员卡</h2>
+                    <div class="info-box">
+                        <h4>接口说明</h4>
+                        <p>
+                            <strong>URL:</strong> GET /api/v1/member-cards/query-by-phone<br>
+                            <strong>权限:</strong> 店长/店员（工作令牌）<br>
+                            <strong>说明:</strong> 通过手机号查询会员在指定店铺的会员卡（包括本店卡和跨店卡，手机号将AES加密传输）
+                        </p>
+                    </div>
+                    <div class="form-group">
+                        <label>店铺ID</label>
+                        <input type="text" id="queryPhoneStoreId" placeholder="输入店铺ID">
+                    </div>
+                    <div class="form-group">
+                        <label>会员手机号（明文，将自动加密）</label>
+                        <input type="text" id="queryPhoneMemberPhone" placeholder="输入手机号">
+                    </div>
+                    <button class="btn" onclick="queryCardsByPhone()">查询会员卡</button>
+                    <div class="result" id="queryByPhoneResult"></div>
+                </div>
+
+                <!-- 9. 会员卡详情 -->
+                <div class="card">
+                    <h2>🔍 9. 会员卡详情</h2>
+                    <div class="info-box">
+                        <h4>接口说明</h4>
+                        <p>
+                            <strong>URL:</strong> GET /api/v1/member-cards/detail<br>
+                            <strong>权限:</strong> 任意持有合法令牌的用户<br>
+                            <strong>说明:</strong> 查询指定会员卡的详细信息
+                        </p>
+                    </div>
+                    <div class="form-group">
+                        <label>会员卡ID</label>
+                        <input type="text" id="detailMemberCardId" placeholder="输入会员卡ID（UUID）">
+                    </div>
+                    <button class="btn" onclick="getCardDetail()">查询详情</button>
+                    <div class="result" id="cardDetailResult"></div>
+                </div>
+
+                <!-- 11. 批量激活会员卡 -->
+                <div class="card">
+                    <h2>🔓 11. 批量激活会员卡</h2>
+                    <div class="info-box">
+                        <h4>接口说明</h4>
+                        <p>
+                            <strong>URL:</strong> POST /api/v1/member-cards/activate-batch<br>
+                            <strong>权限:</strong> 普通用户（普通令牌）<br>
+                            <strong>说明:</strong> 激活所有通过当前用户手机号办理的未激活会员卡
+                        </p>
+                    </div>
+                    <button class="btn" onclick="activateBatch()">批量激活会员卡</button>
+                    <div class="result" id="activateBatchResult"></div>
+                </div>
+
+                <!-- 12. 冻结会员卡 -->
+                <div class="card">
+                    <h2>❄️ 12. 冻结会员卡</h2>
+                    <div class="info-box">
+                        <h4>接口说明</h4>
+                        <p>
+                            <strong>URL:</strong> POST /api/v1/member-cards/freeze<br>
+                            <strong>权限:</strong> 商家/店长（工作令牌）、用户本人（普通令牌）<br>
+                            <strong>说明:</strong> 冻结会员卡，冻结后不能消费、充值、积分操作
+                        </p>
+                    </div>
+                    <div class="form-group">
+                        <label>会员卡ID</label>
+                        <input type="text" id="freezeMemberCardId" placeholder="输入会员卡ID（UUID）">
+                    </div>
+                    <div class="form-group">
+                        <label>冻结原因（10-200字符）</label>
+                        <textarea id="freezeReason" rows="3" placeholder="输入冻结原因"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>令牌类型</label>
+                        <select id="freezeTokenType">
+                            <option value="normal">普通令牌（用户本人）</option>
+                            <option value="work">工作令牌（商家/店长）</option>
+                        </select>
+                    </div>
+                    <button class="btn" onclick="freezeCard()">冻结会员卡</button>
+                    <div class="result" id="freezeCardResult"></div>
+                </div>
+
+                <!-- 13. 解冻会员卡 -->
+                <div class="card">
+                    <h2>☀️ 13. 解冻会员卡</h2>
+                    <div class="info-box">
+                        <h4>接口说明</h4>
+                        <p>
+                            <strong>URL:</strong> POST /api/v1/member-cards/unfreeze<br>
+                            <strong>权限:</strong> 商家/店长（工作令牌）、用户本人（普通令牌）<br>
+                            <strong>说明:</strong> 解冻已冻结的会员卡
+                        </p>
+                    </div>
+                    <div class="form-group">
+                        <label>会员卡ID</label>
+                        <input type="text" id="unfreezeMemberCardId" placeholder="输入会员卡ID（UUID）">
+                    </div>
+                    <div class="form-group">
+                        <label>解冻原因（10-200字符，可选）</label>
+                        <textarea id="unfreezeReason" rows="3" placeholder="输入解冻原因"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>令牌类型</label>
+                        <select id="unfreezeTokenType">
+                            <option value="normal">普通令牌（用户本人）</option>
+                            <option value="work">工作令牌（商家/店长）</option>
+                        </select>
+                    </div>
+                    <button class="btn" onclick="unfreezeCard()">解冻会员卡</button>
+                    <div class="result" id="unfreezeCardResult"></div>
+                </div>
+
+                <!-- 15. 线下扫码查询个人会员卡 -->
+                <div class="card">
+                    <h2>🔍 15. 线下扫码查询个人会员卡</h2>
+                    <div class="info-box">
+                        <h4>接口说明</h4>
+                        <p>
+                            <strong>URL:</strong> POST /api/v1/member-cards/query-by-scan<br>
+                            <strong>权限:</strong> 商家/店长/店员（工作令牌）<br>
+                            <strong>说明:</strong> 扫描用户二维码，验证特权令牌（QUERY_MCARD权限），查询会员卡详情或列表
+                        </p>
+                    </div>
+                    <div class="form-group">
+                        <label>店铺ID</label>
+                        <input type="text" id="scanStoreId" placeholder="输入店铺ID">
+                    </div>
+                    <div class="form-group">
+                        <label>特权令牌（从用户二维码获取）</label>
+                        <textarea id="scanPrivilegeToken" rows="3" placeholder="粘贴用户的特权令牌（QUERY_MCARD权限）"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>会员卡ID（可选，不填则查询列表）</label>
+                        <input type="text" id="scanMemberCardId" placeholder="输入会员卡ID或留空查询列表">
+                    </div>
+                    <button class="btn" onclick="queryByScan()">查询</button>
+                    <div class="result" id="queryByScanResult"></div>
+                </div>
+        </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script>
+        // 配置
+        const API_BASE_URL = 'http://localhost:8087';
+        const DEVICE_ID = 'device_test_12345';
+        const AES_KEY = 'oUDKf7+y6SrpeJ+GCJHL31HKlRFJ1mM/1MhGB4HF/94='; // 与后端一致（32字节）
+
+        // 全局变量存储令牌和用户信息
+        let currentNormalToken = '';
+        let currentAutoLoginToken = '';
+        let currentUserId = '';
+        let currentWorkToken = '';
+        let currentWorkStoreId = '';
+        let currentWorkStoreName = '';
+        let currentWorkRole = '';
+        let currentMerchantId = '';
+
+        // 侧边栏切换函数
+        function switchSection(sectionId) {
+            // 隐藏所有section
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // 显示目标section
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
+            
+            // 更新导航高亮
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // 如果是员工工作模块，检查userType
+            if (sectionId === 'staff-section') {
+                checkStaffModuleVisibility();
+            }
+        }
+
+        // 检查员工模块可见性
+        function checkStaffModuleVisibility() {
+            const staffModule = document.getElementById('staffModule');
+            const userType = localStorage.getItem('userType'); // 假设登录后存储了userType
+            
+            if (userType === '3') {
+                staffModule.innerHTML = staffModule.innerHTML; // 保持现有内容
+            } else {
+                staffModule.innerHTML = `
+                    <div class="card" style="text-align: center; padding: 60px 20px;">
+                        <h2 style="color: #999;">⚠️ 您还不是任何一家店铺的员工</h2>
+                        <p style="color: #666; margin-top: 20px;">
+                            如需使用员工功能，请先让商家添加您为员工
+                        </p>
+                    </div>
+                `;
+            }
+        }
+
+        // 更新Device-Id显示
+        document.getElementById('deviceIdDisplay').textContent = DEVICE_ID;
+
+        // 手动输入自动登录令牌切换
+        document.getElementById('manualAutoLoginToken').addEventListener('change', function(e) {
+            const textarea = document.getElementById('autoLoginTokenInput');
+            textarea.readOnly = !e.target.checked;
+            if (e.target.checked) {
+                textarea.placeholder = '请手动输入自动登录令牌...';
+                textarea.style.backgroundColor = '#fff';
+            } else {
+                textarea.placeholder = 'Bearer eyJhbGc...';
+                textarea.style.backgroundColor = '#f5f5f5';
+            }
+        });
+
+        // AES加密（简化版，实际应使用GCM模式）
+        function encryptAES(plaintext) {
+            // 注意：这里使用简化的AES加密，实际项目应使用AES-256-GCM
+            // 由于浏览器限制，这里使用AES-CBC模式模拟
+            const key = CryptoJS.enc.Base64.parse(AES_KEY);
+            const iv = CryptoJS.lib.WordArray.random(16);
+            const encrypted = CryptoJS.AES.encrypt(plaintext, key, {
+                iv: iv,
+                mode: CryptoJS.mode.CBC,
+                padding: CryptoJS.pad.Pkcs7
+            });
+            
+            // 返回 IV + Ciphertext 的Base64编码
+            const combined = iv.concat(encrypted.ciphertext);
+            return CryptoJS.enc.Base64.stringify(combined);
+        }
+
+        // 通用请求函数（支持自定义令牌）
+        async function apiRequest(url, method, body = null, useAuth = false, customToken = null) {
+            const headers = {
+                'Content-Type': 'application/json',
+                'Device-Id': DEVICE_ID
+            };
+
+            // 如果需要认证，优先使用自定义令牌，否则使用普通令牌
+            if (useAuth) {
+                const token = customToken || currentNormalToken;
+                if (!token || token.trim() === '') {
+                    console.error('❌ 缺少认证令牌', { customToken, currentNormalToken });
+                    return { 
+                        code: 401, 
+                        message: '请先登录获取令牌！如需使用工作令牌功能，请先在"员工工作"模块获取工作令牌。' 
+                    };
+                }
+                headers['Authorization'] = token;
+                console.log('✅ 请求携带令牌:', token.substring(0, 20) + '...');
+            }
+
+            const options = {
+                method,
+                headers
+            };
+
+            if (body) {
+                options.body = JSON.stringify(body);
+            }
+
+            try {
+                const response = await fetch(API_BASE_URL + url, options);
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                return { code: 500, message: '请求失败: ' + error.message };
+            }
+        }
+
+        // 显示结果
+        function showResult(elementId, data, isSuccess) {
+            const element = document.getElementById(elementId);
+            const statusClass = isSuccess ? 'success' : 'error';
+            const statusText = isSuccess ? '✅ 成功' : '❌ 失败';
+            
+            element.innerHTML = `
+                <h3 class="${statusClass}">${statusText}</h3>
+                <pre>${JSON.stringify(data, null, 2)}</pre>
+            `;
+        }
+
+        // 1. 获取验证码
+        async function getVerifyCode() {
+            const phone = document.getElementById('phoneForCode').value;
+            const platform = document.getElementById('globalPlatform').value;
+            
+            if (!phone) {
+                alert('请输入手机号');
+                return;
+            }
+
+            const encryptedPhone = encryptAES(phone);
+            
+            const result = await apiRequest('/api/v1/users/verify-code', 'POST', {
+                phone: encryptedPhone,
+                platform: platform
+            });
+
+            showResult('codeResult', result, result.code === 200);
+            
+            if (result.code === 200) {
+                alert('验证码已发送！请查看后端控制台获取验证码');
+            }
+        }
+
+        // 2. 用户注册
+        async function register() {
+            const phone = document.getElementById('phoneForReg').value;
+            const password = document.getElementById('passwordForReg').value;
+            const verifyCode = document.getElementById('verifyCodeForReg').value;
+            const nickname = document.getElementById('nicknameForReg').value;
+            const invitedCode = document.getElementById('invitedCode').value;
+            const rememberMe = document.getElementById('rememberMeForReg').checked;
+            const platform = document.getElementById('globalPlatform').value;
+
+            if (!phone || !password || !verifyCode || !nickname) {
+                alert('请填写所有必填项');
+                return;
+            }
+
+            const encryptedPhone = encryptAES(phone);
+
+            const result = await apiRequest('/api/v1/users/registration', 'POST', {
+                phone: encryptedPhone,
+                password: password,
+                verifyCode: verifyCode,
+                nickname: nickname,
+                invitedCode: invitedCode || null,
+                rememberMe: rememberMe,
+                platform: platform
+            });
+
+            showResult('regResult', result, result.code === 200);
+
+            if (result.code === 200 && result.data) {
+                currentNormalToken = result.data.normalToken;
+                currentAutoLoginToken = result.data.autoLoginToken || '';
+                currentUserId = result.data.userInfo.userId;
+                
+                // 自动填充令牌到其他表单
+                document.getElementById('oldToken').value = currentNormalToken;
+                document.getElementById('normalTokenForPrivilege').value = currentNormalToken;
+                document.getElementById('tokenForRevoke').value = currentNormalToken;
+                
+                // 自动填充自动登录令牌
+                if (currentAutoLoginToken) {
+                    document.getElementById('autoLoginTokenInput').value = currentAutoLoginToken;
+                    document.getElementById('autoLoginTokenForLogout').value = currentAutoLoginToken;
+                }
+                
+                // 自动填充用户ID
+                document.getElementById('userIdForQuery').value = currentUserId;
+                document.getElementById('userIdForUpdate').value = currentUserId;
+                document.getElementById('userIdForLogout').value = currentUserId;
+                document.getElementById('userIdForPwdUpdate').value = currentUserId;
+                
+                alert(`注册成功！\n您的邀请码: ${result.data.userInfo.inviteCode}\n令牌和用户ID已自动填充到其他表单`);
+            }
+        }
+
+        // 3. 用户登录
+        async function login() {
+            const phone = document.getElementById('phoneForLogin').value;
+            const password = document.getElementById('passwordForLogin').value;
+            const rememberMe = document.getElementById('rememberMeForLogin').checked;
+            const platform = document.getElementById('globalPlatform').value;
+
+            if (!phone || !password) {
+                alert('请填写手机号和密码');
+                return;
+            }
+
+            const encryptedPhone = encryptAES(phone);
+
+            const startTime = Date.now();
+            const result = await apiRequest('/api/v1/users/login', 'POST', {
+                phone: encryptedPhone,
+                password: password,
+                rememberMe: rememberMe,
+                platform: platform
+            });
+            const endTime = Date.now();
+            const duration = endTime - startTime;
+
+            showResult('loginResult', result, result.code === 200);
+            
+            // 显示耗时
+            const element = document.getElementById('loginResult');
+            element.innerHTML += `<div style="margin-top: 10px; padding: 10px; background-color: #e8f5e9; border-radius: 5px; color: #2e7d32; font-weight: bold;">⏱️ 接口响应耗时: ${duration} ms</div>`;
+
+            if (result.code === 200 && result.data) {
+                currentNormalToken = result.data.normalToken;
+                currentAutoLoginToken = result.data.autoLoginToken || '';
+                currentUserId = result.data.userInfo.userId;
+                
+                // 自动填充令牌到其他表单
+                document.getElementById('oldToken').value = currentNormalToken;
+                document.getElementById('normalTokenForPrivilege').value = currentNormalToken;
+                document.getElementById('tokenForRevoke').value = currentNormalToken;
+                
+                // 自动填充自动登录令牌
+                if (currentAutoLoginToken) {
+                    document.getElementById('autoLoginTokenInput').value = currentAutoLoginToken;
+                    document.getElementById('autoLoginTokenForLogout').value = currentAutoLoginToken;
+                }
+                
+                // 自动填充用户ID
+                document.getElementById('userIdForQuery').value = currentUserId;
+                document.getElementById('userIdForUpdate').value = currentUserId;
+                document.getElementById('userIdForLogout').value = currentUserId;
+                document.getElementById('userIdForPwdUpdate').value = currentUserId;
+                
+                // 自动填充商户升级模块
+                document.getElementById('userIdForFreeMerchant').value = currentUserId;
+                document.getElementById('userIdForDirectMerchant').value = currentUserId;
+                document.getElementById('userIdForAuditQuery').value = currentUserId;
+                
+                // 自动填充员工工作模块
+                document.getElementById('userIdForWorkToken').value = currentUserId;
+                
+                alert('登录成功！令牌和用户ID已自动填充到其他表单');
+                
+                // 检查用户类型，显示对应模块（修复员工模块不显示的bug）
+                checkUserType(result.data.userInfo);
+            }
+        }
+
+        // 4. 刷新令牌
+        async function refreshToken() {
+            const oldToken = document.getElementById('oldToken').value;
+            const tokenType = parseInt(document.getElementById('tokenType').value);
+
+            if (!oldToken) {
+                alert('请先登录获取令牌');
+                return;
+            }
+
+            const result = await apiRequest('/api/v1/tokens/refresh', 'PUT', {
+                tokenType: tokenType
+            }, true);
+
+            showResult('refreshResult', result, result.code === 200);
+
+            if (result.code === 200 && result.data) {
+                currentNormalToken = result.data.newToken;
+                document.getElementById('oldToken').value = currentNormalToken;
+                document.getElementById('normalTokenForPrivilege').value = currentNormalToken;
+                document.getElementById('tokenForRevoke').value = currentNormalToken;
+                
+                alert('令牌刷新成功！新令牌已自动填充');
+            }
+        }
+
+        // 5. 获取特权令牌
+        async function getPrivilegeToken() {
+            const normalToken = document.getElementById('normalTokenForPrivilege').value;
+            const selectedValue = document.getElementById('targetOperate').value;
+
+            if (!normalToken) {
+                alert('请先登录获取普通令牌');
+                return;
+            }
+
+            if (!selectedValue) {
+                alert('请选择目标操作权限');
+                return;
+            }
+
+            // 根据选择构建权限数组
+            let permissions;
+            if (selectedValue === 'ALL') {
+                // 全部权限
+                permissions = ['CARD_CREATE', 'RECHARGE', 'CONSUME', 'STAFF_BIND', 'APPOINTMENT', 'QUERY_MCARD'];
+            } else {
+                // 单个权限
+                permissions = [selectedValue];
+            }
+
+            const result = await apiRequest('/api/v1/tokens/privilege', 'POST', {
+                targetOperate: permissions
+            }, true);
+
+            showResult('privilegeResult', result, result.code === 200);
+
+            if (result.code === 200) {
+                alert('特权令牌获取成功！注意：特权令牌仅可使用一次\n权限：' + permissions.join(', '));
+            }
+        }
+
+        // 6. 自动登录
+        async function testAutoLogin() {
+            const autoLoginToken = document.getElementById('autoLoginTokenInput').value.trim();
+            const platform = document.getElementById('globalPlatform').value;
+
+            if (!autoLoginToken) {
+                alert('请输入自动登录令牌（可从注册/登录响应中获取）');
+                return;
+            }
+
+            // 移除 Bearer 前缀（如果有）
+            const token = autoLoginToken.replace(/^Bearer\s+/i, '');
+
+            const result = await apiRequest('/api/v1/tokens/normal', 'POST', {
+                loginType: 3, // 自动登录
+                autoLoginToken: 'Bearer ' + token,
+                platform: platform
+            });
+
+            showResult('autoLoginResult', result, result.code === 200);
+
+            if (result.code === 200 && result.data) {
+                currentNormalToken = result.data.token;
+                
+                // 自动填充新的普通令牌到其他表单
+                document.getElementById('oldToken').value = currentNormalToken;
+                document.getElementById('normalTokenForPrivilege').value = currentNormalToken;
+                document.getElementById('tokenForRevoke').value = currentNormalToken;
+                
+                alert(`自动登录成功！\n新的普通令牌已自动填充\n用户角色: ${result.data.userRole}\n过期时间: ${result.data.expireTime}`);
+            }
+        }
+
+        // 7. 注销令牌
+        async function revokeToken() {
+            const token = document.getElementById('tokenForRevoke').value;
+
+            if (!token) {
+                alert('请先登录获取令牌');
+                return;
+            }
+
+            const result = await apiRequest('/api/v1/tokens', 'DELETE', null, true);
+
+            showResult('revokeResult', result, result.code === 200);
+
+            if (result.code === 200) {
+                currentNormalToken = '';
+                currentAutoLoginToken = '';
+                
+                // 清空所有令牌输入框
+                document.getElementById('oldToken').value = '';
+                document.getElementById('normalTokenForPrivilege').value = '';
+                document.getElementById('tokenForRevoke').value = '';
+                document.getElementById('autoLoginTokenInput').value = '';
+                
+                alert('令牌注销成功！');
+            }
+        }
+
+        // 8. 用户信息查询
+        async function getUserInfo() {
+            const userId = document.getElementById('userIdForQuery').value;
+
+            if (!userId) {
+                alert('请先登录获取用户ID');
+                return;
+            }
+
+            const result = await apiRequest('/api/v1/users/info?userId=' + userId, 'GET', null, true);
+
+            showResult('userInfoResult', result, result.code === 200);
+
+            if (result.code === 200) {
+                alert('查询成功！');
+            }
+        }
+
+        // 9. 用户信息修改
+        async function updateUserInfo() {
+            const userId = document.getElementById('userIdForUpdate').value;
+            const nickname = document.getElementById('nicknameForUpdate').value;
+            const avatar = document.getElementById('avatarForUpdate').value;
+            const memberAvatar = document.getElementById('memberAvatarForUpdate').value;
+
+            if (!userId) {
+                alert('请先登录获取用户ID');
+                return;
+            }
+
+            // 构建请求体（只包含非空字段）
+            const requestBody = { userId: userId };
+            if (nickname) requestBody.nickname = nickname;
+            if (avatar) requestBody.avatar = avatar;
+            if (memberAvatar) requestBody.memberAvatar = memberAvatar;
+
+            // 检查是否至少有一个字段需要修改
+            if (Object.keys(requestBody).length === 1) {
+                alert('请至少填写一个需要修改的字段');
+                return;
+            }
+
+            const result = await apiRequest('/api/v1/users/info', 'PUT', requestBody, true);
+
+            showResult('updateUserInfoResult', result, result.code === 200);
+
+            if (result.code === 200) {
+                alert(`信息修改成功！\n更新时间: ${result.data.updateTime}`);
+                
+                // 清空输入框
+                document.getElementById('nicknameForUpdate').value = '';
+                document.getElementById('avatarForUpdate').value = '';
+                document.getElementById('memberAvatarForUpdate').value = '';
+            }
+        }
+
+        // 10. 用户主动退出
+        async function userLogout() {
+            const userId = document.getElementById('userIdForLogout').value;
+            const autoLoginToken = document.getElementById('autoLoginTokenForLogout').value;
+            const logoutAllDevices = document.getElementById('logoutAllDevices').checked;
+
+            if (!userId) {
+                alert('请先登录获取用户ID');
+                return;
+            }
+
+            // 构建请求体
+            const requestBody = { 
+                userId: userId,
+                logoutAllDevices: logoutAllDevices
+            };
+            if (autoLoginToken) {
+                requestBody.autoLoginToken = autoLoginToken;
+            }
+
+            const result = await apiRequest('/api/v1/users/logout', 'DELETE', requestBody, true);
+
+            showResult('logoutResult', result, result.code === 200);
+
+            if (result.code === 200) {
+                currentNormalToken = '';
+                currentAutoLoginToken = '';
+                currentUserId = '';
+                
+                // 清空所有输入框
+                document.getElementById('oldToken').value = '';
+                document.getElementById('normalTokenForPrivilege').value = '';
+                document.getElementById('tokenForRevoke').value = '';
+                document.getElementById('autoLoginTokenInput').value = '';
+                document.getElementById('autoLoginTokenForLogout').value = '';
+                document.getElementById('userIdForQuery').value = '';
+                document.getElementById('userIdForUpdate').value = '';
+                document.getElementById('userIdForLogout').value = '';
+                
+                alert(`退出登录成功！\n已注销 ${result.data.revokedJtis.length} 个令牌`);
+            }
+        }
+
+        // 11. 密码重置（通过验证码）
+        async function resetPassword() {
+            const phone = document.getElementById('phoneForReset').value;
+            const verifyCode = document.getElementById('verifyCodeForReset').value;
+            const newPassword = document.getElementById('newPasswordForReset').value;
+            const platform = document.getElementById('globalPlatform').value;
+
+            if (!phone || !verifyCode || !newPassword) {
+                alert('请填写所有必填项');
+                return;
+            }
+
+            const encryptedPhone = encryptAES(phone);
+
+            const result = await apiRequest('/api/v1/users/password/reset', 'POST', {
+                phone: encryptedPhone,
+                verifyCode: verifyCode,
+                newPassword: newPassword,
+                platform: platform
+            });
+
+            showResult('resetPasswordResult', result, result.code === 200);
+
+            if (result.code === 200) {
+                alert(`密码重置成功！\n重置时间: ${result.data.resetTime}\n请使用新密码重新登录`);
+                
+                // 清空输入框
+                document.getElementById('verifyCodeForReset').value = '';
+            }
+        }
+
+        // 12. 用户密码修改（通过旧密码）
+        async function updateUserPassword() {
+            const userId = document.getElementById('userIdForPwdUpdate').value;
+            const oldPassword = document.getElementById('oldPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (!userId || !oldPassword || !newPassword || !confirmPassword) {
+                alert('请填写所有必填项');
+                return;
+            }
+
+            if (newPassword.length < 8) {
+                alert('新密码长度至少为8位');
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                alert('两次输入的新密码不一致');
+                return;
+            }
+
+            const result = await apiRequest('/api/v1/users/password', 'PUT', {
+                userId: userId,
+                oldPassword: oldPassword,
+                newPassword: newPassword,
+                confirmPassword: confirmPassword
+            }, true);
+
+            showResult('updateUserPwdResult', result, result.code === 200);
+
+            if (result.code === 200) {
+                alert(`用户密码修改成功！\n更新时间: ${result.data.updateTime}\n\n提示：所有令牌已失效，请重新登录`);
+                
+                // 清空密码输入框
+                document.getElementById('oldPassword').value = '';
+                document.getElementById('newPassword').value = '';
+                document.getElementById('confirmPassword').value = '';
+                
+                // 清空当前令牌
+                currentNormalToken = '';
+                currentAutoLoginToken = '';
+                currentUserId = '';
+                
+                // 清空所有令牌输入框
+                document.getElementById('oldToken').value = '';
+                document.getElementById('normalTokenForPrivilege').value = '';
+                document.getElementById('tokenForRevoke').value = '';
+                document.getElementById('autoLoginTokenInput').value = '';
+                document.getElementById('autoLoginTokenForLogout').value = '';
+                document.getElementById('userIdForQuery').value = '';
+                document.getElementById('userIdForUpdate').value = '';
+                document.getElementById('userIdForLogout').value = '';
+                document.getElementById('userIdForPwdUpdate').value = '';
+            }
+        }
+
+        // ==================== 员工管理模块函数 ====================
+
+        // 13. 查询用户工作关系
+        async function getUserWorkRelations() {
+            const userId = currentUserId || document.getElementById('userIdForWorkRelations').value;
+            
+            if (!userId) {
+                alert('请先登录获取用户ID');
+                return;
+            }
+
+            const result = await apiRequest(`/api/v1/users/work-relations?userId=${userId}`, 'GET', null, true);
+            
+            showResult('workRelationsResult', result, result.code === 200);
+
+            if (result.code === 200 && result.data && result.data.relations) {
+                const relations = result.data.relations;
+                
+                if (relations.length === 0) {
+                    alert('你还没有任何工作关系');
+                    return;
+                }
+
+                // 显示工作关系列表
+                displayWorkRelations(relations);
+            }
+        }
+
+        // 显示工作关系列表（可选择店铺获取工作令牌）
+        function displayWorkRelations(relations) {
+            const container = document.getElementById('workRelationsCards');
+            const listDiv = document.getElementById('workRelationsList');
+            
+            container.innerHTML = '';
+            
+            relations.forEach(relation => {
+                const card = document.createElement('div');
+                card.style.cssText = `
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    color: white;
+                    padding: 15px;
+                    margin-bottom: 15px;
+                    border-radius: 10px;
+                    cursor: pointer;
+                    transition: transform 0.2s;
+                `;
+                
+                card.onmouseover = () => card.style.transform = 'translateY(-3px)';
+                card.onmouseout = () => card.style.transform = 'translateY(0)';
+                
+                const roleText = relation.role === 'manager' ? '店长' : '店员';
+                const statusText = relation.status === 1 ? '在职' : '离职';
+                
+                card.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h4 style="margin: 0 0 8px 0; font-size: 18px;">${relation.storeName}</h4>
+                            <p style="margin: 0; opacity: 0.9; font-size: 14px;">
+                                角色: ${roleText} | 状态: ${statusText}<br>
+                                入职时间: ${relation.entryTime}<br>
+                                <span style="color: #fff; font-size: 12px; opacity: 0.8;">店铺ID: ${relation.storeId}</span>
+                            </p>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 8px;">
+                            <button class="btn" style="background: white; color: #667eea; padding: 8px 16px; font-size: 14px; margin: 0;" 
+                                    onclick="getWorkToken('${relation.storeId}', '${relation.storeName}', '${relation.role}')">
+                                🎫 获取工作令牌
+                            </button>
+                            <button class="btn" style="background: rgba(255,255,255,0.2); color: white; padding: 6px 12px; font-size: 12px; margin: 0; border: 1px solid white;" 
+                                    onclick="document.getElementById('storeIdForWorkToken').value='${relation.storeId}'; document.querySelector('#storeIdForWorkToken').scrollIntoView({behavior: 'smooth', block: 'center'});">
+                                📋 复制ID到快速测试
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+            
+            listDiv.style.display = 'block';
+        }
+
+        // 获取工作令牌（从工作关系列表点击）
+        async function getWorkToken(storeId, storeName, role) {
+            if (!currentNormalToken) {
+                alert('请先登录获取普通令牌');
+                return;
+            }
+
+            const result = await apiRequest('/api/v1/tokens/work', 'POST', {
+                storeId: storeId
+            }, true);
+
+            if (result.code === 200) {
+                currentWorkToken = result.data.token;
+                currentWorkStoreId = result.data.storeId;
+                currentWorkStoreName = storeName;
+                currentWorkRole = role === 'manager' ? '店长' : '店员';
+
+                // 更新显示
+                document.getElementById('currentWorkToken').value = currentWorkToken;
+                document.getElementById('currentWorkStore').value = `${currentWorkStoreName} (${currentWorkStoreId})`;
+                document.getElementById('currentWorkRole').value = currentWorkRole;
+
+                // 自动填充到其他输入框
+                document.getElementById('storeIdForSelfQuery').value = storeId;
+                document.getElementById('storeIdForStaffList').value = storeId;
+
+                // 根据角色显示/隐藏店长功能卡片（仅店长可见）
+                const permissionCard = document.getElementById('staffPermissionCard');
+                const infoUpdateCard = document.getElementById('staffInfoUpdateCard');
+                if (role === 'manager') {
+                    // 店长：高亮提示功能已解锁
+                    permissionCard.style.display = 'block';
+                    infoUpdateCard.style.display = 'block';
+                    
+                    // 高亮店长功能区域
+                    infoUpdateCard.style.border = '3px solid #4CAF50';
+                    infoUpdateCard.style.boxShadow = '0 0 20px rgba(76, 175, 80, 0.5)';
+                    setTimeout(() => {
+                        infoUpdateCard.style.border = '';
+                        infoUpdateCard.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.2)';
+                    }, 3000);
+                    
+                    alert(`✅ 工作令牌获取成功！\n\n📋 店铺: ${storeName}\n👔 角色: ${currentWorkRole}\n⏰ 过期时间: ${result.data.expireTime}\n\n🎉 店长功能已解锁！\n向下滚动可使用：\n  • 员工信息修改\n  • 员工权限修改`);
+                } else {
+                    // 普通员工
+                    permissionCard.style.display = 'none';
+                    infoUpdateCard.style.display = 'none';
+                    
+                    alert(`✅ 工作令牌获取成功！\n\n📋 店铺: ${storeName}\n👔 角色: ${currentWorkRole}\n⏰ 过期时间: ${result.data.expireTime}`);
+                }
+            } else {
+                alert(`获取工作令牌失败: ${result.message}`);
+            }
+        }
+
+        // 13.5. 直接获取工作令牌（独立测试模块）
+        async function getWorkTokenDirect() {
+            const storeId = document.getElementById('storeIdForWorkToken').value.trim();
+
+            if (!currentNormalToken) {
+                alert('❌ 请先登录获取普通令牌');
+                return;
+            }
+
+            if (!storeId) {
+                alert('❌ 请输入店铺ID');
+                return;
+            }
+
+            console.log('🔄 直接获取工作令牌，店铺ID:', storeId);
+
+            const result = await apiRequest('/api/v1/tokens/work', 'POST', {
+                storeId: storeId
+            }, true);
+
+            showResult('workTokenDirectResult', result, result.code === 200);
+
+            if (result.code === 200) {
+                currentWorkToken = result.data.token;
+                currentWorkStoreId = result.data.storeId;
+                currentWorkStoreName = ''; // 直接获取时可能没有店铺名称
+                
+                // 从令牌解析角色（如果有）
+                const role = result.data.role || 'employee';
+                currentWorkRole = role === 'manager' ? '店长' : '店员';
+
+                // 更新"当前工作令牌"模块显示
+                document.getElementById('currentWorkToken').value = currentWorkToken;
+                document.getElementById('currentWorkStore').value = `${currentWorkStoreId}`;
+                document.getElementById('currentWorkRole').value = currentWorkRole;
+
+                // 自动填充到其他输入框
+                document.getElementById('storeIdForSelfQuery').value = storeId;
+                document.getElementById('storeIdForStaffList').value = storeId;
+
+                console.log('✅ 工作令牌获取成功');
+
+                // 根据角色显示/隐藏店长功能卡片
+                const permissionCard = document.getElementById('staffPermissionCard');
+                const infoUpdateCard = document.getElementById('staffInfoUpdateCard');
+                if (role === 'manager') {
+                    permissionCard.style.display = 'block';
+                    infoUpdateCard.style.display = 'block';
+                    
+                    // 高亮提示
+                    infoUpdateCard.style.border = '3px solid #4CAF50';
+                    infoUpdateCard.style.boxShadow = '0 0 20px rgba(76, 175, 80, 0.5)';
+                    setTimeout(() => {
+                        infoUpdateCard.style.border = '';
+                        infoUpdateCard.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.2)';
+                    }, 3000);
+                    
+                    alert(`✅ 工作令牌获取成功！\n\n📋 店铺ID: ${currentWorkStoreId}\n👔 角色: ${currentWorkRole}\n⏰ 过期时间: ${result.data.expireTime}\n\n🎉 店长功能已解锁！\n向下滚动可使用：\n  • 员工信息修改\n  • 员工权限修改`);
+                } else {
+                    permissionCard.style.display = 'none';
+                    infoUpdateCard.style.display = 'none';
+                    
+                    alert(`✅ 工作令牌获取成功！\n\n📋 店铺ID: ${currentWorkStoreId}\n👔 角色: ${currentWorkRole}\n⏰ 过期时间: ${result.data.expireTime}`);
+                }
+            } else {
+                alert(`❌ 获取工作令牌失败: ${result.message}`);
+            }
+        }
+
+        // 13.6. 员工信息查询（列表）
+        async function getStaffListAsEmployee() {
+            const storeId = document.getElementById('storeIdForStaffList').value.trim();
+            const staffRole = document.getElementById('staffRoleFilter').value;
+            const staffName = document.getElementById('staffNameFilter').value.trim();
+            const pageNum = parseInt(document.getElementById('staffListPageNum').value) || 1;
+            const pageSize = parseInt(document.getElementById('staffListPageSize').value) || 10;
+
+            if (!currentWorkToken) {
+                alert('❌ 请先获取工作令牌（需要店长身份）');
+                return;
+            }
+
+            if (!storeId) {
+                alert('❌ 店铺ID为空，请先获取工作令牌');
+                return;
+            }
+
+            // 构建查询参数
+            let queryParams = `pageNum=${pageNum}&pageSize=${pageSize}`;
+            if (staffRole) {
+                queryParams += `&staffRole=${staffRole}`;
+            }
+            if (staffName) {
+                queryParams += `&staffName=${encodeURIComponent(staffName)}`;
+            }
+
+            console.log('🔄 查询员工列表:', { storeId, staffRole, staffName, pageNum, pageSize });
+
+            const result = await apiRequest(
+                `/api/v1/staffs?${queryParams}`,
+                'GET',
+                null,
+                true,  // 必须为true，才能将工作令牌添加到Authorization header
+                currentWorkToken
+            );
+
+            showResult('staffListResult', result, result.code === 200);
+
+            if (result.code === 200 && result.data) {
+                const { total, list, pageNum: currentPage, pageSize: size } = result.data;
+                
+                // 构建表格显示
+                let tableHtml = `
+                    <div style="margin-top: 15px; padding: 15px; background: #f8f9fa; border-radius: 6px;">
+                        <h4 style="color: #667eea; margin-bottom: 15px;">📊 员工列表（共 ${total} 人，第 ${currentPage} 页）</h4>
+                        <table style="width: 100%; border-collapse: collapse; background: white;">
+                            <thead>
+                                <tr style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                                    <th style="padding: 12px; border: 1px solid #ddd;">员工ID</th>
+                                    <th style="padding: 12px; border: 1px solid #ddd;">姓名</th>
+                                    <th style="padding: 12px; border: 1px solid #ddd;">手机号</th>
+                                    <th style="padding: 12px; border: 1px solid #ddd;">角色</th>
+                                    <th style="padding: 12px; border: 1px solid #ddd;">入职时间</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+
+                if (list && list.length > 0) {
+                    list.forEach(staff => {
+                        const roleColor = staff.staffRole === 'STORE_MANAGER' ? '#2196f3' : '#4caf50';
+                        const roleText = staff.staffRole === 'STORE_MANAGER' ? '👔 店长' : '👤 店员';
+                        tableHtml += `
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #ddd; font-size: 12px;">${staff.staffId}</td>
+                                <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">${staff.staffName}</td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">${staff.staffPhone}</td>
+                                <td style="padding: 10px; border: 1px solid #ddd; color: ${roleColor}; font-weight: bold;">${roleText}</td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">${staff.entryTime}</td>
+                            </tr>
+                        `;
+                    });
+                } else {
+                    tableHtml += `
+                        <tr>
+                            <td colspan="5" style="padding: 20px; text-align: center; color: #999;">暂无员工数据</td>
+                        </tr>
+                    `;
+                }
+
+                tableHtml += `
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+
+                // 添加到结果区域
+                const resultDiv = document.getElementById('staffListResult');
+                resultDiv.innerHTML = tableHtml;
+                resultDiv.style.display = 'block';
+
+                console.log('✅ 员工列表查询成功:', result.data);
+            } else {
+                alert(`❌ 查询失败: ${result.message}`);
+            }
+        }
+
+        // 14. 员工详情查询（自查）
+        async function getStaffSelfDetail() {
+            const staffId = currentUserId || document.getElementById('staffIdForSelfQuery').value;
+            const storeId = document.getElementById('storeIdForSelfQuery').value;
+
+            if (!staffId || !storeId) {
+                alert('请先登录并选择店铺');
+                return;
+            }
+
+            const result = await apiRequest(`/api/v1/staffs/${staffId}?storeId=${storeId}`, 'GET', null, true);
+            
+            showResult('staffSelfDetailResult', result, result.code === 200);
+
+            if (result.code === 200) {
+                alert(`员工信息查询成功！\n姓名: ${result.data.staffName}\n角色: ${result.data.staffRole}\n店铺: ${result.data.storeName}`);
+            }
+        }
+
+        // 16. 员工信息修改（店长功能）
+        async function updateStaffInfoAsManager() {
+            const staffId = document.getElementById('staffIdForInfoUpdate').value.trim();
+            const staffName = document.getElementById('staffNameForUpdate').value.trim();
+            const remark = document.getElementById('staffRemarkForUpdate').value.trim();
+
+            // 输入验证
+            if (!staffId) {
+                alert('请输入员工ID');
+                return;
+            }
+
+            if (!staffName && !remark) {
+                alert('请至少修改一项（姓名或备注）');
+                return;
+            }
+
+            if (!currentWorkToken) {
+                alert('请先获取工作令牌（需要店长身份）');
+                return;
+            }
+
+            // 构建请求体
+            const requestBody = {
+                storeId: currentWorkStoreId
+            };
+            if (staffName) requestBody.staffName = staffName;
+            if (remark) requestBody.remark = remark;
+
+            const result = await apiRequest(
+                `/api/v1/staffs/${staffId}`,
+                'PUT',
+                requestBody,
+                false,
+                currentWorkToken
+            );
+
+            showResult('staffInfoUpdateResult', result, result.code === 200);
+
+            if (result.code === 200) {
+                alert(`✅ 员工信息修改成功！\n更新时间: ${result.data.updateTime}`);
+                // 清空输入
+                document.getElementById('staffIdForInfoUpdate').value = '';
+                document.getElementById('staffNameForUpdate').value = '';
+                document.getElementById('staffRemarkForUpdate').value = '';
+            } else {
+                alert(`❌ 员工信息修改失败: ${result.message}`);
+            }
+        }
+
+        // 17. 员工权限修改（店长功能）
+        async function updateStaffPermissionAsManager() {
+            const staffId = document.getElementById('staffIdForPermUpdate').value.trim();
+            const newPermJson = document.getElementById('newPermJsonForStaff').value.trim();
+
+            // 输入验证
+            if (!staffId) {
+                alert('请输入员工ID');
+                return;
+            }
+
+            if (!newPermJson) {
+                alert('请输入新权限配置（JSON）');
+                return;
+            }
+
+            // JSON格式验证
+            let permissionObj;
+            try {
+                permissionObj = JSON.parse(newPermJson);
+                // 检查是否包含employee键（店长只能修改店员权限）
+                if (!permissionObj.hasOwnProperty('employee')) {
+                    alert('权限配置必须包含"employee"键，店长只能修改店员权限');
+                    return;
+                }
+            } catch (e) {
+                alert('权限配置JSON格式错误，请检查格式');
+                return;
+            }
+
+            if (!currentWorkToken) {
+                alert('请先获取工作令牌（需要店长身份）');
+                return;
+            }
+
+            // 确认操作
+            if (!confirm(`确认修改员工权限？\n员工ID: ${staffId}\n新权限: ${newPermJson}`)) {
+                return;
+            }
+
+            const result = await apiRequest(
+                `/api/v1/staffs/${staffId}/permission`,
+                'PUT',
+                {
+                    merchantId: null, // 店长使用工作令牌，不需要传merchantId
+                    storeId: currentWorkStoreId,
+                    newPermission: newPermJson
+                },
+                false,
+                currentWorkToken
+            );
+
+            showResult('staffPermUpdateResult', result, result.code === 200);
+
+            if (result.code === 200) {
+                alert(`✅ 员工权限修改成功！\n员工ID: ${staffId}\n提示: 该员工的工作令牌已失效，需要重新获取`);
+                // 清空输入
+                document.getElementById('staffIdForPermUpdate').value = '';
+                document.getElementById('newPermJsonForStaff').value = '';
+            } else {
+                alert(`❌ 员工权限修改失败: ${result.message}`);
+            }
+        }
+
+        // ==================== 商户升级模块函数 ====================
+        
+        // 商户升级（免认证通道）
+        async function registerMerchantFree() {
+            // 检查用户类型：员工不能注册为商家
+            const userType = localStorage.getItem('userType');
+            if (userType === '3') {
+                alert('❌ 员工用户不能注册为商家\n请使用普通用户账户申请商户资格');
+                return;
+            }
+
+            const userId = document.getElementById('userIdForFreeMerchant').value;
+            const merchantName = document.getElementById('merchantNameFree').value;
+            const sndPswd = document.getElementById('sndPswdFree').value;
+
+            if (!userId || !merchantName || !sndPswd) {
+                alert('请填写所有必填项');
+                return;
+            }
+
+            if (sndPswd.length < 8) {
+                alert('二级密码长度至少为8位');
+                return;
+            }
+
+            const result = await apiRequest('/api/v1/merchants/registration', 'POST', {
+                userId: userId,
+                applicationType: 1,
+                merchantName: merchantName,
+                sndPswd: sndPswd
+            }, true);
+
+            showResult('freeMerchantResult', result, result.code === 200);
+
+            if (result.code === 200 && result.data) {
+                currentMerchantId = result.data.merchantId;
+                alert(`商户申请成功（免认证通道）！\n商户ID: ${currentMerchantId}\n商户名称: ${result.data.merchantName}\n认证状态: ${result.data.certification} (2-测试中)\n测试期过期时间: ${result.data.testExpireTime}\n\n⚠️ 重要：请手动重新登录获取新令牌（因为user_type已变为2）`);
+            }
+        }
+
+        // 商户升级（直接认证通道）
+        async function registerMerchantDirect() {
+            // 检查用户类型：员工不能注册为商家
+            const userType = localStorage.getItem('userType');
+            if (userType === '3') {
+                alert('❌ 员工用户不能注册为商家\n请使用普通用户账户申请商户资格');
+                return;
+            }
+
+            const userId = document.getElementById('userIdForDirectMerchant').value;
+            const numStores = parseInt(document.getElementById('numStoresDirect').value);
+            const numMembers = document.getElementById('numMembersDirect').value;
+            const storeName = document.getElementById('storeNameDirect').value;
+            const storePhotos = document.getElementById('storePhotosUrl').value;
+            const businessLicense = document.getElementById('businessLicenseUrl').value;
+
+            if (!userId || !numStores || !numMembers || !storeName) {
+                alert('请填写所有必填项');
+                return;
+            }
+
+            if (!storePhotos || !businessLicense) {
+                alert('请先上传门头店照和营业执照');
+                return;
+            }
+
+            const result = await apiRequest('/api/v1/merchants/registration', 'POST', {
+                userId: userId,
+                applicationType: 2,
+                numStores: numStores,
+                numMembers: numMembers,
+                storeName: storeName,
+                storePhotos: storePhotos,
+                businessLicense: businessLicense
+            }, true);
+
+            showResult('directMerchantResult', result, result.code === 200);
+
+            if (result.code === 200 && result.data) {
+                if (result.data.auditId) {
+                    alert(`商户申请已提交（直接认证通道）！\n审核记录ID: ${result.data.auditId}\n申请时间: ${result.data.applyTime}\n\n${result.data.message || '请等待管理员审核'}\n\n注意：审核通过后，您需要重新登录才能获取商户权限。`);
+                    
+                    // 清空上传表单
+                    document.getElementById('storePhotosUrl').value = '';
+                    document.getElementById('businessLicenseUrl').value = '';
+                    document.getElementById('storePhotosPreview').innerHTML = '';
+                    document.getElementById('businessLicensePreview').innerHTML = '';
+                }
+            }
+        }
+
+        // 商户资质审核结果查询
+        async function getQualificationAuditStatus() {
+            const userId = document.getElementById('userIdForAuditQuery').value;
+
+            if (!userId) {
+                alert('请输入用户ID');
+                return;
+            }
+
+            const result = await apiRequest(`/api/v1/merchants/qual-audit?userId=${userId}`, 'GET', null, true);
+
+            showResult('auditQueryResult', result, result.code === 200);
+
+            if (result.code === 200 && result.data) {
+                let statusText = result.data.auditStatus === 'WAIT' ? '待审核' : 
+                               result.data.auditStatus === 'PASSED' ? '已通过' : '已驳回';
+                
+                let alertMessage = `审核结果查询成功！\n审核ID: ${result.data.auditId}\n审核状态: ${statusText}\n提交时间: ${result.data.submitTime}`;
+                
+                if (result.data.auditTime) {
+                    alertMessage += `\n审核时间: ${result.data.auditTime}`;
+                }
+                
+                if (result.data.rejectReason) {
+                    alertMessage += `\n驳回原因: ${result.data.rejectReason}`;
+                }
+                
+                alert(alertMessage);
+            }
+        }
+
+        // 用户登录后的自动检测（检测是否是员工用户）
+        function checkUserType(userInfo) {
+            // 假设登录响应中包含 userType 字段
+            // 1: 普通用户, 2: 商家, 3: 员工
+            
+            // 保存userType到localStorage
+            if (userInfo && userInfo.userType) {
+                localStorage.setItem('userType', userInfo.userType.toString());
+            }
+            
+            const staffModule = document.getElementById('staffModule');
+            
+            if (userInfo && userInfo.userType === 3) {
+                // 显示员工管理模块内容（恢复原始HTML）
+                staffModule.style.display = 'block';
+                
+                // 自动填充用户ID
+                const userId = userInfo.userId || currentUserId;
+                console.log('🔧 填充员工ID:', userId);
+                document.getElementById('userIdForWorkRelations').value = userId;
+                document.getElementById('staffIdForSelfQuery').value = userId;
+                document.getElementById('userIdForWorkToken').value = userId;
+                
+                // ✨ 自动查询工作关系，显示获取工作令牌按钮
+                console.log('🔄 自动查询员工工作关系...');
+                setTimeout(() => {
+                    getUserWorkRelations();
+                }, 500); // 延迟500ms确保DOM已更新
+            } else {
+                // 显示非员工提示
+                staffModule.innerHTML = `
+                    <div class="card" style="text-align: center; padding: 60px 20px;">
+                        <h2 style="color: #999;">⚠️ 您还不是任何一家店铺的员工</h2>
+                        <p style="color: #666; margin-top: 20px;">
+                            如需使用员工功能，请先让商家添加您为员工
+                        </p>
+                    </div>
+                `;
+                staffModule.style.display = 'block';
+            }
+        }
+
+        // ============= 会员卡种管理函数 =============
+        
+        // 1. 会员卡种列表查询
+        async function listCardTypes() {
+            const storeId = document.getElementById('storeIdForCardTypeList').value;
+            const cardTtype = document.getElementById('cardTtypeFilter').value;
+            const cardTypeName = document.getElementById('cardTypeNameFilter').value;
+            const pageNum = document.getElementById('cardTypePageNum').value;
+            const pageSize = document.getElementById('cardTypePageSize').value;
+
+            if (!storeId) {
+                alert('请输入店铺ID');
+                return;
+            }
+
+            // 构建查询参数
+            let queryParams = `storeId=${storeId}&pageNum=${pageNum}&pageSize=${pageSize}`;
+            if (cardTtype) {
+                queryParams += `&cardTtype=${cardTtype}`;
+            }
+            if (cardTypeName) {
+                queryParams += `&cardTypeName=${encodeURIComponent(cardTypeName)}`;
+            }
+
+            const result = await apiRequest(`/api/v1/member-card-types/list-query?${queryParams}`, 'GET', null, true);
+
+            showResult('cardTypeListResult', result, result.code === 200);
+
+            if (result.code === 200 && result.data) {
+                alert(`查询成功！共找到 ${result.data.total} 个卡种，当前页 ${result.data.list.length} 个`);
+            }
+        }
+
+        // 2. 会员卡种详情查询
+        async function getCardTypeDetail() {
+            const cardTypeId = document.getElementById('cardTypeIdForDetail').value;
+            const storeId = document.getElementById('storeIdForCardTypeDetail').value;
+
+            if (!cardTypeId || !storeId) {
+                alert('请输入卡种ID和店铺ID');
+                return;
+            }
+
+            const queryParams = `cardTypeId=${cardTypeId}&storeId=${storeId}`;
+            const result = await apiRequest(`/api/v1/member-card-types/detail-query?${queryParams}`, 'GET', null, true);
+
+            showResult('cardTypeDetailResult', result, result.code === 200);
+
+            if (result.code === 200 && result.data) {
+                alert(`查询成功！卡种名称：${result.data.cardTypeName}\n卡种类型：${result.data.cardTtypeName}`);
+            }
+        }
+
+        // 3. 会员卡种修改设置
+        async function updateCardType() {
+            const cardTypeId = document.getElementById('cardTypeIdForUpdate').value;
+            const storeId = document.getElementById('storeIdForCardTypeUpdate').value;
+            const tokenType = document.getElementById('updateCardTypeTokenType').value;
+            const cardTypeName = document.getElementById('newCardTypeName').value;
+            const description = document.getElementById('newCardTypeDesc').value;
+            const autoNotify = document.getElementById('newAutoNotify').value;
+            const crossStore = document.getElementById('newCrossStore').value;
+
+            if (!cardTypeId || !storeId) {
+                alert('请输入卡种ID和店铺ID');
+                return;
+            }
+
+            // 根据令牌类型选择使用的令牌
+            let token = null;
+            if (tokenType === 'normal') {
+                if (!currentNormalToken) {
+                    alert('请先登录获取普通令牌');
+                    return;
+                }
+                token = currentNormalToken;
+            } else if (tokenType === 'work') {
+                if (!currentWorkToken) {
+                    alert('请先获取工作令牌（在上方"13.5. 获取工作令牌"模块）');
+                    return;
+                }
+                token = currentWorkToken;
+            }
+
+            // 构建请求体（只包含需要修改的字段）
+            const requestBody = {
+                cardTypeId: parseInt(cardTypeId),
+                storeId: storeId
+            };
+
+            if (cardTypeName) requestBody.cardTypeName = cardTypeName;
+            if (description) requestBody.description = description;
+            if (autoNotify !== '') requestBody.autoNotify = parseInt(autoNotify);
+            if (crossStore !== '') requestBody.crossStore = parseInt(crossStore);
+
+            // 处理预设充值项目
+            const presetRecharge = document.getElementById('newPresetRecharge').value.trim();
+            if (presetRecharge) {
+                try {
+                    JSON.parse(presetRecharge); // 验证JSON格式
+                    requestBody.presetRecharge = presetRecharge;
+                } catch (e) {
+                    alert('预设充值项目JSON格式错误：' + e.message);
+                    return;
+                }
+            }
+
+            // 处理预设消费项目
+            const presetCost = document.getElementById('newPresetCost').value.trim();
+            if (presetCost) {
+                try {
+                    JSON.parse(presetCost); // 验证JSON格式
+                    requestBody.presetCost = presetCost;
+                } catch (e) {
+                    alert('预设消费项目JSON格式错误：' + e.message);
+                    return;
+                }
+            }
+
+            const result = await apiRequest('/api/v1/member-card-types/set', 'POST', requestBody, true, token);
+
+            showResult('cardTypeUpdateResult', result, result.code === 200);
+
+            if (result.code === 200 && result.data) {
+                alert(`修改成功！\n已更新字段：${result.data.updatedFields.join(', ')}\n更新时间：${result.data.updateTime}`);
+            }
+        }
+
+        // ============= 会员卡管理函数 =============
+
+        // 0. 获取会员卡管理专用的工作令牌
+        async function getMemberCardWorkToken() {
+            const storeId = document.getElementById('memberCardWorkStoreId').value;
+            
+            if (!storeId) {
+                alert('请输入店铺ID');
+                return;
+            }
+            
+            if (!currentNormalToken) {
+                alert('请先登录获取普通令牌');
+                return;
+            }
+            
+            const result = await apiRequest('/api/v1/tokens/work', 'POST', {
+                storeId: storeId
+            }, true);
+            
+            showResult('memberCardWorkTokenResult', result, result.code === 200);
+            
+            if (result.code === 200) {
+                // 保存工作令牌到专用变量
+                const memberCardWorkToken = result.data.token;
+                
+                // 显示在文本框
+                document.getElementById('memberCardCurrentWorkToken').value = memberCardWorkToken;
+                
+                // 同时保存到全局变量（供下面的接口使用）
+                currentWorkToken = memberCardWorkToken;
+                currentWorkStoreId = result.data.storeId;
+                currentWorkRole = result.data.role === 'manager' ? '店长' : '店员';
+                
+                alert(`✅ 工作令牌获取成功！\n\n📋 店铺ID: ${result.data.storeId}\n👔 角色: ${currentWorkRole}\n⏰ 过期时间: ${result.data.expireTime}\n\n💡 提示：下方接口将自动使用此令牌`);
+            }
+        }
+
+        // 1. 会员卡办理（手机号快速办理）- 店长/店员使用工作令牌
+        async function createStaffMemberCardByPhone() {
+            const storeId = document.getElementById('storeIdForPhoneCard').value;
+            const cardTypeId = document.getElementById('cardTypeIdForPhoneCard').value;
+            const memberPhone = document.getElementById('memberPhoneForPhoneCard').value;
+            const memberName = document.getElementById('memberNameForPhoneCard').value;
+            const initialBalance = document.getElementById('initialBalanceForPhoneCard').value;
+            const initialTimes = document.getElementById('initialTimesForPhoneCard').value;
+            const initialPoints = document.getElementById('initialPointsForPhoneCard').value;
+
+            if (!storeId || !cardTypeId || !memberPhone) {
+                alert('请填写必填项：店铺ID、卡种ID、会员手机号');
+                return;
+            }
+
+            if (!currentWorkToken) {
+                alert('请先获取工作令牌！\n\n提示：在上方"工作令牌管理"卡片中输入店铺ID并获取工作令牌');
+                return;
+            }
+
+            // AES加密手机号
+            const encryptedPhone = encryptAES(memberPhone);
+
+            const requestBody = {
+                storeId,
+                cardTypeId: parseInt(cardTypeId),
+                memberPhone: encryptedPhone,
+                memberName: memberName || null,
+                initialBalance: initialBalance ? parseFloat(initialBalance) : null,
+                initialTimes: initialTimes ? parseInt(initialTimes) : null,
+                initialPoints: initialPoints ? parseInt(initialPoints) : null
+            };
+
+            const result = await apiRequest('/api/v1/member-cards/create-by-phone', 'POST', requestBody, true, currentWorkToken);
+
+            showResult('createStaffMemberCardByPhoneResult', result, result.code === 200);
+
+            if (result.code === 200 && result.data) {
+                alert(`办卡成功！\n会员卡ID：${result.data.memberCardId}\n卡种名称：${result.data.cardTypeName}\n状态：${result.data.statusName}\n${result.data.message}`);
+            }
+        }
+
+        // 2. 会员卡办理（线下扫码办理）- 店长/店员使用工作令牌
+        async function createStaffMemberCardByScan() {
+            const storeId = document.getElementById('storeIdForScanCard').value;
+            const cardTypeId = document.getElementById('cardTypeIdForScanCard').value;
+            const privilegeToken = document.getElementById('privilegeTokenForScanCard').value;
+            const memberName = document.getElementById('memberNameForScanCard').value;
+            const initialBalance = document.getElementById('initialBalanceForScanCard').value;
+            const initialTimes = document.getElementById('initialTimesForScanCard').value;
+            const initialPoints = document.getElementById('initialPointsForScanCard').value;
+
+            if (!storeId || !cardTypeId || !privilegeToken) {
+                alert('请填写必填项：店铺ID、卡种ID、特权令牌');
+                return;
+            }
+
+            if (!currentWorkToken) {
+                alert('请先获取工作令牌！\n\n提示：在上方"工作令牌管理"卡片中输入店铺ID并获取工作令牌');
+                return;
+            }
+
+            const requestBody = {
+                storeId,
+                cardTypeId: parseInt(cardTypeId),
+                privilegeToken,
+                memberName: memberName || null,
+                initialBalance: initialBalance ? parseFloat(initialBalance) : null,
+                initialTimes: initialTimes ? parseInt(initialTimes) : null,
+                initialPoints: initialPoints ? parseInt(initialPoints) : null
+            };
+
+            const result = await apiRequest('/api/v1/member-cards/create-by-scan', 'POST', requestBody, true, currentWorkToken);
+
+            showResult('createStaffMemberCardByScanResult', result, result.code === 200);
+
+            if (result.code === 200 && result.data) {
+                alert(`办卡成功！\n会员卡ID：${result.data.memberCardId}\n卡种名称：${result.data.cardTypeName}\n会员姓名：${result.data.memberName}`);
+            }
+        }
+
+        // 3. 查询店铺会员卡列表 - 店长使用工作令牌
+        async function queryStaffStoreCardList() {
+            const storeId = document.getElementById('storeIdForStoreList').value;
+            const cardScope = document.getElementById('cardScopeForStoreList').value;
+            const cardTypeIdFilter = document.getElementById('cardTypeIdFilterForStoreList').value;
+            const cardTtypeFilter = document.getElementById('cardTtypeFilterForStoreList').value;
+            const statusFilter = document.getElementById('statusFilterForStoreList').value;
+            const phoneFilter = document.getElementById('phoneFilterForStoreList').value;
+            const nameFilter = document.getElementById('nameFilterForStoreList').value;
+            const pageNum = document.getElementById('pageNumForStoreList').value;
+            const pageSize = document.getElementById('pageSizeForStoreList').value;
+
+            if (!storeId || !cardScope) {
+                alert('请填写必填项：店铺ID、查询范围');
+                return;
+            }
+
+            if (!currentWorkToken) {
+                alert('请先获取工作令牌！\n\n提示：在上方"工作令牌管理"卡片中输入店铺ID并获取工作令牌');
+                return;
+            }
+
+            let queryParams = `storeId=${storeId}&cardScope=${cardScope}&pageNum=${pageNum}&pageSize=${pageSize}`;
+            if (cardTypeIdFilter) queryParams += `&cardTypeId=${cardTypeIdFilter}`;
+            if (cardTtypeFilter) queryParams += `&cardTtype=${cardTtypeFilter}`;
+            if (statusFilter) queryParams += `&status=${statusFilter}`;
+            if (phoneFilter) queryParams += `&memberPhone=${phoneFilter}`;
+            if (nameFilter) queryParams += `&memberName=${nameFilter}`;
+
+            const result = await apiRequest(`/api/v1/member-cards/store-list?${queryParams}`, 'GET', null, true, currentWorkToken);
+
+            showResult('queryStaffStoreCardListResult', result, result.code === 200);
+
+            if (result.code === 200 && result.data) {
+                const cardType = cardScope === 'local' ? '本店卡' : '跨店卡';
+                alert(`查询成功！共找到 ${result.data.total} 张${cardType}，当前页 ${result.data.list.length} 张`);
+            }
+        }
+
+        // ============= 阶段二：接口5-9函数 =============
+
+        // 5. 查询商家会员统计
+        async function getMerchantStatistics() {
+            const resultDiv = document.getElementById('merchantStatisticsResult');
+            resultDiv.textContent = '请求中...';
+
+            const result = await apiRequest('/api/v1/member-cards/merchant-statistics', 'GET', null, true);
+            resultDiv.textContent = JSON.stringify(result, null, 2);
+
+            if (result.code === 200) {
+                alert(`✅ 统计查询成功！\n会员总数: ${result.data.totalMembers}\n会员卡总数: ${result.data.totalMemberCards}`);
+            }
+        }
+
+        // 6. 查询店铺会员统计
+        async function getStoreStatistics() {
+            const storeId = document.getElementById('storeIdForStatistics').value;
+
+            if (!storeId) {
+                alert('请输入店铺ID');
+                return;
+            }
+
+            if (!currentWorkToken) {
+                alert('请先获取工作令牌！\n\n提示：在上方"工作令牌管理"卡片中输入店铺ID并获取工作令牌');
+                return;
+            }
+
+            const resultDiv = document.getElementById('storeStatisticsResult');
+            resultDiv.textContent = '请求中...';
+
+            const result = await apiRequest(`/api/v1/member-cards/store-statistics?storeId=${storeId}`, 'GET', null, true, currentWorkToken);
+            resultDiv.textContent = JSON.stringify(result, null, 2);
+
+            if (result.code === 200) {
+                alert(`✅ 统计查询成功！\n本店会员数: ${result.data.localCardStats.totalMembers}\n本店卡数: ${result.data.localCardStats.totalCards}\n跨店卡数: ${result.data.crossStoreCardStats.totalCards}`);
+            }
+        }
+
+        // 7. 查询我的会员卡列表
+        async function getMyCardList() {
+            const status = document.getElementById('myListStatus').value;
+            const storeId = document.getElementById('myListStoreId').value;
+            const merchantId = document.getElementById('myListMerchantId').value;
+            const cardTtype = document.getElementById('myListCardTtype').value;
+            const pageNum = document.getElementById('myListPageNum').value || 1;
+            const pageSize = document.getElementById('myListPageSize').value || 10;
+
+            const params = new URLSearchParams();
+            if (status) params.append('status', status);
+            if (storeId) params.append('storeId', storeId);
+            if (merchantId) params.append('merchantId', merchantId);
+            if (cardTtype) params.append('cardTtype', cardTtype);
+            params.append('pageNum', pageNum);
+            params.append('pageSize', pageSize);
+
+            const resultDiv = document.getElementById('myCardListResult');
+            resultDiv.textContent = '请求中...';
+
+            const result = await apiRequest(`/api/v1/member-cards/my-list?${params.toString()}`, 'GET', null, true);
+            resultDiv.textContent = JSON.stringify(result, null, 2);
+
+            if (result.code === 200) {
+                alert(`✅ 查询成功！共找到 ${result.data.total} 张会员卡，当前页 ${result.data.list.length} 张`);
+            }
+        }
+
+        // 8. 通过手机号查询会员卡
+        async function queryCardsByPhone() {
+            const storeId = document.getElementById('queryPhoneStoreId').value;
+            const memberPhone = document.getElementById('queryPhoneMemberPhone').value;
+
+            if (!storeId || !memberPhone) {
+                alert('请输入店铺ID和手机号');
+                return;
+            }
+
+            if (!currentWorkToken) {
+                alert('请先获取工作令牌！\n\n提示：在上方"工作令牌管理"卡片中输入店铺ID并获取工作令牌');
+                return;
+            }
+
+            const resultDiv = document.getElementById('queryByPhoneResult');
+            resultDiv.textContent = '请求中...';
+
+            // 加密手机号
+            const encryptedPhone = encryptAES(memberPhone);
+
+            const params = new URLSearchParams();
+            params.append('storeId', storeId);
+            params.append('memberPhone', encryptedPhone);
+
+            const result = await apiRequest(`/api/v1/member-cards/query-by-phone?${params.toString()}`, 'GET', null, true, currentWorkToken);
+            resultDiv.textContent = JSON.stringify(result, null, 2);
+
+            if (result.code === 200) {
+                const localCount = result.data.localCards ? result.data.localCards.length : 0;
+                const crossCount = result.data.crossStoreCards ? result.data.crossStoreCards.length : 0;
+                alert(`✅ 查询成功！\n本店卡: ${localCount} 张\n跨店卡: ${crossCount} 张`);
+            }
+        }
+
+        // 9. 查询会员卡详情
+        async function getCardDetail() {
+            const memberCardId = document.getElementById('detailMemberCardId').value;
+
+            if (!memberCardId) {
+                alert('请输入会员卡ID');
+                return;
+            }
+
+            const resultDiv = document.getElementById('cardDetailResult');
+            resultDiv.textContent = '请求中...';
+
+            // 优先使用工作令牌，其次使用普通令牌
+            const token = currentWorkToken || currentNormalToken;
+            const result = await apiRequest(`/api/v1/member-cards/detail?memberCardId=${memberCardId}`, 'GET', null, true, token);
+            resultDiv.textContent = JSON.stringify(result, null, 2);
+
+            if (result.code === 200) {
+                alert(`✅ 查询成功！\n卡种: ${result.data.cardTypeName}\n状态: ${result.data.statusName}\n余额: ${result.data.balance}`);
+            }
+        }
+
+        // 11. 批量激活会员卡
+        async function activateBatch() {
+            const resultDiv = document.getElementById('activateBatchResult');
+            resultDiv.textContent = '请求中...';
+
+            const result = await apiRequest('/api/v1/member-cards/activate-batch', 'POST', null, true);
+            resultDiv.textContent = JSON.stringify(result, null, 2);
+
+            if (result.code === 200) {
+                alert(`✅ 批量激活成功！激活了 ${result.data.activatedCount} 张会员卡`);
+            }
+        }
+
+        // 12. 冻结会员卡
+        async function freezeCard() {
+            const memberCardId = document.getElementById('freezeMemberCardId').value;
+            const freezeReason = document.getElementById('freezeReason').value;
+            const tokenType = document.getElementById('freezeTokenType').value;
+
+            if (!memberCardId || !freezeReason) {
+                alert('请输入会员卡ID和冻结原因');
+                return;
+            }
+
+            if (freezeReason.length < 10 || freezeReason.length > 200) {
+                alert('冻结原因长度必须在10-200字符之间');
+                return;
+            }
+
+            const resultDiv = document.getElementById('freezeCardResult');
+            resultDiv.textContent = '请求中...';
+
+            const requestData = {
+                memberCardId: memberCardId,
+                freezeReason: freezeReason
+            };
+
+            // 根据选择使用不同的令牌
+            const token = tokenType === 'work' ? currentWorkToken : currentNormalToken;
+            const result = await apiRequest('/api/v1/member-cards/freeze', 'POST', requestData, true, token);
+            resultDiv.textContent = JSON.stringify(result, null, 2);
+
+            if (result.code === 200) {
+                alert(`✅ 会员卡冻结成功！\n会员卡ID: ${result.data.memberCardId}\n冻结时间: ${result.data.freezeTime}`);
+            }
+        }
+
+        // 13. 解冻会员卡
+        async function unfreezeCard() {
+            const memberCardId = document.getElementById('unfreezeMemberCardId').value;
+            const unfreezeReason = document.getElementById('unfreezeReason').value;
+            const tokenType = document.getElementById('unfreezeTokenType').value;
+
+            if (!memberCardId) {
+                alert('请输入会员卡ID');
+                return;
+            }
+
+            if (unfreezeReason && (unfreezeReason.length < 10 || unfreezeReason.length > 200)) {
+                alert('解冻原因长度必须在10-200字符之间');
+                return;
+            }
+
+            const resultDiv = document.getElementById('unfreezeCardResult');
+            resultDiv.textContent = '请求中...';
+
+            const requestData = {
+                memberCardId: memberCardId,
+                unfreezeReason: unfreezeReason || undefined
+            };
+
+            // 根据选择使用不同的令牌
+            const token = tokenType === 'work' ? currentWorkToken : currentNormalToken;
+            const result = await apiRequest('/api/v1/member-cards/unfreeze', 'POST', requestData, true, token);
+            resultDiv.textContent = JSON.stringify(result, null, 2);
+
+            if (result.code === 200) {
+                alert(`✅ 会员卡解冻成功！\n会员卡ID: ${result.data.memberCardId}\n状态: ${result.data.status === 1 ? '正常' : '已过期'}\n解冻时间: ${result.data.unfreezeTime}`);
+            }
+        }
+
+        // 15. 线下扫码查询个人会员卡
+        async function queryByScan() {
+            const storeId = document.getElementById('scanStoreId').value;
+            const privilegeToken = document.getElementById('scanPrivilegeToken').value;
+            const memberCardId = document.getElementById('scanMemberCardId').value;
+
+            if (!storeId || !privilegeToken) {
+                alert('请输入店铺ID和特权令牌');
+                return;
+            }
+
+            if (!currentWorkToken) {
+                alert('请先获取工作令牌！\n\n提示：在上方"工作令牌管理"卡片中输入店铺ID并获取工作令牌');
+                return;
+            }
+
+            const resultDiv = document.getElementById('queryByScanResult');
+            resultDiv.textContent = '请求中...';
+
+            const requestData = {
+                storeId: storeId,
+                privilegeToken: privilegeToken,
+                memberCardId: memberCardId || undefined
+            };
+
+            const result = await apiRequest('/api/v1/member-cards/query-by-scan', 'POST', requestData, true, currentWorkToken);
+            resultDiv.textContent = JSON.stringify(result, null, 2);
+
+            if (result.code === 200) {
+                if (memberCardId) {
+                    // 场景A：详情查询
+                    alert(`✅ 查询成功！\n卡种: ${result.data.cardTypeName}\n状态: ${result.data.statusName}\n余额: ${result.data.balance}`);
+                } else {
+                    // 场景B：列表查询
+                    const localCount = result.data.localCards ? result.data.localCards.length : 0;
+                    const crossCount = result.data.crossStoreCards ? result.data.crossStoreCards.length : 0;
+                    alert(`✅ 查询成功！\n本店卡: ${localCount} 张\n跨店卡: ${crossCount} 张`);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
+

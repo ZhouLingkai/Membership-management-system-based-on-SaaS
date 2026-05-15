@@ -1,0 +1,17 @@
+<!-- components/card-display/card-display.wxml -->
+<view class="card-display-container" style="width: {{width}}rpx; height: {{height}}rpx;">
+  <!-- 背景层 -->
+  <view class="card-bg-layer">
+    <!-- OSS图片背景 -->
+    <image wx:if="{{bgType === 'oss'}}" class="card-bg-image" src="{{bgUrl}}" mode="aspectFill" />
+    <!-- 本地高级图片背景 -->
+    <image wx:elif="{{bgType === 'local'}}" class="card-bg-image" src="{{bgUrl}}" mode="aspectFill" />
+    <!-- 渐变色背景 -->
+    <view wx:elif="{{bgType === 'gradient'}}" class="card-bg-gradient" style="{{bgGradientStyle}}"></view>
+    <!-- 默认背景 -->
+    <view wx:else class="card-bg-default"></view>
+  </view>
+
+  <!-- 蒙版层 -->
+  <image wx:if="{{maskUrl}}" class="card-mask-image" src="{{maskUrl}}" mode="aspectFill" />
+</view>

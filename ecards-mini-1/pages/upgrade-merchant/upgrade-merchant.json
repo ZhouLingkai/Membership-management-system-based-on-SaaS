@@ -1,0 +1,7 @@
+{
+  "usingComponents": {
+    "step-form": "/components/step-form/step-form",
+    "custom-toast": "/components/custom-toast/custom-toast"
+  },
+  "navigationBarTitleText": "商家升级"
+}

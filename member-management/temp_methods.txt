@@ -1,0 +1,496 @@
+﻿
+    // ==================== 鎺ュ彛10锛氭煡璇㈡煇鏃ラ绾︽儏鍐?====================
+    @Override
+    public ReservationQueryResponse queryReservations(ReservationQueryRequest request, String token) {
+        log.info("鏌ヨ鏌愭棩棰勭害鎯呭喌锛歴toreId={}, requestDate={}", request.getStoreId(), request.getRequestDate());
+
+        // 1. 瑙ｆ瀽浠ょ墝
+        Claims claims = jwtUtils.parseToken(token);
+        Integer tokenType = claims.get("token_type", Integer.class);
+        boolean isWorkToken = (tokenType == 2);
+
+        // 2. 楠岃瘉搴楅摵
+        byte[] storeIdBytes = encryptUtils.uuidToBytes(request.getStoreId());
+        Store store = storeRepository.findByStoreId(storeIdBytes)
+                .orElseThrow(() -> new BusinessException(ErrorCode.STORE_NOT_FOUND));
+
+        // 3. 鏌ヨ妯℃澘
+        LocalDate queryDate = LocalDate.parse(request.getRequestDate(), DATE_FORMATTER);
+        ReservationTemplate template = templateRepository.findEffectiveTemplate(storeIdBytes, queryDate)
+                .orElseThrow(() -> new BusinessException(ErrorCode.RESERVATION_TEMPLATE_NOT_FOUND));
+
+        // 4. 鏋勯€爁orbiddenDays鍒楄〃锛堜粠浠婃棩鍒板彲棰勭害鏈€鍚庝竴澶╋紝浠呰€冭檻妯℃澘锛?
+        LocalDate today = LocalDate.now();
+        int advanceDays = template.getAdvanceDays();
+        LocalDate lastReservableDate = today.plusDays(advanceDays);
+        List<String> forbiddenDaysInRange = new ArrayList<>();
+        
+        if (template.getForbiddenDays() != null) {
+            for (String day : template.getForbiddenDays()) {
+                if (day.startsWith("鍛?)) {
+                    forbiddenDaysInRange.add(day);
+                } else {
+                    try {
+                        LocalDate date = LocalDate.parse(day, DATE_FORMATTER);
+                        if (!date.isBefore(today) && !date.isAfter(lastReservableDate)) {
+                            forbiddenDaysInRange.add(day);
+                        }
+                    } catch (Exception e) {
+                        // 蹇界暐鏍煎紡閿欒鐨勬棩鏈?
+                    }
+                }
+            }
+        }
+
+        // 5. 鏌ヨ璧勬簮鍒楄〃
+        List<ReservationResource> resources;
+        if (request.getKeyword() != null && !request.getKeyword().isEmpty()) {
+            // 鏈夊叧閿瘝绛涢€?
+            Page<ReservationResource> page = resourceRepository.findByConditions(
+                    storeIdBytes, request.getKeyword(), null, null, 
+                    PageRequest.of(0, 1000));
+            resources = page.getContent();
+        } else {
+            // 鏃犲叧閿瘝锛屾煡璇㈡墍鏈?
+            Page<ReservationResource> page = resourceRepository.findByConditions(
+                    storeIdBytes, null, null, null, 
+                    PageRequest.of(0, 1000));
+            resources = page.getContent();
+        }
+
+        // 6. 鏌ヨ璇ユ棩鎵€鏈夐绾﹁褰?
+        List<ReservationRecord> allRecords = recordRepository.findStoreReservationsByDate(storeIdBytes, queryDate);
+
+        // 7. 鏋勫缓鍝嶅簲
+        ReservationQueryResponse response = new ReservationQueryResponse();
+        response.setQueryDate(request.getRequestDate());
+        response.setForbiddenDays(forbiddenDaysInRange);
+        response.setTimeList(template.getTimeList());
+        response.setCancelRule(template.getCancelRule());
+
+        List<ReservationQueryResponse.ResourceDetail> resourceDetails = new ArrayList<>();
+        for (ReservationResource resource : resources) {
+            // 妫€鏌ヨ鏃ユ湡璇ヨ祫婧愭槸鍚﹀彲棰勭害
+            boolean dateReservable = ForbiddenDaysValidator.isDateReservableWithCustomize(
+                    queryDate,
+                    template.getForbiddenDays(),
+                    resource.getForbiddenDays(),
+                    template.getCustomizeForbidden()
+            );
+
+            // 濡傛灉customize_forbidden=1涓旇鏃ユ湡涓嶅彲棰勭害锛岃烦杩囪璧勬簮
+            if (template.getCustomizeForbidden() == 1 && !dateReservable) {
+                continue;
+            }
+
+            ReservationQueryResponse.ResourceDetail detail = new ReservationQueryResponse.ResourceDetail();
+            detail.setResourceId(resource.getResourceId());
+            detail.setResourceName(resource.getResourceName());
+            detail.setIsReservable(resource.getIsReservable());
+
+            // 璧勬簮闄愬埗
+            ReservationQueryResponse.ResourceRestriction restriction = 
+                    new ReservationQueryResponse.ResourceRestriction();
+            restriction.setMinContinuousTime(resource.getMinContinuousTime());
+            restriction.setMaxContinuousTime(resource.getMaxContinuousTime());
+            restriction.setSupportCardTypes(resource.getSupportCardTypes());
+            restriction.setUnitPrice(resource.getUnitPrice());
+            detail.setResourceRestriction(restriction);
+
+            // 棰勭害鍒楄〃
+            List<ReservationQueryResponse.ReservationItem> reservationList = new ArrayList<>();
+            for (ReservationRecord record : allRecords) {
+                if (record.getResourceId().equals(resource.getResourceId())) {
+                    ReservationQueryResponse.ReservationItem item = 
+                            new ReservationQueryResponse.ReservationItem();
+                    item.setStartTime(record.getStartTime().format(TIME_FORMATTER));
+                    item.setEndTime(record.getEndTime().format(TIME_FORMATTER));
+                    item.setOperateType(record.getOperateType());
+
+                    // 宸ヤ綔浠ょ墝杩斿洖鏇村淇℃伅
+                    if (isWorkToken) {
+                        ReservationQueryResponse.MoreInfo moreInfo = 
+                                new ReservationQueryResponse.MoreInfo();
+                        moreInfo.setUserId(encryptUtils.bytesToUuid(record.getUserId()));
+                        moreInfo.setUserPhone(record.getUserPhone());
+                        moreInfo.setTransactionId(record.getTransactionId());
+                        moreInfo.setRemark(record.getRemark());
+                        item.setMoreInfo(moreInfo);
+                    }
+
+                    reservationList.add(item);
+                }
+            }
+            detail.setReservationList(reservationList);
+
+            resourceDetails.add(detail);
+        }
+
+        response.setResourceDetails(resourceDetails);
+        return response;
+    }
+
+    // ==================== 鎺ュ彛11锛氳幏鍙栭绾﹀垪琛?====================
+    @Override
+    public MyReservationsResponse getMyReservations(MyReservationsRequest request, String token) {
+        log.info("鑾峰彇棰勭害鍒楄〃锛歴tatus={}, page={}", request.getStatus(), request.getPage());
+
+        // 1. 瑙ｆ瀽浠ょ墝锛堜粎鏅€氫护鐗岋級
+        Claims claims = jwtUtils.parseToken(token);
+        Integer tokenType = claims.get("token_type", Integer.class);
+        if (tokenType != 1) {
+            throw new BusinessException(ErrorCode.TOKEN_TYPE_ERROR, "浠呮敮鎸佹櫘閫氫护鐗?);
+        }
+
+        String userId = claims.get("user_id", String.class);
+        byte[] userIdBytes = encryptUtils.uuidToBytes(userId);
+
+        // 2. 鍙傛暟澶勭悊
+        int page = request.getPage() != null && request.getPage() > 0 ? request.getPage() : 1;
+        int pageSize = request.getPageSize() != null && request.getPageSize() > 0 ? request.getPageSize() : 20;
+
+        LocalDate startDate = request.getStartDate() != null ? 
+                LocalDate.parse(request.getStartDate(), DATE_FORMATTER) : null;
+        LocalDate endDate = request.getEndDate() != null ? 
+                LocalDate.parse(request.getEndDate(), DATE_FORMATTER) : null;
+
+        // 3. 鍒嗛〉鏌ヨ
+        Pageable pageable = PageRequest.of(page - 1, pageSize);
+        Page<ReservationRecord> recordPage = recordRepository.findUserReservations(
+                userIdBytes, request.getStatus(), startDate, endDate, pageable);
+
+        // 4. 鏋勫缓鍝嶅簲
+        MyReservationsResponse response = new MyReservationsResponse();
+        response.setTotal((int) recordPage.getTotalElements());
+        response.setPage(page);
+        response.setPageSize(pageSize);
+
+        List<MyReservationsResponse.ReservationItem> list = new ArrayList<>();
+        for (ReservationRecord record : recordPage.getContent()) {
+            // 鏌ヨ璧勬簮鍜屽簵閾轰俊鎭?
+            ReservationResource resource = resourceRepository.findByResourceId(record.getResourceId())
+                    .orElse(null);
+            Store store = resource != null ? storeRepository.findByStoreId(resource.getStoreId()).orElse(null) : null;
+
+            MyReservationsResponse.ReservationItem item = new MyReservationsResponse.ReservationItem();
+            item.setReservationId(record.getReservationId());
+            item.setResourceId(record.getResourceId());
+            item.setResourceName(resource != null ? resource.getResourceName() : "鏈煡璧勬簮");
+            item.setStoreName(store != null ? store.getStoreName() : "鏈煡搴楅摵");
+            item.setReservationDate(record.getReservationDate().format(DATE_FORMATTER));
+            item.setStartTime(record.getStartTime().format(TIME_FORMATTER));
+            item.setEndTime(record.getEndTime().format(TIME_FORMATTER));
+            item.setOperateType(record.getOperateType());
+            item.setTransactionAmount(record.getTransactionAmount());
+            item.setReservationStatus(record.getReservationStatus());
+            item.setRemark(record.getRemark());
+            item.setCreateTime(record.getCreateTime().format(DATETIME_FORMATTER));
+
+            list.add(item);
+        }
+
+        response.setList(list);
+        return response;
+    }
+
+    // ==================== 鎺ュ彛12锛氶绾﹁祫婧?====================
+    @Override
+    @Transactional
+    public ReserveResourceResponse reserveResource(ReserveResourceRequest request, String token) {
+        log.info("棰勭害璧勬簮锛歳esourceId={}, date={}, time={}-{}", 
+                request.getResourceId(), request.getReservationDate(), 
+                request.getStartTime(), request.getEndTime());
+
+        // 1. 瑙ｆ瀽浠ょ墝
+        Claims claims = jwtUtils.parseToken(token);
+        Integer tokenType = claims.get("token_type", Integer.class);
+        String userId = claims.get("user_id", String.class);
+        byte[] userIdBytes = encryptUtils.uuidToBytes(userId);
+
+        // 2. 鏌ヨ璧勬簮
+        ReservationResource resource = resourceRepository.findByResourceId(request.getResourceId())
+                .orElseThrow(() -> new BusinessException(ErrorCode.RESERVATION_RESOURCE_NOT_FOUND));
+
+        // 3. 鏌ヨ妯℃澘
+        LocalDate reservationDate = LocalDate.parse(request.getReservationDate(), DATE_FORMATTER);
+        ReservationTemplate template = templateRepository.findEffectiveTemplate(resource.getStoreId(), reservationDate)
+                .orElseThrow(() -> new BusinessException(ErrorCode.RESERVATION_TEMPLATE_NOT_FOUND));
+
+        // 4. 鏍￠獙棰勭害鏃ユ湡鏄惁鍦ㄥ彲棰勭害鑼冨洿鍐?
+        LocalDate today = LocalDate.now();
+        long daysFromToday = java.time.temporal.ChronoUnit.DAYS.between(today, reservationDate);
+        if (daysFromToday < 0 || daysFromToday > template.getAdvanceDays()) {
+            throw new BusinessException(ErrorCode.PARAM_ERROR, "棰勭害鏃ユ湡瓒呭嚭鍙绾﹁寖鍥?);
+        }
+
+        // 5. 鏍￠獙鏃ユ湡鏄惁鍙绾?
+        boolean dateReservable = ForbiddenDaysValidator.isDateReservableWithCustomize(
+                reservationDate,
+                template.getForbiddenDays(),
+                resource.getForbiddenDays(),
+                template.getCustomizeForbidden()
+        );
+        if (!dateReservable) {
+            throw new BusinessException(ErrorCode.RESERVATION_DATE_FORBIDDEN);
+        }
+
+        // 6. 鏍￠獙鏃堕棿娈?
+        LocalTime startTime = LocalTime.parse(request.getStartTime(), TIME_FORMATTER);
+        LocalTime endTime = LocalTime.parse(request.getEndTime(), TIME_FORMATTER);
+        
+        if (!startTime.isBefore(endTime)) {
+            throw new BusinessException(ErrorCode.PARAM_ERROR, "寮€濮嬫椂闂村繀椤绘棭浜庣粨鏉熸椂闂?);
+        }
+
+        int duration = (int) java.time.Duration.between(startTime, endTime).toMinutes();
+        if (duration < resource.getMinContinuousTime() || duration > resource.getMaxContinuousTime()) {
+            throw new BusinessException(ErrorCode.PARAM_ERROR, 
+                    String.format("棰勭害鏃堕暱蹇呴』鍦?d-%d鍒嗛挓涔嬮棿", 
+                            resource.getMinContinuousTime(), resource.getMaxContinuousTime()));
+        }
+
+        // 7. 鏌ヨ浼氬憳鍗?
+        byte[] memberCardIdBytes = encryptUtils.uuidToBytes(request.getMemberCardId());
+        MemberCard memberCard = memberCardRepository.findByMemberCardId(memberCardIdBytes)
+                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_CARD_NOT_FOUND));
+
+        // 8. 鏍￠獙浼氬憳鍗＄被鍨?
+        if ((resource.getSupportCardTypes() & memberCard.getCardTtype()) == 0) {
+            throw new BusinessException(ErrorCode.PARAM_ERROR, "璇ヨ祫婧愪笉鏀寔姝ょ被鍨嬩細鍛樺崱");
+        }
+
+        // 9. 浣跨敤鍒嗗竷寮忛攣鎵ц棰勭害
+        String lockKey = lockUtil.generateLockKey(reservationDate, 
+                encryptUtils.bytesToUuid(resource.getStoreId()), 
+                resource.getResourceId());
+
+        return lockUtil.executeWithLock(lockKey, 3, 10, () -> {
+            // 10. 妫€鏌ユ椂闂存鍐茬獊
+            boolean hasConflict = recordRepository.existsTimeConflict(
+                    request.getResourceId(), reservationDate, startTime, endTime);
+            if (hasConflict) {
+                throw new BusinessException(ErrorCode.RESERVATION_TIMESLOT_OCCUPIED);
+            }
+
+            // 11. 璁＄畻璐圭敤
+            BigDecimal amount = resource.getUnitPrice()
+                    .multiply(BigDecimal.valueOf(duration))
+                    .divide(BigDecimal.valueOf(60), 2, RoundingMode.HALF_UP);
+
+            // 12. 鍒涘缓浜ゆ槗璁板綍锛堟墸娆撅級
+            TransactionRecord transaction = new TransactionRecord();
+            transaction.setMemberCardId(memberCardIdBytes);
+            transaction.setUserId(userIdBytes);
+            transaction.setMerchantId(memberCard.getMerchantId());
+            transaction.setTransactionType(2); // 娑堣垂
+            transaction.setAmount(amount.negate()); // 璐熸暟琛ㄧず鏀嚭
+            
+            // 鏇存柊浣欓蹇収
+            if (memberCard.getCardTtype() == 1) { // 浣欓鍗?
+                BigDecimal newBalance = memberCard.getBalance().subtract(amount);
+                if (newBalance.compareTo(BigDecimal.ZERO) < 0) {
+                    throw new BusinessException(ErrorCode.MEMBER_CARD_BALANCE_INSUFFICIENT);
+                }
+                transaction.setBalanceSnapshot(newBalance);
+                memberCard.setBalance(newBalance);
+            } else if (memberCard.getCardTtype() == 2) { // 娆℃暟鍗?
+                BigDecimal times = BigDecimal.valueOf(Math.ceil(amount.doubleValue()));
+                BigDecimal newTimes = memberCard.getTimes().subtract(times);
+                if (newTimes.compareTo(BigDecimal.ZERO) < 0) {
+                    throw new BusinessException(ErrorCode.MEMBER_CARD_TIMES_INSUFFICIENT);
+                }
+                transaction.setBalanceSnapshot(newTimes);
+                memberCard.setTimes(newTimes);
+            }
+
+            transaction.setOperatorId(userIdBytes);
+            transaction.setTransStoreId(resource.getStoreId());
+            transaction.setRemark(request.getRemark() != null ? request.getRemark() : "棰勭害璧勬簮");
+            transaction.setTransactionTime(LocalDateTime.now());
+            transactionRepository.save(transaction);
+            memberCardRepository.save(memberCard);
+
+            // 13. 鍒涘缓棰勭害璁板綍
+            ReservationRecord record = new ReservationRecord();
+            record.setResourceId(request.getResourceId());
+            record.setTemplateId(template.getTemplateId());
+            record.setReservationDate(reservationDate);
+            record.setStartTime(startTime);
+            record.setEndTime(endTime);
+            record.setOperateType(request.getOperateType());
+            record.setUserId(userIdBytes);
+            
+            // 澶勭悊鎵嬫満鍙?
+            if (request.getOperateType() == 2) {
+                // 绾夸笅棰勭害锛岃В瀵嗘墜鏈哄彿
+                if (request.getUserPhone() == null || request.getUserPhone().isEmpty()) {
+                    throw new BusinessException(ErrorCode.PARAM_ERROR, "绾夸笅棰勭害蹇呴』鎻愪緵鐢ㄦ埛鎵嬫満鍙?);
+                }
+                String decryptedPhone = encryptUtils.decryptAES(request.getUserPhone());
+                record.setUserPhone(decryptedPhone);
+            } else {
+                // 绾夸笂棰勭害锛屼粠token鑾峰彇
+                String phone = claims.get("phone", String.class);
+                record.setUserPhone(phone);
+            }
+
+            record.setTransactionId(transaction.getTransactionId());
+            record.setTransactionAmount(amount);
+            record.setReservationStatus(0); // 鏈娇鐢?
+            record.setRemark(request.getRemark());
+            record.setCreateTime(LocalDateTime.now());
+            record.setUpdateTime(LocalDateTime.now());
+            recordRepository.save(record);
+
+            // 14. 鏋勫缓鍝嶅簲
+            ReserveResourceResponse response = new ReserveResourceResponse();
+            response.setReservationId(record.getReservationId());
+            response.setResourceId(resource.getResourceId());
+            response.setResourceName(resource.getResourceName());
+            response.setReservationDate(request.getReservationDate());
+            response.setStartTime(request.getStartTime());
+            response.setEndTime(request.getEndTime());
+            response.setOperateType(request.getOperateType());
+            response.setTransactionId(transaction.getTransactionId());
+            response.setTransactionAmount(amount);
+            response.setCreateTime(record.getCreateTime().format(DATETIME_FORMATTER));
+
+            return response;
+        });
+    }
+
+    // ==================== 鎺ュ彛13锛氬彇娑堥绾﹁祫婧?====================
+    @Override
+    @Transactional
+    public CancelReservationResponse cancelReservation(CancelReservationRequest request, String token) {
+        log.info("鍙栨秷棰勭害锛歳eservationId={}", request.getReservationId());
+
+        // 1. 瑙ｆ瀽浠ょ墝锛堜粎鏅€氫护鐗岋級
+        Claims claims = jwtUtils.parseToken(token);
+        Integer tokenType = claims.get("token_type", Integer.class);
+        if (tokenType != 1) {
+            throw new BusinessException(ErrorCode.TOKEN_TYPE_ERROR, "浠呮敮鎸佹櫘閫氫护鐗?);
+        }
+
+        String userId = claims.get("user_id", String.class);
+        byte[] userIdBytes = encryptUtils.uuidToBytes(userId);
+
+        // 2. 鏌ヨ棰勭害璁板綍
+        ReservationRecord record = recordRepository.findByIdAndUserId(
+                request.getReservationId(), userIdBytes)
+                .orElseThrow(() -> new BusinessException(ErrorCode.RESERVATION_NOT_FOUND));
+
+        // 3. 鏍￠獙棰勭害鐘舵€?
+        if (record.getReservationStatus() != 0) {
+            throw new BusinessException(ErrorCode.RESERVATION_NOT_FOUND, "棰勭害涓嶅瓨鍦ㄦ垨宸插彇娑?);
+        }
+
+        // 4. 鏍￠獙鏄惁杩囨湡
+        LocalDateTime reservationStartTime = LocalDateTime.of(
+                record.getReservationDate(), record.getStartTime());
+        if (LocalDateTime.now().isAfter(reservationStartTime)) {
+            throw new BusinessException(ErrorCode.RESERVATION_EXPIRED);
+        }
+
+        // 5. 鏌ヨ妯℃澘鑾峰彇鍙栨秷瑙勫垯
+        ReservationResource resource = resourceRepository.findByResourceId(record.getResourceId())
+                .orElseThrow(() -> new BusinessException(ErrorCode.RESERVATION_RESOURCE_NOT_FOUND));
+        ReservationTemplate template = templateRepository.findEffectiveTemplate(
+                resource.getStoreId(), record.getReservationDate())
+                .orElseThrow(() -> new BusinessException(ErrorCode.RESERVATION_TEMPLATE_NOT_FOUND));
+
+        // 6. 璁＄畻杩濈害璐?
+        long minutesToStart = java.time.Duration.between(LocalDateTime.now(), reservationStartTime).toMinutes();
+        BigDecimal penaltyAmount = BigDecimal.ZERO;
+        String penaltyRule = "鏃犺繚绾﹁垂";
+
+        if (template.getCancelRule() != null && !template.getCancelRule().isEmpty()) {
+            // 瑙ｆ瀽鍙栨秷瑙勫垯锛歔"60:0.1", "180:5"]
+            for (String rule : template.getCancelRule()) {
+                String[] parts = rule.split(":");
+                if (parts.length == 2) {
+                    try {
+                        long ruleMinutes = Long.parseLong(parts[0]);
+                        if (minutesToStart <= ruleMinutes) {
+                            String penaltyStr = parts[1];
+                            if (penaltyStr.contains(".")) {
+                                // 鐧惧垎姣?
+                                BigDecimal percentage = new BigDecimal(penaltyStr);
+                                penaltyAmount = record.getTransactionAmount().multiply(percentage);
+                                penaltyRule = String.format("璺濈棰勭害寮€濮嬫椂闂?d鍒嗛挓鍐呭彇娑堬紝鎵ｉ櫎%.0f%%杩濈害璐?, 
+                                        ruleMinutes, percentage.multiply(BigDecimal.valueOf(100)).doubleValue());
+                            } else {
+                                // 鍥哄畾閲戦
+                                penaltyAmount = new BigDecimal(penaltyStr);
+                                penaltyRule = String.format("璺濈棰勭害寮€濮嬫椂闂?d鍒嗛挓鍐呭彇娑堬紝鎵ｉ櫎%s鍏冭繚绾﹁垂", 
+                                        ruleMinutes, penaltyStr);
+                            }
+                            break;
+                        }
+                    } catch (Exception e) {
+                        log.warn("瑙ｆ瀽鍙栨秷瑙勫垯澶辫触锛歿}", rule, e);
+                    }
+                }
+            }
+        }
+
+        // 7. 璁＄畻閫€娆鹃噾棰?
+        BigDecimal refundAmount = record.getTransactionAmount().subtract(penaltyAmount);
+
+        // 8. 鏌ヨ浼氬憳鍗?
+        MemberCard memberCard = memberCardRepository.findByMemberCardId(
+                recordRepository.findById(record.getReservationId()).get().getTransactionId() != null ?
+                transactionRepository.findById(record.getTransactionId()).get().getMemberCardId() : null)
+                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_CARD_NOT_FOUND));
+
+        // 绠€鍖栵細鐩存帴浠巖ecord鑾峰彇transaction淇℃伅
+        TransactionRecord originalTransaction = transactionRepository.findById(record.getTransactionId())
+                .orElseThrow(() -> new BusinessException(ErrorCode.SYSTEM_ERROR, "鍘熶氦鏄撹褰曚笉瀛樺湪"));
+
+        // 9. 鍒涘缓閫€娆句氦鏄撹褰?
+        TransactionRecord refundTransaction = new TransactionRecord();
+        refundTransaction.setMemberCardId(originalTransaction.getMemberCardId());
+        refundTransaction.setUserId(userIdBytes);
+        refundTransaction.setMerchantId(originalTransaction.getMerchantId());
+        refundTransaction.setTransactionType(3); // 閫€娆?
+        refundTransaction.setAmount(refundAmount); // 姝ｆ暟琛ㄧず閫€娆?
+        
+        // 鏇存柊浣欓蹇収
+        if (memberCard.getCardTtype() == 1) { // 浣欓鍗?
+            BigDecimal newBalance = memberCard.getBalance().add(refundAmount);
+            refundTransaction.setBalanceSnapshot(newBalance);
+            memberCard.setBalance(newBalance);
+        } else if (memberCard.getCardTtype() == 2) { // 娆℃暟鍗?
+            BigDecimal times = BigDecimal.valueOf(Math.ceil(refundAmount.doubleValue()));
+            BigDecimal newTimes = memberCard.getTimes().add(times);
+            refundTransaction.setBalanceSnapshot(newTimes);
+            memberCard.setTimes(newTimes);
+        }
+
+        refundTransaction.setOperatorId(userIdBytes);
+        refundTransaction.setTransStoreId(resource.getStoreId());
+        refundTransaction.setRemark(penaltyRule);
+        refundTransaction.setTransactionTime(LocalDateTime.now());
+        transactionRepository.save(refundTransaction);
+        memberCardRepository.save(memberCard);
+
+        // 10. 鏇存柊棰勭害璁板綍鐘舵€?
+        record.setReservationStatus(2); // 鐢ㄦ埛鍙栨秷
+        record.setUpdateTime(LocalDateTime.now());
+        if (request.getRemark() != null) {
+            record.setRemark(record.getRemark() + " | 鍙栨秷鍘熷洜锛? + request.getRemark());
+        }
+        recordRepository.save(record);
+
+        // 11. 鏋勫缓鍝嶅簲
+        CancelReservationResponse response = new CancelReservationResponse();
+        response.setReservationId(record.getReservationId());
+        response.setReservationStatus(record.getReservationStatus());
+        response.setRefundTransactionId(refundTransaction.getTransactionId());
+        response.setRefundAmount(refundAmount);
+        response.setPenaltyAmount(penaltyAmount);
+        response.setPenaltyRule(penaltyRule);
+        response.setUpdateTime(record.getUpdateTime().format(DATETIME_FORMATTER));
+
+        return response;
+    }

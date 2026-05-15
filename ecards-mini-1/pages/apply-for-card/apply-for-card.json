@@ -1,0 +1,9 @@
+{
+  "usingComponents": {
+    "custom-toast": "/components/custom-toast/custom-toast",
+    "card-display": "/components/card-display/card-display"
+  },
+  "navigationBarTitleText": "快捷办卡",
+  "navigationBarBackgroundColor": "#1976d2",
+  "navigationBarTextStyle": "white"
+}

@@ -1,0 +1,22 @@
+<!--pages/member-home/member-home.wxml-->
+<view class="container">
+  <view class="header">
+    <text class="title">会员首页</text>
+    <text class="subtitle">欢迎使用电子卡包</text>
+  </view>
+
+  <view class="content">
+    <view class="card-section">
+      <text class="section-title">我的卡包</text>
+      <view class="card-list">
+        <view class="card-item">
+          <text>会员卡 1</text>
+        </view>
+        <view class="card-item">
+          <text>会员卡 2</text>
+        </view>
+      </view>
+    </view>
+
+  </view>
+</view>

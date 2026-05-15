@@ -1,0 +1,140 @@
+<!--pages/merchant-privilege/merchant-privilege.wxml-->
+  <!-- 自定义导航栏 -->
+  <view class="custom-nav-bar" style="height: {{totalNavHeight}}rpx;">
+    <!-- 状态栏占位 -->
+    <view class="status-bar" style="width: 100%; height: {{statusBarHeight}}rpx;"></view>
+    
+    <!-- 导航栏内容 -->
+    <view class="nav-bar-content" style="height: {{navBarHeight}}rpx;">
+      <!-- 返回按钮 -->
+      <view class="nav-back-btn" bindtap="navigateBack">
+        <text class="nav-back-icon">‹</text>
+      </view>
+      
+      <!-- 标题 -->
+      <view class="nav-title">商家特权</view>
+      
+      <!-- 右侧占位（保持居中） -->
+      <view class="nav-placeholder"></view>
+    </view>
+  </view>
+  <!-- 占位 -->
+  <view style="width: 100%; height: {{totalNavHeight}}rpx;"></view>
+  <!-- 1. 付费卡片 -->
+  <view class="pricing-card {{selectedPlan ? 'has-selected' : ''}}">
+    <!-- VIP 卡片 -->
+    <view class="vip-option {{selectedPlan === 'vip' ? 'selected' : ''}}" bindtap="selectPlan" data-plan="vip">
+        <!-- 上半部分：图片蒙版区域 -->
+        <view class="vip-upper">
+            <view class="vip-tag">VIP年卡</view>
+            <!-- 预留图片位置 -->
+            <!-- <image class="vip-bg-image" src="/assets/images/vip-bg.png" mode="aspectFill"></image> -->
+        </view>
+
+        <!-- 下半部分：价格信息 -->
+        <view class="vip-lower">
+            <view class="price-section">
+                <text class="current-price"><text class="price-symbol">¥</text>188</text>
+                <text class="original-price">¥288</text>
+            </view>
+            <text class="daily-price">0.5元/天</text>
+        </view>
+
+        <!-- 选中状态的对勾图标 -->
+        <view class="check-icon" wx:if="{{selectedPlan === 'vip'}}">
+            <text class="check-mark">✓</text>
+        </view>
+    </view>
+
+    <!-- SVIP 卡片 -->
+    <view class="vip-option {{selectedPlan === 'svip' ? 'selected' : ''}}" bindtap="selectPlan" data-plan="svip">
+        <!-- 上半部分：图片蒙版区域 -->
+        <view class="vip-upper">
+            <view class="vip-tag">SVIP年卡</view>
+            <!-- 预留图片位置 -->
+            <!-- <image class="vip-bg-image" src="/assets/images/svip-bg.png" mode="aspectFill"></image> -->
+        </view>
+
+        <!-- 下半部分：价格信息 -->
+        <view class="vip-lower">
+            <view class="price-section">
+                <text class="current-price"><text class="price-symbol">¥</text>299</text>
+                <text class="original-price">¥399</text>
+            </view>
+            <text class="daily-price">0.8元/天</text>
+        </view>
+
+        <!-- 选中状态的对勾图标 -->
+        <view class="check-icon" wx:if="{{selectedPlan === 'svip'}}">
+            <text class="check-mark">✓</text>
+        </view>
+    </view>
+</view>
+
+<!-- 2. 选项卡下的介绍 -->
+<view class="privilege-intro-card">
+    <!-- 标题 -->
+    <view class="intro-title">
+        <text wx:if="{{selectedPlan === 'vip'}}">商家 VIP 特权介绍</text>
+        <text wx:if="{{selectedPlan === 'svip'}}">超级商家SVIP 特权介绍</text>
+    </view>
+
+    <!-- 二级选项卡 -->
+    <view class="sub-tab-bar">
+        <view class="sub-tab-item {{currentSubTab === 'compare' ? 'active' : ''}}" bindtap="switchSubTab" data-tab="compare">
+            权益对比
+        </view>
+        <view class="sub-tab-item {{currentSubTab === 'features' ? 'active' : ''}}" bindtap="switchSubTab" data-tab="features">
+            功能特权
+        </view>
+    </view>
+
+    <!-- 2.1 权益对比内容 -->
+    <view class="compare-content" wx:if="{{currentSubTab === 'compare'}}">
+        <!-- 表格 -->
+        <view class="compare-table">
+            <!-- 表头行 -->
+            <view class="table-row header-row">
+                <view class="table-cell header-cell">权益项</view>
+                <view class="table-cell header-cell">免费商家</view>
+                <view class="table-cell header-cell vip">VIP商家</view>
+                <view class="table-cell header-cell svip">SVIP商家</view>
+            </view>
+
+            <!-- 数据行 -->
+            <view class="table-row {{index % 2 === 0 ? 'even-row' : 'odd-row'}}" wx:for="{{compareData}}" wx:key="index">
+                <view class="table-cell">{{item.name}}</view>
+                <view class="table-cell free-cell">{{item.free}}</view>
+                <view class="table-cell vip-cell">{{item.vip}}</view>
+                <view class="table-cell svip-cell">{{item.svip}}</view>
+            </view>
+        </view>
+    </view>
+
+    <!-- 2.2 功能特权内容（预留） -->
+    <view class="features-content" wx:if="{{currentSubTab === 'features'}}">
+        <view class="placeholder-area">
+            <text class="placeholder-text">功能特权内容开发中...</text>
+        </view>
+    </view>
+</view>
+
+<!-- 3. 底部固定盒子 -->
+<view class="bottom-fixed-box">
+    <!-- 购买按钮 -->
+    <view class="purchase-btn" bindtap="handlePurchase">
+        <text wx:if="{{selectedPlan === 'vip'}}">¥ 188 确认协议并开通</text>
+        <text wx:if="{{selectedPlan === 'svip'}}">¥ 299 确认协议并开通</text>
+    </view>
+
+    <!-- 协议区域 -->
+    <view class="agreement-section">
+        <view class="agreement-checkbox {{agreedToTerms ? 'checked' : ''}}" bindtap="toggleAgreement">
+            <view class="check-dot"></view>
+        </view>
+        <text class="agreement-text">购买即视为同意</text>
+        <text class="agreement-link" bindtap="viewAgreement">《付费服务协议》</text>
+    </view>
+</view>
+
+<view class="pos"></view>

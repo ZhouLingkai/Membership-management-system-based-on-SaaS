@@ -1,0 +1,499 @@
+<!--pages/use-member-card/use-member-card.wxml-->
+<custom-toast id="customToast"></custom-toast>
+
+<view class="page-container">
+  <!-- 搜索区域 -->
+  <view class="search-section">
+    <view class="store-info">
+      <view class="store-name">🏪 {{storeName}}</view>
+    </view>
+    <view class="search-box">
+      <input 
+        class="search-input" 
+        type="number" 
+        maxlength="11"
+        placeholder="请输入会员手机号" 
+        value="{{searchPhone}}"
+        bindinput="onPhoneInput"
+        bindconfirm="handleSearch"
+      />
+      <button class="search-btn" bindtap="handleSearch" disabled="{{searching}}">
+        {{searching ? '查询中...' : '查询'}}
+      </button>
+    </view>
+    <text class="error-tip" wx:if="{{phoneError}}">{{phoneError}}</text>
+  </view>
+
+  <!-- 查询结果 -->
+  <view class="result-section" wx:if="{{hasSearched}}">
+    <view class="result-header">
+      <text class="result-title">查询"{{queryResult.memberPhone}}"的结果</text>
+      <text class="result-user" wx:if="{{queryResult.userId}}">用户已注册</text>
+      <text class="result-user unregistered" wx:else>用户未注册</text>
+    </view>
+
+    <!-- 本店卡列表 -->
+    <view class="card-list-section">
+      <view class="section-header">
+        <text class="section-title">本店会员卡</text>
+        <text class="section-count">{{queryResult.localCards.length}}张</text>
+      </view>
+      
+      <view class="empty-list" wx:if="{{queryResult.localCards.length === 0}}">
+        <text>暂无本店会员卡</text>
+      </view>
+
+      <view class="card-table" wx:else>
+        <!-- 统一表头 -->
+        <view class="table-header">
+          <text class="th col-name">卡名</text>
+          <text class="th col-member">会员</text>
+          <text class="th col-value">数值</text>
+          <text class="th col-status">状态</text>
+          <text class="th col-arrow"></text>
+        </view>
+        
+        <!-- 所有卡片统一显示 -->
+        <block wx:for="{{queryResult.localCards}}" wx:key="memberCardId">
+          <view class="table-row">
+            <text class="td col-name" bindtap="showCardImage" data-card="{{item}}">{{item.cardTypeName}}</text>
+            <text class="td col-member" bindtap="showCardDetail" data-card="{{item}}">{{item.memberName || '-'}}</text>
+            <text class="td col-value" bindtap="showCardDetail" data-card="{{item}}">{{item.displayValue}}</text>
+            <text class="td col-status status-{{item.status}}" bindtap="showCardDetail" data-card="{{item}}">{{item.statusName}}</text>
+            <text class="td col-arrow" bindtap="showCardDetail" data-card="{{item}}">›</text>
+          </view>
+        </block>
+      </view>
+    </view>
+
+    <!-- 跨店卡列表 -->
+    <view class="card-list-section">
+      <view class="section-header">
+        <text class="section-title">跨店会员卡</text>
+        <text class="section-count">{{queryResult.crossStoreCards.length}}张</text>
+      </view>
+      
+      <view class="empty-list" wx:if="{{queryResult.crossStoreCards.length === 0}}">
+        <text>暂无跨店会员卡</text>
+      </view>
+
+      <view class="card-table" wx:else>
+        <!-- 统一表头 -->
+        <view class="table-header">
+          <text class="th col-name">卡名</text>
+          <text class="th col-member">会员</text>
+          <text class="th col-value">数值</text>
+          <text class="th col-status">状态</text>
+          <text class="th col-arrow"></text>
+        </view>
+        
+        <!-- 所有卡片统一显示 -->
+        <block wx:for="{{queryResult.crossStoreCards}}" wx:key="memberCardId">
+          <view class="table-row">
+            <text class="td col-name" bindtap="showCardImage" data-card="{{item}}">{{item.cardTypeName}}</text>
+            <text class="td col-member" bindtap="showCardDetail" data-card="{{item}}">{{item.memberName || '-'}}</text>
+            <text class="td col-value" bindtap="showCardDetail" data-card="{{item}}">{{item.displayValue}}</text>
+            <text class="td col-status status-{{item.status}}" bindtap="showCardDetail" data-card="{{item}}">{{item.statusName}}</text>
+            <text class="td col-arrow" bindtap="showCardDetail" data-card="{{item}}">›</text>
+          </view>
+        </block>
+      </view>
+    </view>
+  </view>
+
+  <!-- 未查询状态 -->
+  <view class="empty-state" wx:if="{{!hasSearched}}">
+    <image class="empty-icon" src="/assets/icons/search.png" mode="aspectFit"></image>
+    <text class="empty-text">输入手机号查询会员卡</text>
+  </view>
+
+  <!-- 会员卡详情弹窗 -->
+  <view class="detail-modal-mask" wx:if="{{showDetailModal}}" catchtap="hideDetailModal">
+    <view class="detail-modal" catchtap="stopPropagation">
+      <view class="modal-header">
+        <text class="modal-title">会员卡管理</text>
+        <text class="modal-close" bindtap="hideDetailModal">×</text>
+      </view>
+
+      <!-- Tab切换 -->
+      <view class="tab-bar">
+        <view class="tab-item {{currentTab === 'detail' ? 'active' : ''}}" data-tab="detail" bindtap="switchTab">
+          <text>详细信息</text>
+        </view>
+        <view class="tab-item {{currentTab === 'consume' ? 'active' : ''}}" wx:if="{{currentCard.cardTtype === 1 || currentCard.cardTtype === 2}}" data-tab="consume" bindtap="switchTab">
+          <text>划卡消费</text>
+        </view>
+        <view class="tab-item {{currentTab === 'recharge' ? 'active' : ''}}" wx:if="{{currentCard.cardTtype === 1 || currentCard.cardTtype === 2}}" data-tab="recharge" bindtap="switchTab">
+          <text>充值</text>
+        </view>
+        <view class="tab-item {{currentTab === 'expire' ? 'active' : ''}}" wx:if="{{currentCard.cardTtype === 3}}" data-tab="expire" bindtap="switchTab">
+          <text>延期</text>
+        </view>
+        <view class="tab-item {{currentTab === 'points' ? 'active' : ''}}" data-tab="points" bindtap="switchTab">
+          <text>积分管理</text>
+        </view>
+      </view>
+
+      <!-- 详细信息 -->
+      <view class="modal-body" wx:if="{{currentTab === 'detail'}}">
+        <view class="detail-row clickable" bindtap="showCardImageFromDetail">
+          <text class="detail-label">卡种名称</text>
+          <view class="detail-value-with-icon">
+            <text class="detail-value">{{currentCard.cardTypeName}}</text>
+            <image class="eye-icon" src="/assets/icons/eye-open.png" mode="aspectFit"></image>
+          </view>
+        </view>
+        <view class="detail-row">
+          <text class="detail-label">卡种类型</text>
+          <text class="detail-value">{{currentCard.cardTtypeName}}</text>
+        </view>
+        <view class="detail-row">
+          <text class="detail-label">会员姓名</text>
+          <text class="detail-value">{{currentCard.memberName || '-'}}</text>
+        </view>
+        <view class="detail-row">
+          <text class="detail-label">会员手机</text>
+          <text class="detail-value">{{currentCard.memberPhone}}</text>
+        </view>
+        <!-- 根据卡种类型显示对应值 -->
+        <view class="detail-row" wx:if="{{currentCard.cardTtype === 1}}">
+          <text class="detail-label">余额</text>
+          <text class="detail-value highlight">{{currentCard.balance}}元</text>
+        </view>
+        <view class="detail-row" wx:if="{{currentCard.cardTtype === 2}}">
+          <text class="detail-label">剩余次数</text>
+          <text class="detail-value highlight">{{currentCard.times}}次</text>
+        </view>
+        <view class="detail-row" wx:if="{{currentCard.cardTtype === 3}}">
+          <text class="detail-label">到期时间</text>
+          <text class="detail-value highlight">{{currentCard.expireDateDisplay}}（剩{{currentCard.remainingDays}}天）</text>
+        </view>
+        <view class="detail-row" wx:if="{{currentCard.cardTtype === 4}}">
+          <text class="detail-label">积分</text>
+          <text class="detail-value highlight">{{currentCard.points}}分</text>
+        </view>
+        <view class="detail-row" wx:if="{{currentCard.cardTtype !== 4}}">
+          <text class="detail-label">积分</text>
+          <text class="detail-value">{{currentCard.points}}分</text>
+        </view>
+        <view class="detail-row">
+          <text class="detail-label">状态</text>
+          <text class="detail-value status-{{currentCard.status}}">{{currentCard.statusName}}</text>
+        </view>
+        <view class="detail-row">
+          <text class="detail-label">开卡时间</text>
+          <text class="detail-value">{{currentCard.openCardTime}}</text>
+        </view>
+        <view class="detail-row" wx:if="{{currentCard.originalStoreName}}">
+          <text class="detail-label">办卡店铺</text>
+          <text class="detail-value">{{currentCard.originalStoreName}}</text>
+        </view>
+      </view>
+      
+      <!-- 划卡消费 -->
+      <view class="modal-body" wx:if="{{currentTab === 'consume'}}">
+        <view class="form-section">
+          <!-- 预设消费项目按钮 -->
+          <view class="preset-btn-wrapper" wx:if="{{presetConsumeList.length > 0}}">
+            <view class="preset-btn" bindtap="openPresetSelector" data-type="consume">
+              <text class="preset-btn-icon">📋</text>
+              <text>选择预设消费项目</text>
+            </view>
+          </view>
+
+          <view class="form-item">
+            <text class="form-label"><text class="required-star">*</text> 消费{{currentCard.cardTtype === 1 ? '金额' : '次数'}}</text>
+            <input 
+              class="form-input" 
+              type="text" 
+              placeholder="请输入消费{{currentCard.cardTtype === 1 ? '金额' : '次数'}}"
+              value="{{consumeAmount}}"
+              bindinput="onConsumeAmountInput"
+            />
+          </view>
+          <view class="form-item">
+            <text class="form-label">消费备注</text>
+            <input 
+              class="form-input" 
+              type="text" 
+              placeholder="请输入消费备注（选填）"
+              value="{{consumeRemark}}"
+              bindinput="onConsumeRemarkInput"
+              maxlength="200"
+            />
+          </view>
+          <view class="form-item">
+            <text class="form-label">赠送积分</text>
+            <input 
+              class="form-input" 
+              type="text" 
+              placeholder="不填则{{currentCard.cardTtype === 1 ? '按消费金额向下取整' : '默认为0'}}"
+              value="{{consumePoints}}"
+              bindinput="onConsumePointsInput"
+            />
+          </view>
+          <button 
+            class="submit-btn" 
+            bindtap="handleConsume"
+            disabled="{{submittingConsume}}"
+          >
+            {{submittingConsume ? '提交中...' : '确认消费'}}
+          </button>
+        </view>
+      </view>
+
+      <!-- 充值 -->
+      <view class="modal-body" wx:if="{{currentTab === 'recharge'}}">
+        <view class="form-section">
+          <!-- 预设充值项目按钮 -->
+          <view class="preset-btn-wrapper" wx:if="{{presetRechargeList.length > 0}}">
+            <view class="preset-btn" bindtap="openPresetSelector" data-type="recharge">
+              <text class="preset-btn-icon">📋</text>
+              <text>选择预设充值项目</text>
+            </view>
+          </view>
+
+          <view class="form-item">
+            <text class="form-label"><text class="required-star">*</text> 充值{{currentCard.cardTtype === 1 ? '金额' : '次数'}}</text>
+            <input 
+              class="form-input" 
+              type="text" 
+              placeholder="请输入充值{{currentCard.cardTtype === 1 ? '金额' : '次数'}}"
+              value="{{rechargeAmount}}"
+              bindinput="onRechargeAmountInput"
+            />
+          </view>
+          <view class="form-item">
+            <text class="form-label">充值备注</text>
+            <input 
+              class="form-input" 
+              type="text" 
+              placeholder="请输入充值备注（选填）"
+              value="{{rechargeRemark}}"
+              bindinput="onRechargeRemarkInput"
+              maxlength="200"
+            />
+          </view>
+          <button 
+            class="submit-btn" 
+            bindtap="handleRecharge"
+            disabled="{{submittingRecharge}}"
+          >
+            {{submittingRecharge ? '提交中...' : '确认充值'}}
+          </button>
+        </view>
+      </view>
+
+      <!-- 延期 -->
+      <view class="modal-body" wx:if="{{currentTab === 'expire'}}">
+        <view class="form-section">
+          <view class="form-item">
+            <text class="form-label">原过期时间</text>
+            <text class="form-value">{{currentCard.expireDateDisplay}}</text>
+          </view>
+          
+          <view class="form-item">
+            <text class="form-label"><text class="required-star">*</text> 调整方式</text>
+            <radio-group class="radio-group" bindchange="onExpireAdjustTypeChange">
+              <label class="radio-item">
+                <radio value="1" checked="{{expireAdjustType === 1}}" color="#1976d2" />
+                <text>按天数延期</text>
+              </label>
+              <label class="radio-item">
+                <radio value="2" checked="{{expireAdjustType === 2}}" color="#1976d2" />
+                <text>设置到期日期</text>
+              </label>
+            </radio-group>
+          </view>
+
+          <view class="form-item" wx:if="{{expireAdjustType === 1}}">
+            <text class="form-label"><text class="required-star">*</text> 延期天数</text>
+            <input 
+              class="form-input" 
+              type="text" 
+              placeholder="请输入延期天数"
+              value="{{expireDays}}"
+              bindinput="onExpireDaysInput"
+            />
+            <text class="form-hint">如果还未过期，在过期时间基础上延期X天；如果已过期，从今日起延期X天</text>
+          </view>
+
+          <view class="form-item" wx:if="{{expireAdjustType === 2}}">
+            <text class="form-label"><text class="required-star">*</text> 到期日期</text>
+            <picker 
+              mode="date" 
+              value="{{expireDate}}" 
+              start="{{expireDate}}"
+              bindchange="onExpireDateChange"
+            >
+              <view class="picker-view">
+                {{expireDate || '请选择到期日期'}}
+              </view>
+            </picker>
+            <text class="form-hint">时间将自动设置为23:59:59</text>
+          </view>
+
+          <view class="form-item">
+            <text class="form-label">调整原因</text>
+            <input 
+              class="form-input" 
+              type="text" 
+              placeholder="请输入调整原因（选填）"
+              value="{{expireRemark}}"
+              bindinput="onExpireRemarkInput"
+              maxlength="200"
+            />
+          </view>
+
+          <button 
+            class="submit-btn" 
+            bindtap="handleExpireAdjust"
+            disabled="{{submittingExpire}}"
+          >
+            {{submittingExpire ? '提交中...' : '确认调整'}}
+          </button>
+        </view>
+      </view>
+
+      <!-- 积分管理 -->
+      <view class="modal-body" wx:if="{{currentTab === 'points'}}">
+        <view class="form-section">
+          <view class="form-item">
+            <text class="form-label">当前积分</text>
+            <text class="form-value highlight">{{currentCard.points}}分</text>
+          </view>
+
+          <view class="form-item">
+            <text class="form-label"><text class="required-star">*</text> 操作类型</text>
+            <radio-group class="radio-group" bindchange="onPointsChangeTypeChange">
+              <label class="radio-item">
+                <radio value="add" checked="{{pointsChangeType === 'add'}}" color="#1976d2" />
+                <text>增加积分</text>
+              </label>
+              <label class="radio-item">
+                <radio value="reduce" checked="{{pointsChangeType === 'reduce'}}" color="#1976d2" />
+                <text>减少积分</text>
+              </label>
+            </radio-group>
+          </view>
+
+          <view class="form-item">
+            <text class="form-label"><text class="required-star">*</text> 变动值</text>
+            <input 
+              class="form-input" 
+              type="text" 
+              placeholder="请输入积分变动值（>0）"
+              value="{{pointsChangeValue}}"
+              bindinput="onPointsChangeValueInput"
+            />
+          </view>
+
+          <view class="form-item">
+            <text class="form-label">变动原因（选填）</text>
+            <input 
+              class="form-input" 
+              type="text" 
+              placeholder="请输入变动原因（选填）"
+              value="{{pointsRemark}}"
+              bindinput="onPointsRemarkInput"
+              maxlength="200"
+            />
+          </view>
+
+          <button 
+            class="submit-btn" 
+            bindtap="handlePointsAdjust"
+            disabled="{{submittingPoints}}"
+          >
+            {{submittingPoints ? '提交中...' : '确认变动'}}
+          </button>
+        </view>
+      </view>
+
+      <!-- 操作按钮（仅在详情tab显示） -->
+      <view class="modal-footer" wx:if="{{currentTab === 'detail'}}">
+        <view class="footer-buttons">
+          <!-- 积分卡不显示交易记录按钮 -->
+          <view class="action-btn trans-btn" wx:if="{{currentCard.cardTtype !== 4}}" bindtap="goToTransRecords">交易记录</view>
+          <view class="action-btn points-btn" bindtap="goToPointsRecords">积分记录</view>
+          <view 
+            class="action-btn freeze-btn {{currentCard.status === 3 ? 'unfreeze' : 'freeze'}}" 
+            bindtap="showFreezeDialog"
+            data-action="{{currentCard.status === 3 ? 'unfreeze' : 'freeze'}}"
+          >
+            {{currentCard.status === 3 ? '解冻' : '冻结'}}
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 冻结/解冻表单弹窗 -->
+  <view class="freeze-modal-mask" wx:if="{{showFreezeModal}}" catchtap="hideFreezeModal">
+    <view class="freeze-modal" catchtap="stopPropagation">
+      <view class="freeze-modal-header">
+        <text class="freeze-modal-title">{{freezeAction === 'freeze' ? '冻结会员卡' : '解冻会员卡'}}</text>
+        <text class="freeze-modal-close" catchtap="hideFreezeModal">×</text>
+      </view>
+      <view class="freeze-modal-body">
+        <view class="freeze-form-item">
+          <text class="freeze-label">{{freezeAction === 'freeze' ? '冻结原因' : '解冻原因'}}{{freezeAction === 'freeze' ? '（必填）' : '（选填）'}}</text>
+          <textarea 
+            class="freeze-textarea" 
+            placeholder="{{freezeAction === 'freeze' ? '请输入冻结原因（1-50字）' : '请输入解冻原因（选填，不超过50字）'}}"
+            value="{{freezeReason}}"
+            bindinput="onFreezeReasonInput"
+            maxlength="50"
+            auto-height
+          />
+          <text class="freeze-error" wx:if="{{freezeReasonError}}">{{freezeReasonError}}</text>
+        </view>
+        <view class="freeze-actions">
+          <button class="freeze-cancel-btn" catchtap="hideFreezeModal">取消</button>
+          <button 
+            class="freeze-confirm-btn {{freezeAction === 'freeze' ? 'blue' : 'success'}}" 
+            catchtap="handleFreezeSubmit"
+            disabled="{{submittingFreeze}}"
+          >
+            {{submittingFreeze ? '提交中...' : (freezeAction === 'freeze' ? '确认冻结' : '确认解冻')}}
+          </button>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 卡面展示弹窗 -->
+  <view class="card-image-modal-mask" wx:if="{{showCardImageModal}}" catchtap="hideCardImageModal">
+    <view class="card-image-modal" catchtap="stopPropagation">
+      <card-display 
+        width="{{690}}"
+        cardBgc="{{cardImageData.cardBgc}}" 
+        cardMask="{{cardImageData.cardMask}}" />
+    </view>
+  </view>
+
+  <!-- 预设项目选择器 -->
+  <view class="preset-selector-mask {{presetSelectorAnimating ? 'show' : ''}}" wx:if="{{showPresetSelector}}" catchtap="closePresetSelector">
+    <view class="preset-selector {{presetSelectorAnimating ? 'show' : ''}}" catchtap="stopPropagation">
+      <view class="preset-selector-header">
+        <text class="preset-selector-title">选择预设{{presetSelectorType === 'recharge' ? '充值' : '消费'}}项目</text>
+        <text class="preset-selector-close" catchtap="closePresetSelector">×</text>
+      </view>
+      <scroll-view class="preset-selector-body" scroll-y enhanced show-scrollbar="{{false}}">
+        <view 
+          class="preset-selector-item"
+          wx:for="{{presetSelectorType === 'recharge' ? presetRechargeList : presetConsumeList}}"
+          wx:key="index"
+          data-item="{{item}}"
+          bindtap="selectPresetItem"
+        >
+          <view class="preset-item-info">
+            <text class="preset-item-name">{{item.itemName}}</text>
+            <text class="preset-item-desc" wx:if="{{item.itemDesc}}">{{item.itemDesc}}</text>
+          </view>
+          <text class="preset-item-amount">{{item.amount}} {{units[currentCard.cardTtype]}}</text>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+</view>

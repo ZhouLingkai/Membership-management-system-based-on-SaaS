@@ -1,0 +1,191 @@
+<!--pages/login/index.wxml-->
+<view class="login-container">
+    <!-- 顶部宣传文字 -->
+    <view class="header-section">
+        <view class="header-text">
+            <text class="title">登录后 更精彩</text>
+            <text class="subtitle">快加入我们吧~</text>
+        </view>
+    </view>
+
+    <!-- 卡片容器 -->
+    <view class="card-container">
+        <!-- 切换按钮 -->
+        <!-- 切换按钮 -->
+        <view class="tab-bar" wx:if="{{!showResetPassword}}">
+            <view class="tab-item {{currentTab === 'login' ? 'active' : ''}}" bindtap="switchTab" data-tab="login">
+                登录
+            </view>
+            <view class="tab-item {{currentTab === 'register' ? 'active' : ''}}" bindtap="switchTab" data-tab="register">
+                注册
+            </view>
+
+            <!-- 底部滑动蓝条 -->
+            <view class="tab-indicator {{currentTab}}"></view>
+        </view>
+
+        <!-- 登录表单 -->
+        <view class="form-container {{currentTab === 'login' && !showResetPassword ? 'show' : 'hide'}}">
+            <view class="input-group">
+                <view class="input-wrapper">
+                    <input class="input-field" type="number" placeholder="请输入手机号" value="{{phone}}" bindinput="onPhoneInput" maxlength="11" />
+                </view>
+            </view>
+
+            <view class="input-group">
+                <view class="input-wrapper password-wrapper">
+                    <input class="input-field" password="{{showPassword}}" placeholder="请输入密码" 
+                    value="{{password}}" bindinput="onPasswordInput" maxlength="20"/>
+                    <!-- 右侧小眼睛图标 -->
+                    <view class="eye-icon" catch:tap="toggleShowPassword">
+                        <image src="{{showPassword ? '/assets/icons/eye-close.png' : '/assets/icons/eye-open.png'}}" mode="aspectFit" />
+                    </view>
+                </view>
+            </view>
+
+            <view class="form-footer">
+                <view class="checkbox-wrapper">
+                    <checkbox-group bindchange="onRememberMeChange">
+                        <label class="checkbox-label">
+                            <checkbox value="remember" checked="{{rememberMe}}" />
+                            <text class="checkbox-text">7天自动登录</text>
+                        </label>
+                    </checkbox-group>
+                </view>
+                <view class="forgot-password" bindtap="showResetPasswordForm">
+                    <text>忘记密码</text>
+                </view>
+            </view>
+
+            <button class="submit-btn" bindtap="handleLogin" disabled="{{isSubmitting}}">
+                {{isSubmitting ? '登录中...' : '登录'}}
+            </button>
+        </view>
+
+        <!-- 注册表单 -->
+        <view class="form-container {{currentTab === 'register' && !showResetPassword ? 'show' : 'hide'}}">
+            <view class="input-group">
+                <view class="input-wrapper">
+                    <input class="input-field" type="number" placeholder="请输入手机号" value="{{registerPhone}}" bindinput="onRegisterPhoneInput" maxlength="11" />
+                </view>
+            </view>
+            
+            <view class="input-group">
+                <view class="input-wrapper password-wrapper">
+                    <input class="input-field" password="{{registerShowPassword}}" placeholder="请设置密码（≥8位）" 
+                    value="{{registerPassword}}" bindinput="onRegisterPasswordInput" maxlength="20" />
+                    <!-- 右侧小眼睛图标 -->
+                    <view class="eye-icon" catch:tap="toggleShowRPassword">
+                        <image src="{{registerShowPassword ? '/assets/icons/eye-close.png' : '/assets/icons/eye-open.png'}}" mode="aspectFit" />
+                    </view>
+                </view>
+                <!-- ✅ 密码强度显示 -->
+                <view class="password-strength" wx:if="{{passwordLevelOrder}}">
+                    <view class="strength-bars">
+                        <view class="bar {{passwordLevel}} {{passwordLevelOrder >= 1 ? 'filled' : ''}}"></view>
+                        <view class="bar {{passwordLevel}} {{passwordLevelOrder >= 2 ? 'filled' : ''}}"></view>
+                        <view class="bar {{passwordLevel}} {{passwordLevelOrder >= 3 ? 'filled' : ''}}"></view>
+                        <view class="bar {{passwordLevel}} {{passwordLevelOrder >= 4 ? 'filled' : ''}}"></view>
+                    </view>
+                    <view class="strength-text">
+                        <text wx:if="{{passwordLevel === 'danger'}}">危险：密码至少8位，需包含字母和数字</text>
+                        <text wx:if="{{passwordLevel === 'weak'}}">弱：密码强度较低，建议至少含大写/小写/数字/字符中的3种</text>
+                        <text wx:if="{{passwordLevel === 'medium'}}">一般：密码安全性尚可</text>
+                        <text wx:if="{{passwordLevel === 'strong'}}">强：密码安全性高</text>
+                    </view>
+                </view>
+            </view>
+            
+            <view class="input-group">
+                <view class="input-wrapper verify-code-wrapper">
+                    <input class="input-field verify-code-input" type="number" placeholder="请输入6位验证码" value="{{verifyCode}}" bindinput="onVerifyCodeInput" maxlength="6" />
+                    <button class="verify-code-btn {{verifyCodeCountdown > 0 ? 'disabled' : ''}}" bindtap="getRegisterVerifyCode" disabled="{{verifyCodeCountdown > 0}}">
+                        {{verifyCodeCountdown > 0 ? verifyCodeCountdown + '秒' : '获取验证码'}}
+                    </button>
+                </view>
+            </view>
+
+            <view class="input-group">
+                <view class="input-wrapper">
+                    <input class="input-field" type="text" placeholder="请输入昵称（选填）" value="{{nickname}}" bindinput="onNicknameInput" maxlength="50" />
+                </view>
+            </view>
+
+            <view class="input-group">
+                <view class="input-wrapper">
+                    <input class="input-field" type="text" placeholder="请输入邀请码（选填）" value="{{invitedCode}}" bindinput="onInvitedCodeInput" />
+                </view>
+            </view>
+
+            <view class="form-footer">
+                <view class="checkbox-wrapper">
+                    <checkbox-group bindchange="onRegisterRememberMeChange">
+                        <label class="checkbox-label">
+                            <checkbox value="remember" checked="{{registerRememberMe}}" />
+                            <text class="checkbox-text">7天自动登录</text>
+                        </label>
+                    </checkbox-group>
+                </view>
+            </view>
+
+            <button class="submit-btn" bindtap="handleRegister" disabled="{{isSubmitting}}">
+                {{isSubmitting ? '注册中...' : '注册'}}
+            </button>
+        </view>
+
+        <!-- 找回密码表单 -->
+        <view class="form-container {{showResetPassword ? 'show' : 'hide'}}">
+            <view class="reset-header">
+                <text class="reset-title">找回密码</text>
+                <text class="reset-back" bindtap="backToLogin"> 返回登录 > </text>
+            </view>
+
+            <view class="input-group">
+                <view class="input-wrapper">
+                    <input class="input-field" type="number" placeholder="手机号" value="{{resetPhone}}" bindinput="onResetPhoneInput" />
+                </view>
+            </view>
+
+            <view class="input-group">
+                <view class="input-wrapper verify-code-wrapper">
+                    <input class="input-field verify-code-input" type="number" placeholder="请输入6位验证码" value="{{resetVerifyCode}}" bindinput="onResetVerifyCodeInput" maxlength="6" />
+                    <button class="verify-code-btn {{resetVerifyCodeCountdown > 0 ? 'disabled' : ''}}" bindtap="getResetVerifyCode" disabled="{{resetVerifyCodeCountdown > 0}}">
+                        {{resetVerifyCodeCountdown > 0 ? resetVerifyCodeCountdown + '秒' : '获取验证码'}}
+                    </button>
+                </view>
+            </view>
+
+            <view class="input-group">
+                <view class="input-wrapper password-wrapper">
+                    <input class="input-field" password="{{resetShowPassword}}" placeholder="请设置新密码（≥8位）" value="{{newPassword}}" bindinput="onNewPasswordInput" maxlength="20" />
+                    <!-- 右侧小眼睛图标 -->
+                    <view class="eye-icon" catch:tap="toggleResetShowPassword">
+                        <image src="{{resetShowPassword ? '/assets/icons/eye-close.png' : '/assets/icons/eye-open.png'}}" mode="aspectFit" />
+                    </view>
+                </view>
+                <!-- 密码强度显示 -->
+                <view class="password-strength" wx:if="{{resetPasswordLevelOrder}}">
+                    <view class="strength-bars">
+                        <view class="bar {{resetPasswordLevel}} {{resetPasswordLevelOrder >= 1 ? 'filled' : ''}}"></view>
+                        <view class="bar {{resetPasswordLevel}} {{resetPasswordLevelOrder >= 2 ? 'filled' : ''}}"></view>
+                        <view class="bar {{resetPasswordLevel}} {{resetPasswordLevelOrder >= 3 ? 'filled' : ''}}"></view>
+                        <view class="bar {{resetPasswordLevel}} {{resetPasswordLevelOrder >= 4 ? 'filled' : ''}}"></view>
+                    </view>
+                    <view class="strength-text">
+                        <text wx:if="{{resetPasswordLevel === 'danger'}}">危险：密码至少8位，需包含字母和数字</text>
+                        <text wx:if="{{resetPasswordLevel === 'weak'}}">弱：密码强度较低，建议至少含大写/小写/数字/字符中的3种</text>
+                        <text wx:if="{{resetPasswordLevel === 'medium'}}">一般：密码安全性尚可</text>
+                        <text wx:if="{{resetPasswordLevel === 'strong'}}">强：密码安全性高</text>
+                    </view>
+                </view>
+            </view>
+
+            <button class="submit-btn" bindtap="handleResetPassword" disabled="{{isSubmitting}}">
+                {{isSubmitting ? '重置中...' : '重置密码'}}
+            </button>
+        </view>
+    </view>
+
+    <!-- 自定义消息组件 -->
+    <custom-toast id="customToast" message="{{toastMessage}}" type="{{toastType}}" animation-type="{{toastAnimationType}}" show="{{showToast}}" />
+</view>

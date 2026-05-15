@@ -1,0 +1,39 @@
+<!--pages/merchant-home/merchant-home.wxml-->
+<view class="container">
+  <view class="header">
+    <text class="title">商家首页</text>
+    <text class="subtitle">商家管理中心</text>
+  </view>
+
+  <view class="content">
+    <view class="stats-section">
+      <text class="section-title">今日数据</text>
+      <view class="stats-grid">
+        <view class="stat-item">
+          <text class="stat-number">128</text>
+          <text class="stat-label">新增会员</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-number">¥2,580</text>
+          <text class="stat-label">今日收入</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="quick-actions">
+      <text class="section-title">快捷操作</text>
+      <view class="action-grid">
+        <view class="action-item" bindtap="goToBusinessData">
+          <text>经营数据</text>
+        </view>
+        <view class="action-item">
+          <text>发放优惠券</text>
+        </view>
+        <view class="action-item">
+          <text>会员管理</text>
+        </view>
+      </view>
+    </view>
+
+  </view>
+</view>

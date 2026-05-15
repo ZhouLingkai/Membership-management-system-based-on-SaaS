@@ -1,0 +1,11 @@
+{
+  "name": "merchant-info-update",
+  "version": "1.0.0",
+  "description": "修改商家信息",
+  "main": "index.js",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@cloudbase/node-sdk": "^3.18.1"
+  }
+}

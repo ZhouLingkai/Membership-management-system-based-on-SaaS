@@ -1,0 +1,1627 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理员系统测试页面</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            font-size: 32px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .module {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .module h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 20px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+        }
+
+        .result.success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .result.error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+
+        .result pre {
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(0,0,0,0.05);
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .info-box {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+        }
+
+        .info-box strong {
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 管理员系统测试页面</h1>
+
+        <!-- 系统说明 -->
+        <div class="module">
+            <h2>📌 系统说明</h2>
+            <div class="info-box">
+                <p><strong>默认超管账号：</strong></p>
+                <p>账号：superadmin</p>
+                <p>密码：Admin@123456</p>
+                <p>二级密码：Admin@123456</p>
+            </div>
+            <div class="info-box">
+                <p><strong>注意事项：</strong></p>
+                <p>1. 首次启动应用会自动创建超管账号</p>
+                <p>2. 管理员Token有效期：2小时</p>
+                <p>3. 二级密码用于危险操作（如封禁商户）</p>
+            </div>
+        </div>
+
+        <!-- 阶段2: 管理员登录 -->
+        <div class="module">
+            <h2>🔑 1. 管理员登录</h2>
+            <div class="form-group">
+                <label>登录账号</label>
+                <input type="text" id="loginAccount" value="superadmin" placeholder="请输入账号">
+            </div>
+            <div class="form-group">
+                <label>登录密码</label>
+                <input type="password" id="loginPassword" value="zhouge666" placeholder="请输入密码">
+            </div>
+            <div class="form-group">
+                <label>设备ID</label>
+                <input type="text" id="loginDeviceId" value="device_admin_test_001" placeholder="设备唯一标识">
+            </div>
+            <button onclick="adminLogin()">🚀 登录</button>
+            <div id="loginResult" class="result"></div>
+        </div>
+
+        <!-- Token信息显示 -->
+        <div class="module">
+            <h2>🎫 当前Token信息</h2>
+            <div class="info-box">
+                <p><strong>AdminToken:</strong></p>
+                <p id="currentToken" style="word-break: break-all; font-size: 12px; color: #666;">未登录</p>
+            </div>
+            <div class="info-box">
+                <p><strong>管理员信息:</strong></p>
+                <pre id="adminInfo" style="font-size: 12px; color: #666;">未登录</pre>
+            </div>
+        </div>
+
+
+        <!-- 阶段3: 创建管理员（仅超管） -->
+        <div class="module">
+            <h2>👤 2. 创建管理员（仅超管）</h2>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>手机号 *</label>
+                    <input type="text" id="createPhone" value="13800138001" placeholder="11位手机号">
+                </div>
+                <div class="form-group">
+                    <label>登录账号 *</label>
+                    <input type="text" id="createAccount" value="auditor001" placeholder="4-50个字符">
+                </div>
+            </div>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>登录密码 *</label>
+                    <input type="password" id="createPassword" value="Auditor@123" placeholder="6-20个字符">
+                </div>
+                <div class="form-group">
+                    <label>二级密码 *</label>
+                    <input type="password" id="createSndPassword" value="Auditor@456" placeholder="6-20个字符">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>管理员角色 *</label>
+                <select id="createAdminRole">
+                    <option value="2" selected>审核员</option>
+                    <option value="3">客服</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>备注</label>
+                <textarea id="createRemark" placeholder="备注信息（可选）">负责商户审核工作</textarea>
+            </div>
+            <button onclick="createAdmin()">➕ 创建管理员</button>
+            <div id="createResult" class="result"></div>
+        </div>
+
+        <!-- 阶段3: 权限验证测试 -->
+        <div class="module">
+            <h2>🔐 3. 权限验证测试</h2>
+            <div class="info-box">
+                <p><strong>测试说明：</strong></p>
+                <p>1. 测试管理员认证（所有管理员可访问）</p>
+                <p>2. 测试超管权限（仅超管可访问）</p>
+                <p>3. 测试审核员权限（仅审核员可访问）</p>
+            </div>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button onclick="testAdminAuth()">✅ 测试管理员认证</button>
+                <button onclick="testSuperAdminRole()">🔑 测试超管权限</button>
+                <button onclick="testAuditorRole()">👁️ 测试审核员权限</button>
+            </div>
+            <div id="authTestResult" class="result"></div>
+        </div>
+
+        <!-- 阶段4: 商户审核列表 -->
+        <div class="module">
+            <h2>📋 4. 商户审核列表</h2>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>审核状态筛选</label>
+                    <select id="auditStatusFilter">
+                        <option value="">全部</option>
+                        <option value="0" selected>待审核</option>
+                        <option value="1">已通过</option>
+                        <option value="2">已拒绝</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>排序方式</label>
+                    <select id="sortOrder">
+                        <option value="1" selected>时间降序（最新在前）</option>
+                        <option value="0">时间升序（最早在前）</option>
+                    </select>
+                </div>
+            </div>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>页码</label>
+                    <input type="number" id="pageNum" value="1" min="1">
+                </div>
+                <div class="form-group">
+                    <label>每页大小</label>
+                    <input type="number" id="pageSize" value="10" min="1" max="100">
+                </div>
+            </div>
+            <button onclick="getAuditList()">🔍 查询列表</button>
+            <div id="auditListResult" class="result"></div>
+        </div>
+
+        <!-- 阶段4: 商户审核详情与操作 -->
+        <div class="module">
+            <h2>🔍 5. 商户审核详情与操作</h2>
+            <div class="form-group">
+                <label>审核记录ID</label>
+                <input type="number" id="auditIdForDetail" placeholder="从列表中获取">
+            </div>
+            <button onclick="getAuditDetail()">📄 查看详情</button>
+            <div id="auditDetailResult" class="result"></div>
+            
+            <div id="auditActions" style="display: none; margin-top: 20px; padding-top: 20px; border-top: 2px solid #e0e0e0;">
+                <h3 style="color: #667eea; margin-bottom: 15px;">审核操作</h3>
+                <div class="form-group">
+                    <label>审核备注（通过时）</label>
+                    <textarea id="approveRemark" placeholder="审核通过备注（可选）"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>拒绝原因（拒绝时） *</label>
+                    <textarea id="rejectReason" placeholder="请详细说明拒绝原因"></textarea>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button onclick="approveMerchant()" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">✅ 通过审核</button>
+                    <button onclick="rejectMerchant()" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);">❌ 拒绝审核</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 待实现功能预览 -->
+        <!-- 阶段5: 密码管理 -->
+        <div class="module">
+            <h2>🔐 6. 修改登录密码</h2>
+            <div class="form-group">
+                <label>旧密码</label>
+                <input type="password" id="oldPassword" placeholder="输入旧密码">
+            </div>
+            <div class="form-group">
+                <label>新密码</label>
+                <input type="password" id="newPassword" placeholder="输入新密码（6-20字符）">
+            </div>
+            <button onclick="updatePassword()">🔄 修改登录密码</button>
+            <div id="updatePasswordResult" class="result"></div>
+        </div>
+
+        <div class="module">
+            <h2>🔑 7. 修改二级密码</h2>
+            <div class="form-group">
+                <label>旧二级密码</label>
+                <input type="password" id="oldSndPassword" placeholder="输入旧二级密码">
+            </div>
+            <div class="form-group">
+                <label>新二级密码</label>
+                <input type="password" id="newSndPassword" placeholder="输入新二级密码（6-20字符）">
+            </div>
+            <button onclick="updateSndPassword()">🔄 修改二级密码</button>
+            <div id="updateSndPasswordResult" class="result"></div>
+        </div>
+
+        <!-- 阶段5: 商户管理 -->
+        <div class="module">
+            <h2>⚠️ 8. 商户警告（通过手机号）</h2>
+            <div class="form-group">
+                <label>用户手机号</label>
+                <input type="text" id="warnMerchantPhone" placeholder="输入用户手机号（11位）">
+            </div>
+            <button onclick="warnMerchant()">⚠️ 警告商户（certification→6）</button>
+            <div id="warnMerchantResult" class="result"></div>
+        </div>
+
+        <div class="module">
+            <h2>🚫 9. 商户封禁（通过手机号，仅超级管理员）</h2>
+            <div class="form-group">
+                <label>用户手机号</label>
+                <input type="text" id="banMerchantPhone" placeholder="输入用户手机号（11位）">
+            </div>
+            <div class="form-group">
+                <label>二级密码</label>
+                <input type="password" id="banSndPassword" placeholder="输入二级密码确认">
+            </div>
+            <button onclick="banMerchant()">🚫 封禁商户（certification→7）</button>
+            <div id="banMerchantResult" class="result"></div>
+        </div>
+
+        <div class="module">
+            <h2>✅ 10. 解除商户封禁（通过手机号，仅超级管理员）</h2>
+            <div class="form-group">
+                <label>用户手机号</label>
+                <input type="text" id="unbanMerchantPhone" placeholder="输入用户手机号（11位）">
+            </div>
+            <div class="form-group">
+                <label>二级密码</label>
+                <input type="password" id="unbanSndPassword" placeholder="输入二级密码确认">
+            </div>
+            <button onclick="unbanMerchant()">✅ 解除封禁（certification→1）</button>
+            <div id="unbanMerchantResult" class="result"></div>
+        </div>
+
+        <!-- 阶段6: 密码找回 -->
+        <div class="module">
+            <h2>🔓 11. 找回登录密码</h2>
+            <div class="form-group">
+                <label>手机号</label>
+                <input type="text" id="resetPwdPhone" placeholder="管理员手机号">
+            </div>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>验证码</label>
+                    <input type="text" id="resetPwdCode" placeholder="6位验证码">
+                </div>
+                <div style="padding-top: 24px;">
+                    <button onclick="sendResetPwdCode()" style="width: 100%;">📨 发送验证码</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>新密码</label>
+                <input type="password" id="resetNewPassword" placeholder="6-20个字符">
+            </div>
+            <button onclick="resetPassword()">🔓 找回登录密码</button>
+            <div id="resetPasswordResult" class="result"></div>
+        </div>
+
+        <div class="module">
+            <h2>🔑 12. 找回二级密码</h2>
+            <div class="form-group">
+                <label>手机号</label>
+                <input type="text" id="resetSndPwdPhone" placeholder="管理员手机号">
+            </div>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>验证码</label>
+                    <input type="text" id="resetSndPwdCode" placeholder="6位验证码">
+                </div>
+                <div style="padding-top: 24px;">
+                    <button onclick="sendResetSndPwdCode()" style="width: 100%;">📨 发送验证码</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>新二级密码</label>
+                <input type="password" id="resetNewSndPassword" placeholder="6-20个字符">
+            </div>
+            <button onclick="resetSndPassword()">🔑 找回二级密码</button>
+            <div id="resetSndPasswordResult" class="result"></div>
+        </div>
+
+        <!-- 阶段6: 操作日志查询 -->
+        <div class="module">
+            <h2>📋 13. 操作日志查询</h2>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>管理员账号（超管可筛选）</label>
+                    <input type="text" id="logAdminAccount" placeholder="留空查询全部">
+                </div>
+                <div class="form-group">
+                    <label>页码</label>
+                    <input type="number" id="logPageNum" value="1" min="1">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>每页大小</label>
+                <input type="number" id="logPageSize" value="20" min="1" max="100">
+            </div>
+            <button onclick="queryOperationLogs()">🔍 查询日志</button>
+            <div id="operationLogsResult" class="result"></div>
+        </div>
+
+        <div class="module">
+            <h2>🚀 功能开发规划</h2>
+            <div class="grid-2">
+                <div class="info-box" style="background: #d4edda;">
+                    <p><strong>✅ 阶段2 - 认证与Token：</strong></p>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>✅ 管理员登录</li>
+                        <li>✅ Token生成与验证</li>
+                        <li>✅ 首次启动初始化超管</li>
+                        <li>✅ Redis Token缓存</li>
+                    </ul>
+                </div>
+                <div class="info-box" style="background: #d4edda;">
+                    <p><strong>✅ 阶段3 - 权限验证：</strong></p>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>✅ @AdminAuth 注解</li>
+                        <li>✅ AOP权限切面</li>
+                        <li>✅ AdminContext 上下文</li>
+                        <li>✅ 创建管理员接口</li>
+                    </ul>
+                </div>
+                <div class="info-box" style="background: #d4edda;">
+                    <p><strong>✅ 阶段4 - P0核心功能：</strong></p>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>✅ 商户审核列表查询</li>
+                        <li>✅ 商户审核详情查看</li>
+                        <li>✅ 商户审核操作（通过/拒绝）</li>
+                        <li>✅ 图片预览（STS签名）</li>
+                    </ul>
+                </div>
+                <div class="info-box">
+                    <p><strong>阶段5 - P1重要功能：</strong></p>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>管理员状态管理</li>
+                        <li>密码管理</li>
+                        <li>商户警告/封禁</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 大图模态框 -->
+    <div id="imageModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:9999; cursor:pointer;" onclick="closeImageModal()">
+        <img id="modalImage" style="max-width:90%; max-height:90%; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); border-radius: 8px; box-shadow: 0 10px 50px rgba(0,0,0,0.5);">
+        <div style="position: absolute; top: 20px; right: 30px; color: white; font-size: 40px; font-weight: bold; cursor: pointer;" onclick="event.stopPropagation(); closeImageModal()">×</div>
+    </div>
+
+    <!-- 引入CryptoJS库用于AES加密 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="https://gosspublic.alicdn.com/aliyun-oss-sdk-6.17.1.min.js"></script>
+    <script>
+        // 全局变量存储Token和管理员信息
+        let adminToken = '';
+        let adminInfo = null;
+        let stsCredentials = null;
+        let currentAuditId = null;
+        
+        // AES密钥（与后端一致）
+        const AES_KEY = 'oUDKf7+y6SrpeJ+GCJHL31HKlRFJ1mM/1MhGB4HF/94='; // 32字节
+        
+        // AES加密（使用CBC模式）
+        function encryptAES(plaintext) {
+            const key = CryptoJS.enc.Base64.parse(AES_KEY);
+            const iv = CryptoJS.lib.WordArray.random(16);
+            const encrypted = CryptoJS.AES.encrypt(plaintext, key, {
+                iv: iv,
+                mode: CryptoJS.mode.CBC,
+                padding: CryptoJS.pad.Pkcs7
+            });
+            
+            // 返回 IV + Ciphertext 的Base64编码
+            const combined = iv.concat(encrypted.ciphertext);
+            return CryptoJS.enc.Base64.stringify(combined);
+        }
+
+        // 管理员登录
+        async function adminLogin() {
+            const account = document.getElementById('loginAccount').value;
+            const password = document.getElementById('loginPassword').value;
+            const deviceId = document.getElementById('loginDeviceId').value;
+
+            if (!account || !password || !deviceId) {
+                showResult('loginResult', false, '请填写完整的登录信息');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/v1/admin/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        account: account,
+                        password: password,
+                        deviceId: deviceId
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.code === 200) {
+                    adminToken = result.data.adminToken;
+                    adminInfo = result.data.adminInfo;
+                    
+                    // 显示Token信息
+                    document.getElementById('currentToken').textContent = adminToken;
+                    document.getElementById('adminInfo').textContent = JSON.stringify(adminInfo, null, 2);
+                    
+                    showResult('loginResult', true, '登录成功！', result.data);
+                } else {
+                    showResult('loginResult', false, '登录失败: ' + result.message);
+                }
+            } catch (error) {
+                showResult('loginResult', false, '请求失败: ' + error.message);
+            }
+        }
+
+        // 创建管理员（仅超管）
+        async function createAdmin() {
+            if (!adminToken) {
+                showResult('createResult', false, '请先登录管理员账号');
+                return;
+            }
+
+            const phone = document.getElementById('createPhone').value;
+            const account = document.getElementById('createAccount').value;
+            const password = document.getElementById('createPassword').value;
+            const sndPassword = document.getElementById('createSndPassword').value;
+            const adminRole = parseInt(document.getElementById('createAdminRole').value);
+            const remark = document.getElementById('createRemark').value;
+
+            if (!phone || !account || !password || !sndPassword) {
+                showResult('createResult', false, '请填写完整的必填信息');
+                return;
+            }
+
+            const requestData = {
+                phone: phone,
+                account: account,
+                password: password,
+                sndPassword: sndPassword,
+                adminRole: adminRole,
+                remark: remark
+            };
+
+            console.log('📤 发送创建管理员请求:', requestData);
+            console.log('🔑 使用Token:', adminToken);
+
+            try {
+                const response = await fetch('/api/v1/admin/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': adminToken
+                    },
+                    body: JSON.stringify(requestData)
+                });
+
+                console.log('📥 HTTP状态码:', response.status);
+                console.log('📥 响应状态:', response.ok ? '成功' : '失败');
+
+                const responseText = await response.text();
+                console.log('📥 原始响应:', responseText);
+
+                let result;
+                try {
+                    result = JSON.parse(responseText);
+                    console.log('📥 解析后的响应:', result);
+                } catch (e) {
+                    console.error('❌ JSON解析失败:', e);
+                    showResult('createResult', false, '服务器返回格式错误: ' + responseText.substring(0, 100));
+                    return;
+                }
+
+                if (result.code === 200) {
+                    console.log('✅ 创建成功');
+                    showResult('createResult', true, '管理员创建成功！', result.data);
+                } else {
+                    const errorMsg = result.message || result.msg || '未知错误';
+                    console.error('❌ 创建失败:', errorMsg, 'code:', result.code);
+                    showResult('createResult', false, '创建失败: ' + errorMsg + ' (错误码: ' + result.code + ')');
+                }
+            } catch (error) {
+                console.error('❌ 请求异常:', error);
+                showResult('createResult', false, '请求失败: ' + error.message);
+            }
+        }
+
+        // 测试管理员认证（所有管理员可访问）
+        async function testAdminAuth() {
+            if (!adminToken) {
+                showResult('authTestResult', false, '请先登录管理员账号');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/v1/admin/test/auth', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': adminToken
+                    }
+                });
+
+                const result = await response.json();
+
+                if (result.code === 200) {
+                    showResult('authTestResult', true, '✅ 管理员认证测试通过', result);
+                } else {
+                    showResult('authTestResult', false, '❌ 认证失败: ' + result.message);
+                }
+            } catch (error) {
+                showResult('authTestResult', false, '❌ 请求失败: ' + error.message);
+            }
+        }
+
+        // 测试超管权限（仅超管可访问）
+        async function testSuperAdminRole() {
+            if (!adminToken) {
+                showResult('authTestResult', false, '请先登录管理员账号');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/v1/admin/test/super', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': adminToken
+                    }
+                });
+
+                const result = await response.json();
+
+                if (result.code === 200) {
+                    showResult('authTestResult', true, '✅ 超管权限测试通过', result);
+                } else {
+                    showResult('authTestResult', false, '❌ 权限不足或其他错误: ' + result.message);
+                }
+            } catch (error) {
+                showResult('authTestResult', false, '❌ 请求失败: ' + error.message);
+            }
+        }
+
+        // 测试审核员权限（仅审核员可访问）
+        async function testAuditorRole() {
+            if (!adminToken) {
+                showResult('authTestResult', false, '请先登录管理员账号');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/v1/admin/test/auditor', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': adminToken
+                    }
+                });
+
+                const result = await response.json();
+
+                if (result.code === 200) {
+                    showResult('authTestResult', true, '✅ 审核员权限测试通过', result);
+                } else {
+                    showResult('authTestResult', false, '❌ 权限不足或其他错误: ' + result.message);
+                }
+            } catch (error) {
+                showResult('authTestResult', false, '❌ 请求失败: ' + error.message);
+            }
+        }
+
+        // 复制SQL路径到剪贴板
+        function copySQL() {
+            const sqlPath = 'member-management/create_admin_tables.sql';
+            navigator.clipboard.writeText(sqlPath).then(() => {
+                showResult('sqlCopyResult', true, 'SQL脚本路径已复制到剪贴板！');
+            }).catch(() => {
+                showResult('sqlCopyResult', false, '复制失败，请手动复制：' + sqlPath);
+            });
+        }
+
+        // 显示结果
+        function showResult(elementId, success, message, data = null) {
+            const resultDiv = document.getElementById(elementId);
+            resultDiv.className = 'result ' + (success ? 'success' : 'error');
+            resultDiv.style.display = 'block';
+            
+            let html = '<strong>' + message + '</strong>';
+            if (data) {
+                html += '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+            }
+            
+            resultDiv.innerHTML = html;
+        }
+
+        // ==================== 阶段4: 商户审核功能 ====================
+
+        // 获取STS凭证（用于图片预览）
+        async function getStsCredentials() {
+            // 检查缓存的凭证是否还有效（提前5分钟刷新）
+            if (stsCredentials && stsCredentials.expirationTime) {
+                const now = new Date().getTime();
+                const expTime = new Date(stsCredentials.expirationTime).getTime();
+                if (expTime - now > 5 * 60 * 1000) {
+                    console.log('使用缓存的STS凭证');
+                    return stsCredentials;
+                }
+            }
+
+            // 获取新的STS凭证（使用管理员专用接口）
+            try {
+                const response = await fetch('/api/v1/admin/sts/credentials', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': adminToken
+                    }
+                });
+                const result = await response.json();
+                if (result.code === 200 && result.data) {
+                    stsCredentials = result.data;
+                    stsCredentials.expirationTime = result.data.expiration;
+                    console.log('管理员获取STS凭证成功');
+                    return stsCredentials;
+                } else {
+                    throw new Error('获取STS凭证失败: ' + result.message);
+                }
+            } catch (error) {
+                console.error('管理员获取STS凭证失败:', error);
+                throw error;
+            }
+        }
+
+        // 使用STS凭证生成签名URL
+        async function generateSignedUrlWithSts(objectName) {
+            try {
+                const credentials = await getStsCredentials();
+                const client = new OSS({
+                    endpoint: credentials.endpoint,
+                    region: credentials.region,
+                    accessKeyId: credentials.accessKeyId,
+                    accessKeySecret: credentials.accessKeySecret,
+                    stsToken: credentials.securityToken,
+                    bucket: credentials.bucket
+                });
+                const signedUrl = client.signatureUrl(objectName, {
+                    expires: 1800  // 30分钟
+                });
+                console.log('生成签名URL成功:', objectName);
+                return signedUrl;
+            } catch (error) {
+                console.error('生成签名URL失败:', error);
+                throw new Error('生成签名URL失败: ' + error.message);
+            }
+        }
+
+        // 显示图片预览
+        async function showImagePreview(objectName) {
+            try {
+                const signedUrl = await generateSignedUrlWithSts(objectName);
+                openImageModal(signedUrl);
+            } catch (error) {
+                alert('加载图片失败: ' + error.message);
+            }
+        }
+
+        // 打开大图模态框
+        function openImageModal(imageUrl) {
+            document.getElementById('modalImage').src = imageUrl;
+            document.getElementById('imageModal').style.display = 'block';
+        }
+
+        // 关闭大图模态框
+        function closeImageModal() {
+            document.getElementById('imageModal').style.display = 'none';
+        }
+
+        // 查询商户审核列表
+        async function getAuditList() {
+            if (!adminToken) {
+                showResult('auditListResult', false, '请先登录管理员账号');
+                return;
+            }
+
+            const auditStatus = document.getElementById('auditStatusFilter').value;
+            const sortOrder = document.getElementById('sortOrder').value;
+            const pageNum = document.getElementById('pageNum').value;
+            const pageSize = document.getElementById('pageSize').value;
+
+            try {
+                let url = `/api/v1/admin/merchant-audit/list?pageNum=${pageNum}&pageSize=${pageSize}&sortOrder=${sortOrder}`;
+                if (auditStatus) {
+                    url += `&auditStatus=${auditStatus}`;
+                }
+
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': adminToken
+                    }
+                });
+
+                const result = await response.json();
+
+                if (result.code === 200) {
+                    // 如果有数据，渲染表格
+                    if (result.data.records && result.data.records.length > 0) {
+                        const successMsg = `查询成功！共 ${result.data.total} 条记录，当前第 ${result.data.pageNum}/${result.data.totalPages} 页`;
+                        displayAuditList(result.data, successMsg);
+                    } else {
+                        showResult('auditListResult', true, '暂无数据');
+                    }
+                } else {
+                    showResult('auditListResult', false, '查询失败: ' + result.message);
+                }
+            } catch (error) {
+                showResult('auditListResult', false, '请求失败: ' + error.message);
+            }
+        }
+
+        // 显示审核列表
+        function displayAuditList(data, successMsg) {
+            let html = '<div style="margin-bottom: 10px; padding: 10px; background: #d4edda; border: 1px solid #c3e6cb; color: #155724; border-radius: 6px;">';
+            html += `<strong>${successMsg}</strong>`;
+            html += '</div>';
+            
+            html += '<div style="margin-top: 15px;"><table style="width: 100%; border-collapse: collapse; font-size: 13px;">';
+            html += '<thead><tr style="background: #667eea; color: white;">';
+            html += '<th style="padding: 10px; border: 1px solid #ddd;">ID</th>';
+            html += '<th style="padding: 10px; border: 1px solid #ddd;">店铺名称</th>';
+            html += '<th style="padding: 10px; border: 1px solid #ddd;">用户手机</th>';
+            html += '<th style="padding: 10px; border: 1px solid #ddd;">申请方式</th>';
+            html += '<th style="padding: 10px; border: 1px solid #ddd;">审核状态</th>';
+            html += '<th style="padding: 10px; border: 1px solid #ddd;">申请时间</th>';
+            html += '<th style="padding: 10px; border: 1px solid #ddd;">操作</th>';
+            html += '</tr></thead><tbody>';
+
+            data.records.forEach(record => {
+                const statusColor = record.auditStatus === 1 ? '#28a745' : 
+                                   record.auditStatus === 2 ? '#dc3545' : '#ffc107';
+                html += '<tr>';
+                html += `<td style="padding: 8px; border: 1px solid #ddd;">${record.auditId}</td>`;
+                html += `<td style="padding: 8px; border: 1px solid #ddd;">${record.storeName}</td>`;
+                html += `<td style="padding: 8px; border: 1px solid #ddd;">${record.userPhone}</td>`;
+                html += `<td style="padding: 8px; border: 1px solid #ddd;">${record.applicationMethodDesc}</td>`;
+                html += `<td style="padding: 8px; border: 1px solid #ddd; color: ${statusColor}; font-weight: bold;">${record.auditStatusDesc}</td>`;
+                html += `<td style="padding: 8px; border: 1px solid #ddd;">${record.createTime}</td>`;
+                html += `<td style="padding: 8px; border: 1px solid #ddd;">`;
+                html += `<button onclick="viewAuditDetail(${record.auditId})" style="padding: 5px 10px; font-size: 12px;">查看详情</button>`;
+                html += `</td></tr>`;
+            });
+
+            html += '</tbody></table></div>';
+            
+            const resultDiv = document.getElementById('auditListResult');
+            resultDiv.className = 'result success';
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = html;
+        }
+
+        // 从列表点击查看详情
+        function viewAuditDetail(auditId) {
+            document.getElementById('auditIdForDetail').value = auditId;
+            getAuditDetail();
+            // 滚动到详情区域
+            document.getElementById('auditDetailResult').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // 查询商户审核详情
+        async function getAuditDetail() {
+            if (!adminToken) {
+                showResult('auditDetailResult', false, '请先登录管理员账号');
+                return;
+            }
+
+            const auditId = document.getElementById('auditIdForDetail').value;
+            if (!auditId) {
+                showResult('auditDetailResult', false, '请输入审核记录ID');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/v1/admin/merchant-audit/detail?auditId=${auditId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': adminToken
+                    }
+                });
+
+                const result = await response.json();
+
+                if (result.code === 200) {
+                    currentAuditId = auditId;
+                    displayAuditDetail(result.data);
+                    // 如果是待审核状态（0），显示操作按钮
+                    if (result.data.auditStatus === 0) {
+                        document.getElementById('auditActions').style.display = 'block';
+                    } else {
+                        document.getElementById('auditActions').style.display = 'none';
+                    }
+                } else {
+                    showResult('auditDetailResult', false, '查询失败: ' + result.message);
+                }
+            } catch (error) {
+                showResult('auditDetailResult', false, '请求失败: ' + error.message);
+            }
+        }
+
+        // 显示审核详情
+        async function displayAuditDetail(data) {
+            const statusColor = data.auditStatus === 1 ? '#28a745' : 
+                               data.auditStatus === 2 ? '#dc3545' : '#ffc107';
+
+            let html = '<div style="margin-top: 15px; padding: 15px; background: #f8f9fa; border-radius: 6px;">';
+            html += '<h3 style="color: #667eea; margin-bottom: 15px;">基本信息</h3>';
+            html += `<p><strong>审核ID:</strong> ${data.auditId}</p>`;
+            html += `<p><strong>用户ID:</strong> ${data.userId}</p>`;
+            html += `<p><strong>用户手机:</strong> ${data.userPhone}</p>`;
+            html += `<p><strong>店铺名称:</strong> ${data.storeName}</p>`;
+            html += `<p><strong>店铺规模:</strong> ${data.numStores} 家</p>`;
+            html += `<p><strong>会员规模:</strong> ${data.numMembers}</p>`;
+            html += `<p><strong>申请方式:</strong> ${data.applicationMethodDesc}</p>`;
+            html += `<p><strong>审核状态:</strong> <span style="color: ${statusColor}; font-weight: bold;">${data.auditStatusDesc}</span></p>`;
+            html += `<p><strong>申请时间:</strong> ${data.createTime}</p>`;
+            if (data.auditTime) {
+                html += `<p><strong>审核时间:</strong> ${data.auditTime}</p>`;
+                html += `<p><strong>审核人:</strong> ${data.auditorAccount || '未知'}</p>`;
+            }
+            if (data.rejectReason) {
+                html += `<p><strong>拒绝原因:</strong> <span style="color: #dc3545;">${data.rejectReason}</span></p>`;
+            }
+
+            // 显示门头店照（支持多张）
+            html += '<h3 style="color: #667eea; margin-top: 20px; margin-bottom: 10px;">门头店照</h3>';
+            html += '<div style="display: flex; gap: 10px; flex-wrap: wrap;">';
+            const storePhotos = data.storePhotos.split(',');
+            for (const photo of storePhotos) {
+                try {
+                    const signedUrl = await generateSignedUrlWithSts(photo.trim());
+                    html += `<img src="${signedUrl}" onclick="showImagePreview('${photo.trim()}')" 
+                             style="width: 150px; height: 150px; object-fit: cover; border-radius: 6px; cursor: pointer; border: 2px solid #ddd;" 
+                             title="点击查看大图">`;
+                } catch (error) {
+                    html += `<div style="width: 150px; height: 150px; background: #f8d7da; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #721c24;">加载失败</div>`;
+                }
+            }
+            html += '</div>';
+
+            // 显示营业执照（支持多张）
+            html += '<h3 style="color: #667eea; margin-top: 20px; margin-bottom: 10px;">营业执照</h3>';
+            html += '<div style="display: flex; gap: 10px; flex-wrap: wrap;">';
+            const businessLicenses = data.businessLicense.split(',');
+            for (const license of businessLicenses) {
+                try {
+                    const signedUrl = await generateSignedUrlWithSts(license.trim());
+                    html += `<img src="${signedUrl}" onclick="showImagePreview('${license.trim()}')" 
+                             style="width: 150px; height: 150px; object-fit: cover; border-radius: 6px; cursor: pointer; border: 2px solid #ddd;" 
+                             title="点击查看大图">`;
+                } catch (error) {
+                    html += `<div style="width: 150px; height: 150px; background: #f8d7da; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #721c24;">加载失败</div>`;
+                }
+            }
+            html += '</div>';
+
+            html += '</div>';
+
+            const resultDiv = document.getElementById('auditDetailResult');
+            resultDiv.className = 'result success';
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = html;
+        }
+
+        // 通过审核
+        async function approveMerchant() {
+            if (!adminToken || !currentAuditId) {
+                alert('请先查看审核详情');
+                return;
+            }
+
+            const remark = document.getElementById('approveRemark').value;
+
+            if (!confirm(`确认通过审核记录 ${currentAuditId} 吗？`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/v1/admin/merchant-audit/approve', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': adminToken
+                    },
+                    body: JSON.stringify({
+                        auditId: parseInt(currentAuditId),
+                        remark: remark
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.code === 200) {
+                    alert('审核通过成功！');
+                    // 清空表单
+                    document.getElementById('approveRemark').value = '';
+                    // 隐藏操作区域
+                    document.getElementById('auditActions').style.display = 'none';
+                    // 重新查询详情
+                    getAuditDetail();
+                    // 刷新列表
+                    getAuditList();
+                } else {
+                    alert('审核失败: ' + result.message);
+                }
+            } catch (error) {
+                alert('请求失败: ' + error.message);
+            }
+        }
+
+        // 拒绝审核
+        async function rejectMerchant() {
+            if (!adminToken || !currentAuditId) {
+                alert('请先查看审核详情');
+                return;
+            }
+
+            const rejectReason = document.getElementById('rejectReason').value;
+            if (!rejectReason) {
+                alert('请输入拒绝原因');
+                return;
+            }
+
+            if (!confirm(`确认拒绝审核记录 ${currentAuditId} 吗？`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/v1/admin/merchant-audit/reject', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': adminToken
+                    },
+                    body: JSON.stringify({
+                        auditId: parseInt(currentAuditId),
+                        rejectReason: rejectReason
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.code === 200) {
+                    alert('审核拒绝成功！');
+                    // 清空表单
+                    document.getElementById('rejectReason').value = '';
+                    // 隐藏操作区域
+                    document.getElementById('auditActions').style.display = 'none';
+                    // 重新查询详情
+                    getAuditDetail();
+                    // 刷新列表
+                    getAuditList();
+                } else {
+                    alert('审核失败: ' + result.message);
+                }
+            } catch (error) {
+                alert('请求失败: ' + error.message);
+            }
+        }
+
+        // ========== 阶段5：密码管理 ==========
+
+        // 修改登录密码
+        async function updatePassword() {
+            const oldPassword = document.getElementById('oldPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+
+            if (!oldPassword || !newPassword) {
+                showResult('updatePasswordResult', false, '请填写完整信息');
+                return;
+            }
+
+            if (newPassword.length < 6 || newPassword.length > 20) {
+                showResult('updatePasswordResult', false, '新密码长度必须在6到20个字符之间');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/v1/admin/password/update', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': adminToken
+                    },
+                    body: JSON.stringify({
+                        oldPassword: oldPassword,
+                        newPassword: newPassword
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.code === 200) {
+                    showResult('updatePasswordResult', true, result.message + '（Token已失效，请重新登录）');
+                    // 清空表单
+                    document.getElementById('oldPassword').value = '';
+                    document.getElementById('newPassword').value = '';
+                    // 清除token
+                    adminToken = '';
+                } else {
+                    showResult('updatePasswordResult', false, '修改失败: ' + result.message);
+                }
+            } catch (error) {
+                showResult('updatePasswordResult', false, '请求失败: ' + error.message);
+            }
+        }
+
+        // 修改二级密码
+        async function updateSndPassword() {
+            const oldSndPassword = document.getElementById('oldSndPassword').value;
+            const newSndPassword = document.getElementById('newSndPassword').value;
+
+            if (!oldSndPassword || !newSndPassword) {
+                showResult('updateSndPasswordResult', false, '请填写完整信息');
+                return;
+            }
+
+            if (newSndPassword.length < 6 || newSndPassword.length > 20) {
+                showResult('updateSndPasswordResult', false, '新二级密码长度必须在6到20个字符之间');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/v1/admin/password/snd-password/update', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': adminToken
+                    },
+                    body: JSON.stringify({
+                        oldSndPassword: oldSndPassword,
+                        newSndPassword: newSndPassword
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.code === 200) {
+                    showResult('updateSndPasswordResult', true, result.message);
+                    // 清空表单
+                    document.getElementById('oldSndPassword').value = '';
+                    document.getElementById('newSndPassword').value = '';
+                } else {
+                    showResult('updateSndPasswordResult', false, '修改失败: ' + result.message);
+                }
+            } catch (error) {
+                showResult('updateSndPasswordResult', false, '请求失败: ' + error.message);
+            }
+        }
+
+        // ========== 阶段5：商户管理 ==========
+
+        // 商户警告（通过手机号）
+        async function warnMerchant() {
+            const phone = document.getElementById('warnMerchantPhone').value;
+
+            if (!phone) {
+                showResult('warnMerchantResult', false, '请输入手机号');
+                return;
+            }
+
+            // 加密手机号
+            const encryptedPhone = encryptAES(phone);
+
+            try {
+                const response = await fetch('/api/v1/admin/merchant-management/warn', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': adminToken
+                    },
+                    body: JSON.stringify({
+                        phone: encryptedPhone
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.code === 200) {
+                    showResult('warnMerchantResult', true, result.message);
+                    document.getElementById('warnMerchantPhone').value = '';
+                } else {
+                    showResult('warnMerchantResult', false, '警告失败: ' + result.message);
+                }
+            } catch (error) {
+                showResult('warnMerchantResult', false, '请求失败: ' + error.message);
+            }
+        }
+
+        // 商户封禁（通过手机号）
+        async function banMerchant() {
+            const phone = document.getElementById('banMerchantPhone').value;
+            const sndPassword = document.getElementById('banSndPassword').value;
+
+            if (!phone || !sndPassword) {
+                showResult('banMerchantResult', false, '请填写完整信息');
+                return;
+            }
+
+            if (!confirm('确认要封禁该商户吗？封禁后商户将无法进行任何操作！')) {
+                return;
+            }
+
+            // 加密手机号
+            const encryptedPhone = encryptAES(phone);
+
+            try {
+                const response = await fetch('/api/v1/admin/merchant-management/ban', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': adminToken
+                    },
+                    body: JSON.stringify({
+                        phone: encryptedPhone,
+                        sndPassword: sndPassword
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.code === 200) {
+                    showResult('banMerchantResult', true, result.message);
+                    document.getElementById('banMerchantPhone').value = '';
+                    document.getElementById('banSndPassword').value = '';
+                } else {
+                    showResult('banMerchantResult', false, '封禁失败: ' + result.message);
+                }
+            } catch (error) {
+                showResult('banMerchantResult', false, '请求失败: ' + error.message);
+            }
+        }
+
+        // 解除商户封禁（通过手机号）
+        async function unbanMerchant() {
+            const phone = document.getElementById('unbanMerchantPhone').value;
+            const sndPassword = document.getElementById('unbanSndPassword').value;
+
+            if (!phone || !sndPassword) {
+                showResult('unbanMerchantResult', false, '请填写完整信息');
+                return;
+            }
+
+            if (!confirm('确认要解除该商户的封禁吗？')) {
+                return;
+            }
+
+            // 加密手机号
+            const encryptedPhone = encryptAES(phone);
+
+            try {
+                const response = await fetch('/api/v1/admin/merchant-management/unban', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': adminToken
+                    },
+                    body: JSON.stringify({
+                        phone: encryptedPhone,
+                        sndPassword: sndPassword
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.code === 200) {
+                    showResult('unbanMerchantResult', true, result.message);
+                    document.getElementById('unbanMerchantPhone').value = '';
+                    document.getElementById('unbanSndPassword').value = '';
+                } else {
+                    showResult('unbanMerchantResult', false, '解封失败: ' + result.message);
+                }
+            } catch (error) {
+                showResult('unbanMerchantResult', false, '请求失败: ' + error.message);
+            }
+        }
+
+        // ========== 阶段6：密码找回 ==========
+
+        // 发送找回登录密码验证码
+        async function sendResetPwdCode() {
+            const phone = document.getElementById('resetPwdPhone').value;
+
+            if (!phone) {
+                alert('请输入手机号');
+                return;
+            }
+
+            if (!/^1[3-9]\d{9}$/.test(phone)) {
+                alert('手机号格式不正确');
+                return;
+            }
+
+            // 加密手机号
+            const encryptedPhone = encryptAES(phone);
+
+            try {
+                const response = await fetch('/api/v1/users/verify-code', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Device-Id': 'admin_test_device_001'
+                    },
+                    body: JSON.stringify({
+                        phone: encryptedPhone,
+                        platform: 'WEB'
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.code === 200) {
+                    alert('验证码已发送！请查看后端控制台');
+                    console.log('='.repeat(60));
+                    console.log('验证码已发送到手机号：' + phone);
+                    console.log('请在后端控制台查看验证码');
+                    console.log('='.repeat(60));
+                } else {
+                    alert('发送失败: ' + result.message);
+                }
+            } catch (error) {
+                alert('请求失败: ' + error.message);
+            }
+        }
+
+        // 发送找回二级密码验证码
+        async function sendResetSndPwdCode() {
+            const phone = document.getElementById('resetSndPwdPhone').value;
+
+            if (!phone) {
+                alert('请输入手机号');
+                return;
+            }
+
+            if (!/^1[3-9]\d{9}$/.test(phone)) {
+                alert('手机号格式不正确');
+                return;
+            }
+
+            // 加密手机号
+            const encryptedPhone = encryptAES(phone);
+
+            try {
+                const response = await fetch('/api/v1/users/verify-code', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Device-Id': 'admin_test_device_001'
+                    },
+                    body: JSON.stringify({
+                        phone: encryptedPhone,
+                        platform: 'WEB'
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.code === 200) {
+                    alert('验证码已发送！请查看后端控制台');
+                    console.log('='.repeat(60));
+                    console.log('验证码已发送到手机号：' + phone);
+                    console.log('请在后端控制台查看验证码');
+                    console.log('='.repeat(60));
+                } else {
+                    alert('发送失败: ' + result.message);
+                }
+            } catch (error) {
+                alert('请求失败: ' + error.message);
+            }
+        }
+
+        // 找回登录密码
+        async function resetPassword() {
+            const phone = document.getElementById('resetPwdPhone').value;
+            const verifyCode = document.getElementById('resetPwdCode').value;
+            const newPassword = document.getElementById('resetNewPassword').value;
+
+            if (!phone || !verifyCode || !newPassword) {
+                showResult('resetPasswordResult', false, '请填写完整信息');
+                return;
+            }
+
+            // 加密手机号
+            const encryptedPhone = encryptAES(phone);
+
+            try {
+                const response = await fetch('/api/v1/admin/password-recovery/reset-password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        phone: encryptedPhone,
+                        verifyCode: verifyCode,
+                        newPassword: newPassword,
+                        deviceId: 'admin_test_device_001'
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.code === 200) {
+                    showResult('resetPasswordResult', true, result.message);
+                    document.getElementById('resetPwdPhone').value = '';
+                    document.getElementById('resetPwdCode').value = '';
+                    document.getElementById('resetNewPassword').value = '';
+                } else {
+                    showResult('resetPasswordResult', false, '找回失败: ' + result.message);
+                }
+            } catch (error) {
+                showResult('resetPasswordResult', false, '请求失败: ' + error.message);
+            }
+        }
+
+        // 找回二级密码
+        async function resetSndPassword() {
+            const phone = document.getElementById('resetSndPwdPhone').value;
+            const verifyCode = document.getElementById('resetSndPwdCode').value;
+            const newSndPassword = document.getElementById('resetNewSndPassword').value;
+
+            if (!phone || !verifyCode || !newSndPassword) {
+                showResult('resetSndPasswordResult', false, '请填写完整信息');
+                return;
+            }
+
+            // 检查是否已登录（找回二级密码需要Token）
+            if (!adminToken) {
+                showResult('resetSndPasswordResult', false, '请先登录后再找回二级密码');
+                return;
+            }
+
+            // 加密手机号
+            const encryptedPhone = encryptAES(phone);
+
+            try {
+                const response = await fetch('/api/v1/admin/password-recovery/reset-snd-password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': adminToken  // 添加管理员Token
+                    },
+                    body: JSON.stringify({
+                        phone: encryptedPhone,
+                        verifyCode: verifyCode,
+                        newSndPassword: newSndPassword,
+                        deviceId: 'admin_test_device_001'
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.code === 200) {
+                    showResult('resetSndPasswordResult', true, result.message);
+                    document.getElementById('resetSndPwdPhone').value = '';
+                    document.getElementById('resetSndPwdCode').value = '';
+                    document.getElementById('resetNewSndPassword').value = '';
+                } else {
+                    showResult('resetSndPasswordResult', false, '找回失败: ' + result.message);
+                }
+            } catch (error) {
+                showResult('resetSndPasswordResult', false, '请求失败: ' + error.message);
+            }
+        }
+
+        // ========== 阶段6：操作日志查询 ==========
+
+        // 查询操作日志
+        async function queryOperationLogs() {
+            const adminAccount = document.getElementById('logAdminAccount').value;
+            const pageNum = document.getElementById('logPageNum').value || 1;
+            const pageSize = document.getElementById('logPageSize').value || 20;
+
+            try {
+                let url = `/api/v1/admin/operation-logs/query?pageNum=${pageNum}&pageSize=${pageSize}`;
+                if (adminAccount) {
+                    url += `&adminAccount=${encodeURIComponent(adminAccount)}`;
+                }
+
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': adminToken
+                    }
+                });
+
+                const result = await response.json();
+
+                if (result.code === 200) {
+                    displayOperationLogs(result.data);
+                } else {
+                    showResult('operationLogsResult', false, '查询失败: ' + result.message);
+                }
+            } catch (error) {
+                showResult('operationLogsResult', false, '请求失败: ' + error.message);
+            }
+        }
+
+        // 显示操作日志
+        function displayOperationLogs(data) {
+            const resultDiv = document.getElementById('operationLogsResult');
+            resultDiv.style.display = 'block';  // 显示元素
+            
+            let html = '<div style="margin-bottom: 10px; padding: 10px; background: #d4edda; border: 1px solid #c3e6cb; color: #155724; border-radius: 6px;">';
+            html += `<strong>查询成功！共 ${data.total} 条记录，当前第 ${data.pageNum}/${data.totalPages} 页</strong>`;
+            html += '</div>';
+            
+            if (data.records && data.records.length > 0) {
+                html += '<div style="margin-top: 15px;"><table style="width: 100%; border-collapse: collapse; font-size: 12px;">';
+                html += '<thead><tr style="background: #667eea; color: white;">';
+                html += '<th style="padding: 8px; border: 1px solid #ddd;">日志ID</th>';
+                html += '<th style="padding: 8px; border: 1px solid #ddd;">管理员账号</th>';
+                html += '<th style="padding: 8px; border: 1px solid #ddd;">操作类型</th>';
+                html += '<th style="padding: 8px; border: 1px solid #ddd;">操作描述</th>';
+                html += '<th style="padding: 8px; border: 1px solid #ddd;">操作IP</th>';
+                html += '<th style="padding: 8px; border: 1px solid #ddd;">结果</th>';
+                html += '<th style="padding: 8px; border: 1px solid #ddd;">操作时间</th>';
+                html += '</tr></thead><tbody>';
+
+                data.records.forEach(log => {
+                    const resultColor = log.result === 1 ? '#28a745' : '#dc3545';
+                    const resultText = log.result === 1 ? '成功' : '失败';
+                    html += '<tr>';
+                    html += `<td style="padding: 8px; border: 1px solid #ddd;">${log.logId}</td>`;
+                    html += `<td style="padding: 8px; border: 1px solid #ddd;">${log.adminAccount}</td>`;
+                    html += `<td style="padding: 8px; border: 1px solid #ddd;">${log.operationType}</td>`;
+                    html += `<td style="padding: 8px; border: 1px solid #ddd; max-width: 300px; word-wrap: break-word;">${log.operationDesc}</td>`;
+                    html += `<td style="padding: 8px; border: 1px solid #ddd;">${log.operationIp}</td>`;
+                    html += `<td style="padding: 8px; border: 1px solid #ddd; color: ${resultColor};">${resultText}</td>`;
+                    html += `<td style="padding: 8px; border: 1px solid #ddd;">${log.createTime}</td>`;
+                    html += '</tr>';
+                });
+
+                html += '</tbody></table></div>';
+            } else {
+                html += '<div style="margin-top: 10px; padding: 10px; background: #fff3cd; border: 1px solid #ffeaa7; color: #856404; border-radius: 6px;">暂无日志记录</div>';
+            }
+
+            resultDiv.innerHTML = html;
+        }
+
+        // 页面加载完成提示
+        window.onload = function() {
+            console.log('🎉 管理员系统测试页面加载成功！');
+            console.log('✅ 阶段0+1 基础设施已完成');
+            console.log('✅ 阶段2 认证与Token管理已完成');
+            console.log('✅ 阶段3 权限验证与管理员创建已完成');
+            console.log('✅ 阶段4 商户审核核心功能已完成');
+            console.log('✅ 阶段5 密码管理+商户管理已完成');
+            console.log('✅ 阶段6 密码找回+操作日志查询已完成');
+            console.log('🎊 当前进度：管理员系统核心功能全部完成！');
+        };
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,133 @@
+<!--pages/advanced-reservation-create/advanced-reservation-create.wxml-->
+<view class="page-container">
+  <!-- 顶部标题 -->
+  <view class="header-card">
+    <view class="header-info">
+      <text class="header-title">创建预约模板</text>
+      <text class="header-subtitle">{{storeName}}</text>
+    </view>
+  </view>
+
+  <scroll-view class="content" scroll-y>
+    <!-- 步骤1: 可预约时间段 -->
+    <view class="section-card">
+      <view class="section-header">
+        <view class="step-badge">1</view>
+        <text class="section-title">辅助制作可预约时间段</text>
+      </view>
+
+      <!-- 快速生成盒子 -->
+      <view class="form-group">
+        <view class="group-title">快速生成</view>
+
+        <view class="form-item">
+          <text class="form-label">预约单位时间（分钟）</text>
+          <input class="form-input" type="number" value="{{unitTime}}" bindblur="onUnitTimeBlur" placeholder="30-240" />
+          <text class="form-hint">推荐设置为30分钟/60分钟</text>
+        </view>
+
+        <view class="form-item">
+          <text class="form-label">休息时长（分钟）</text>
+          <input class="form-input" type="number" value="{{restTime}}" bindblur="onRestTimeBlur" placeholder="0-60" />
+          <text class="form-hint">预约时间段间隔，如需午休可在下方调整</text>
+        </view>
+
+        <view class="form-item">
+          <text class="form-label">营业时间</text>
+          <view class="time-range">
+            <picker mode="time" value="{{startTime}}" bindchange="onStartTimeChange">
+              <view class="time-picker-btn">{{startTime}}</view>
+            </picker>
+            <text class="time-sep">-</text>
+            <picker mode="time" value="{{endTime}}" bindchange="onEndTimeChange">
+              <view class="time-picker-btn">{{endTime}}</view>
+            </picker>
+          </view>
+        </view>
+
+        <button class="action-btn primary" bindtap="generateTimeSlots">一键生成</button>
+      </view>
+
+      <!-- 生成结果 -->
+      <view wx:if="{{generatedTimeList.length > 0}}" class="form-group">
+        <view class="group-title">生成结果（共{{generatedTimeList.length}}个时间段）</view>
+        <view class="time-slot-list">
+          <view class="time-slot-item" wx:for="{{generatedTimeList}}" wx:key="index">
+            <text class="slot-text" bindtap="modifyTimeSlot" data-index="{{index}}">{{item.original}}</text>
+            <text class="slot-delete" bindtap="deleteTimeSlot" data-index="{{index}}">×</text>
+          </view>
+        </view>
+        <text class="form-hint">点击时间段可修改开始时间，点击×可删除</text>
+      </view>
+    </view>
+
+    <!-- 步骤2: 取消规则 -->
+    <view class="section-card">
+      <view class="section-header">
+        <view class="step-badge">2</view>
+        <text class="section-title">收集取消扣费规则</text>
+      </view>
+
+      <view class="form-group">
+        <view class="group-title">取消规则</view>
+        <text class="group-hint">仅余额卡对应资源生效，可不设置</text>
+
+        <view wx:if="{{cancelRules.length > 0}}" class="rule-list">
+          <view class="rule-item" wx:for="{{cancelRules}}" wx:key="index">
+            <text class="rule-text">
+              预约开始前{{item.minutes}}分钟内取消，扣除{{item.type === 'percent' ? item.value + '%' : item.value + '元'}}违约金
+            </text>
+            <text class="rule-delete" bindtap="deleteCancelRule" data-index="{{index}}">×</text>
+          </view>
+        </view>
+
+        <button class="action-btn secondary" bindtap="addCancelRule">添加取消扣费规则</button>
+      </view>
+    </view>
+
+    <!-- 步骤3: 其他配置 -->
+    <view class="section-card">
+      <view class="section-header">
+        <view class="step-badge">3</view>
+        <text class="section-title">其他配置</text>
+      </view>
+
+      <view class="form-group">
+        <view class="form-item">
+          <text class="form-label">可提前预约天数</text>
+          <picker mode="selector" range="{{[1,2,3,4,5,6,7]}}" value="{{advanceDays - 1}}" bindchange="onAdvanceDaysChange">
+            <view class="picker-btn">{{advanceDays}}天</view>
+          </picker>
+          <text class="form-hint">前端限制最多提前7天预约</text>
+        </view>
+
+        <view class="form-item">
+          <text class="form-label">不支持预约的日子</text>
+          <checkbox-group bindchange="onWeekDayChange">
+            <view class="checkbox-grid">
+              <label class="checkbox-item" wx:for="{{weekDayOptions}}" wx:key="index">
+                <checkbox value="{{item}}" checked="{{selectedWeekDays.indexOf(item) !== -1}}" color="#1976d2" />
+                <text>{{item}}</text>
+              </label>
+            </view>
+          </checkbox-group>
+        </view>
+
+        <view class="form-item switch-item">
+          <text class="form-label">支持资源自定义禁止日期</text>
+          <switch checked="{{customizeForbidden === 1}}" bindchange="onCustomizeForbiddenChange" color="#1976d2" />
+        </view>
+      </view>
+    </view>
+
+    <!-- 提交按钮 -->
+    <view class="submit-section">
+      <button class="submit-btn" bindtap="submitForm" disabled="{{submitting}}">
+        {{submitting ? '提交中...' : '提交表单'}}
+      </button>
+    </view>
+  </scroll-view>
+
+  <!-- 自定义Toast -->
+  <custom-toast id="customToast" />
+</view>

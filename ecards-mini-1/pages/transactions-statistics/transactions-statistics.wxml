@@ -1,0 +1,221 @@
+<view class="page-container">
+  <!-- 顶部标题 -->
+  <view class="header-section">
+    <view class="title">{{queryType === 'store' ? '🏪 '+storeName : '🏬 '+merchantName}}</view>
+  </view>
+
+  <!-- 快捷切换查询项（吸顶） -->
+  <view class="quick-options sticky-top">
+    <view 
+      class="option-item {{item.active ? 'active' : ''}}"
+      wx:for="{{quickOptions}}"
+      wx:key="value"
+      data-value="{{item.value}}"
+      bindtap="handleQuickOptionChange"
+    >
+      {{item.label}}
+    </view>
+  </view>
+
+  <!-- 某日数据 -->
+  <view class="day-data-section card" wx:if="{{currentDayData}}">
+    <view class="section-header">
+      <view class="section-title">🧾 单日数据</view>
+      <view class="day-options">
+        <view 
+          class="day-option {{item.active ? 'active' : ''}}"
+          wx:for="{{dayOptions}}"
+          wx:key="value"
+          data-value="{{item.value}}"
+          bindtap="handleDayOptionChange"
+        >
+          <block wx:if="{{item.value === 'custom' && customDateLabel}}">
+            {{customDateLabel}}
+          </block>
+          <block wx:else>
+            {{item.label}}
+          </block>
+        </view>
+      </view>
+    </view>
+
+    <view class="data-grid">
+      <!-- 新增会员数量 -->
+      <view class="data-item">
+        <view class="data-value">{{currentDayData.memberData.newMembers}}</view>
+        <view class="data-label">新增会员</view>
+      </view>
+
+      <!-- 新办会员卡数量 -->
+      <view class="data-item">
+        <view class="data-value">{{currentDayData.memberData.newMemberCards}}</view>
+        <view class="data-label">新办会员卡</view>
+      </view>
+
+      <!-- 余额卡数据 -->
+      <block wx:if="{{currentDayData.haveBalanceCard}}">
+        <view class="data-item">
+          <view class="data-value">{{currentDayData.balanceCardData.consumeAmount}}</view>
+          <view class="data-label">消费总额</view>
+        </view>
+
+        <view class="data-item">
+          <view class="data-value">{{currentDayData.balanceCardData.consumeCount}}</view>
+          <view class="data-label">消费笔数</view>
+        </view>
+
+        <view class="data-item">
+          <view class="data-value">{{currentDayData.balanceCardData.rechargeAmount}}</view>
+          <view class="data-label">充值总额</view>
+        </view>
+
+        <view class="data-item">
+          <view class="data-value">{{currentDayData.balanceCardData.refundAmount}}</view>
+          <view class="data-label">退款统计</view>
+        </view>
+      </block>
+
+      <!-- 次数卡数据 -->
+      <block wx:if="{{currentDayData.haveCountCard}}">
+        <view class="data-item">
+          <view class="data-value">{{currentDayData.countCardData.consumeTimes}}</view>
+          <view class="data-label">次数消耗</view>
+        </view>
+
+        <view class="data-item">
+          <view class="data-value">{{currentDayData.countCardData.rechargeTimes}}</view>
+          <view class="data-label">次数充值</view>
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <!-- 数据汇总 -->
+  <view class="summary-section card" wx:if="{{summaryData}}">
+    <view class="section-header">
+        <view class="section-title">🧾 数据汇总</view>
+    </view>
+    <view class="data-grid">
+      <!-- 新增会员数量 -->
+      <view class="data-item">
+        <view class="data-value highlight">{{summaryData.newMembers}}</view>
+        <view class="data-label">新增会员</view>
+      </view>
+
+      <!-- 新办会员卡数量 -->
+      <view class="data-item">
+        <view class="data-value highlight">{{summaryData.newMemberCards}}</view>
+        <view class="data-label">新办会员卡</view>
+      </view>
+
+      <!-- 余额卡数据 -->
+      <block wx:if="{{summaryData.haveBalanceCard}}">
+        <view class="data-item">
+          <view class="data-value highlight">{{summaryData.balanceCardData.consumeAmount}}</view>
+          <view class="data-label">消费总额</view>
+        </view>
+
+        <view class="data-item">
+          <view class="data-value highlight">{{summaryData.balanceCardData.consumeCount}}</view>
+          <view class="data-label">消费笔数</view>
+        </view>
+
+        <view class="data-item">
+          <view class="data-value highlight">{{summaryData.balanceCardData.rechargeAmount}}</view>
+          <view class="data-label">充值总额</view>
+        </view>
+
+        <view class="data-item">
+          <view class="data-value highlight">{{summaryData.balanceCardData.refundAmount}}</view>
+          <view class="data-label">退款统计</view>
+        </view>
+      </block>
+
+      <!-- 次数卡数据 -->
+      <block wx:if="{{summaryData.haveCountCard}}">
+        <view class="data-item">
+          <view class="data-value highlight">{{summaryData.countCardData.consumeTimes}}</view>
+          <view class="data-label">次数消耗</view>
+        </view>
+
+        <view class="data-item">
+          <view class="data-value highlight">{{summaryData.countCardData.rechargeTimes}}</view>
+          <view class="data-label">次数充值</view>
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <!-- 指标趋势 -->
+  <view class="trend-section card" wx:if="{{trendOptions.length > 0}}">
+    <view class="section-header">  
+        <view class="section-title">📊 指标趋势</view>
+    </view>
+    
+
+    <!-- 指标选择 -->
+    <view class="trend-options">
+      <view 
+        class="trend-option {{selectedTrendIndex === index ? 'active' : ''}}"
+        wx:for="{{trendOptions}}"
+        wx:key="label"
+        data-index="{{index}}"
+        bindtap="handleTrendChange"
+      >
+        {{item.label}}
+      </view>
+    </view>
+
+    <!-- 折线图 -->
+    <view class="chart-container">
+      <canvas 
+        id="trendCanvas" 
+        type="2d" 
+        class="trend-canvas"
+        style="width: {{canvasWidth}}px; height: {{canvasHeight}}px;"
+        bindtap="onCanvasTap"
+        bindtouchstart="onCanvasTouchStart"
+        bindtouchmove="onCanvasTouchMove"
+        bindtouchend="onCanvasTouchEnd"
+      ></canvas>
+
+      <!-- 选中点提示（图表上方） -->
+      <view class="point-tip-top" wx:if="{{selectedPoint}}">
+        <view class="tip-content">
+          <text>日期：{{selectedPoint.date}}</text>
+          <text>数值：{{selectedPoint.value}}</text>
+          <text class="close-btn" bindtap="clearSelectedPoint">×</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading-overlay" wx:if="{{loading && !refreshing}}">
+    <view class="loading-text">加载中...</view>
+  </view>
+
+</view>
+
+<!-- 日期选择弹窗 -->
+<view class="date-picker-modal" wx:if="{{showDatePicker}}">
+  <view class="modal-mask" bindtap="closeDatePicker"></view>
+  <view class="modal-content">
+    <view class="modal-header">
+      <text>选择日期</text>
+      <text class="close-btn" bindtap="closeDatePicker">×</text>
+    </view>
+    <scroll-view scroll-y class="date-list">
+      <view 
+        class="date-item" 
+        wx:for="{{availableDates}}" 
+        wx:key="*this"
+        data-date="{{item}}"
+        bindtap="onSelectDateItem"
+      >{{item}}</view>
+    </scroll-view>
+  </view>
+</view>
+
+<!-- 自定义Toast -->
+<custom-toast id="customToast"></custom-toast>

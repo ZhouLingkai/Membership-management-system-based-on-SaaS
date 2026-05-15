@@ -1,0 +1,204 @@
+<!--pages/upgrade-merchant/upgrade-merchant.wxml-->
+<view class="upgrade-container">
+  <!-- 审核状态页面（待审核时显示） -->
+  <view wx:if="{{showAuditView}}" class="audit-status-container">
+    <view class="audit-card">
+      <image class="audit-icon" src="/assets/icons/waiting.png" mode="aspectFit"></image>
+      <text class="audit-title">审核中</text>
+      <text class="audit-desc">您的商户资质正在审核中</text>
+      <text class="audit-time">提交时间：{{auditInfo.submitTime}}</text>
+      <text class="audit-tip">预计1-2个工作日内完成审核</text>
+      
+      <button class="refresh-btn" bindtap="checkAuditStatus">刷新状态</button>
+    </view>
+  </view>
+
+  <!-- 升级表单页面（未提交或审核驳回时显示） -->
+  <view wx:else class="form-content">
+    <!-- 顶部宣传文字 -->
+    <view class="header-section">
+      <view class="header-text">
+        <text class="title">商家升级</text>
+        <text class="subtitle">开启您的商家之旅</text>
+      </view>
+    </view>
+
+  <!-- 卡片容器 -->
+  <view class="card-container">
+    <!-- 切换按钮 -->
+    <view class="tab-bar">
+      <view class="tab-item {{currentTab === 'merchant' ? 'active' : ''}}" bindtap="switchTab" data-tab="merchant">
+        升级为商家
+      </view>
+      <view class="tab-item {{currentTab === 'quick' ? 'active' : ''}}" bindtap="switchTab" data-tab="quick">
+        免认证通道
+      </view>
+      
+      <!-- 底部滑动蓝条 -->
+      <view class="tab-indicator {{currentTab}}"></view>
+    </view>
+
+    <!-- 升级为商家表单 -->
+    <view class="form-container {{currentTab === 'merchant' ? 'show' : 'hide'}}">
+      <step-form 
+        id="merchantStepForm"
+        steps="{{merchantSteps}}"
+        currentStep="{{merchantCurrentStep}}"
+        bindstepchange="onMerchantStepChange">
+        
+        <!-- 步骤1: 店铺规模 -->
+        <view class="step-panel" wx:if="{{merchantCurrentStep === 0}}">
+          <view class="form-item">
+            <text class="label">您当前的店铺规模是？</text>
+            <radio-group class="radio-group" bindchange="onShopScaleChange">
+              <label class="radio-item" wx:for="{{shopScaleOptions}}" wx:key="value">
+                <radio value="{{item.value}}" checked="{{merchantData.shopScale === item.value}}" />
+                <text>{{item.label}}</text>
+              </label>
+            </radio-group>
+          </view>
+          
+          <view class="btn-group">
+            <button class="next-btn" bindtap="merchantNextStep" disabled="{{!merchantData.shopScale}}">
+              下一步
+            </button>
+          </view>
+        </view>
+
+        <!-- 步骤2: 会员规模 -->
+        <view class="step-panel" wx:if="{{merchantCurrentStep === 1}}">
+          <view class="form-item">
+            <text class="label">您当前拥有的会员规模是？</text>
+            <radio-group class="radio-group" bindchange="onMemberScaleChange">
+              <label class="radio-item" wx:for="{{memberScaleOptions}}" wx:key="value">
+                <radio value="{{item.value}}" checked="{{merchantData.memberScale === item.value}}" />
+                <text>{{item.label}}</text>
+              </label>
+            </radio-group>
+          </view>
+          
+          <view class="btn-group">
+            <button class="prev-btn" bindtap="merchantPrevStep">上一步</button>
+            <button class="next-btn" bindtap="merchantNextStep" disabled="{{!merchantData.memberScale}}">
+              下一步
+            </button>
+          </view>
+        </view>
+
+        <!-- 步骤3: 营业执照 -->
+        <view class="step-panel" wx:if="{{merchantCurrentStep === 2}}">
+          <view class="form-item">
+            <text class="label">请选择您的营业执照！</text>
+            <view class="upload-area" bindtap="uploadLicense">
+              <image wx:if="{{merchantData.licenseImageLocal}}" src="{{merchantData.licenseImageLocal}}" mode="aspectFit" class="uploaded-image" />
+              <view wx:else class="upload-placeholder">
+                <text class="upload-icon">+</text>
+                <text class="upload-text">点击上传营业执照</text>
+              </view>
+            </view>
+          </view>
+          
+          <view class="btn-group">
+            <button class="prev-btn" bindtap="merchantPrevStep">上一步</button>
+            <button class="next-btn" bindtap="merchantNextStep" disabled="{{!merchantData.licenseImage}}">
+              下一步
+            </button>
+          </view>
+        </view>
+
+        <!-- 步骤4: 店铺信息 -->
+        <view class="step-panel" wx:if="{{merchantCurrentStep === 3}}">
+          <view class="form-item">
+            <text class="label">请输入准确的公司/品牌/店铺名称</text>
+            <input class="input-field" placeholder="请输入名称" value="{{merchantData.shopName}}" bindinput="onShopNameInput" maxlength="50" />
+          </view>
+
+          <view class="form-item">
+            <text class="label">请拍摄一张门头店照</text>
+            <view class="upload-area" bindtap="uploadShopPhoto">
+              <image wx:if="{{merchantData.shopPhotoLocal}}" src="{{merchantData.shopPhotoLocal}}" mode="aspectFit" class="uploaded-image" />
+              <view wx:else class="upload-placeholder">
+                <text class="upload-icon">+</text>
+                <text class="upload-text">点击上传门头照</text>
+              </view>
+            </view>
+          </view>
+          
+          <view class="btn-group">
+            <button class="prev-btn" bindtap="merchantPrevStep">上一步</button>
+            <button class="submit-btn" bindtap="submitMerchantUpgrade" disabled="{{!merchantData.shopName || !merchantData.shopPhoto}}">
+              提交申请
+            </button>
+          </view>
+        </view>
+      </step-form>
+    </view>
+
+    <!-- 免认证快速体验表单 -->
+    <view class="form-container {{currentTab === 'quick' ? 'show' : 'hide'}}">
+      <step-form 
+        id="quickStepForm"
+        steps="{{quickSteps}}"
+        currentStep="{{quickCurrentStep}}"
+        bindstepchange="onQuickStepChange">
+        
+        <!-- 步骤1: 阅读规则 -->
+        <view class="step-panel" wx:if="{{quickCurrentStep === 0}}">
+          <view class="form-item">
+            <text class="label">免认证快速体验规则</text>
+            <view class="rules-content">
+              <text class="rule-item">1. 免认证通道仅供体验使用，功能有限</text>
+              <text class="rule-item">2. 体验期为30天，到期后需完成正式认证</text>
+              <text class="rule-item">3. 体验期间无法使用高级功能</text>
+              <text class="rule-item">4. 随时可升级为正式商家账号</text>
+            </view>
+            
+            <view class="checkbox-wrapper">
+              <checkbox-group bindchange="onRulesAgreeChange">
+                <label class="checkbox-label">
+                  <checkbox value="agree" checked="{{quickData.rulesAgreed}}" />
+                  <text class="checkbox-text">我已阅读并同意以上规则</text>
+                </label>
+              </checkbox-group>
+            </view>
+          </view>
+          
+          <view class="btn-group">
+            <button class="next-btn" bindtap="quickNextStep" disabled="{{!quickData.rulesAgreed}}">
+              下一步
+            </button>
+          </view>
+        </view>
+
+        <!-- 步骤2: 商家名和二级密码 -->
+        <view class="step-panel" wx:if="{{quickCurrentStep === 1}}">
+          <view class="form-item">
+            <text class="label">商家名称</text>
+            <input class="input-field" placeholder="请输入商家名称" value="{{quickData.merchantName}}" bindinput="onMerchantNameInput" maxlength="50" />
+          </view>
+
+          <view class="form-item">
+            <text class="label">设置二级密码（6位数字）</text>
+            <input class="input-field" type="number" password placeholder="请输入6位数字密码" value="{{quickData.secondPassword}}" bindinput="onSecondPasswordInput" maxlength="6" />
+          </view>
+
+          <view class="btn-group">
+            <button class="prev-btn" bindtap="quickPrevStep">上一步</button>
+            <button class="submit-btn" bindtap="submitQuickUpgrade" disabled="{{!quickData.merchantName || !quickData.secondPassword || !quickData.confirmPassword}}">
+              成为商家
+            </button>
+          </view>
+        </view>
+      </step-form>
+    </view>
+  </view>
+  </view>
+
+  <!-- 自定义Toast组件 -->
+  <custom-toast 
+    id="customToast" 
+    message="{{toastMessage}}" 
+    type="{{toastType}}" 
+    animation-type="{{toastAnimationType}}" 
+    show="{{showToast}}" />
+</view>

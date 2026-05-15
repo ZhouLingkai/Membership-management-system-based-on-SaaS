@@ -1,0 +1,2166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>交易管理和积分管理 - 测试页面</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* 侧边栏样式 */
+        .sidebar {
+            width: 250px;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+        }
+
+        .sidebar-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.3em;
+            margin-bottom: 5px;
+        }
+
+        .sidebar-header p {
+            font-size: 0.85em;
+            opacity: 0.9;
+        }
+
+        .platform-selector {
+            margin-top: 15px;
+        }
+
+        .platform-selector label {
+            color: rgba(255,255,255,0.8);
+            font-size: 13px;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .platform-selector select {
+            width: 100%;
+            padding: 8px;
+            border-radius: 6px;
+            border: none;
+            background: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .sidebar-menu {
+            padding: 20px 0;
+        }
+
+        .menu-item {
+            padding: 15px 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+            color: #333;
+        }
+
+        .menu-item:hover {
+            background: rgba(102, 126, 234, 0.1);
+            border-left-color: #667eea;
+        }
+
+        .menu-item.active {
+            background: rgba(102, 126, 234, 0.15);
+            border-left-color: #667eea;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        /* 主内容区域 */
+        .main-content {
+            margin-left: 250px;
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .header {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1em;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+            font-size: 1.5em;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .result-box {
+            background: #f5f5f5;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .token-display {
+            background: #e8f4fd;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            word-break: break-all;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+
+        .token-display.empty {
+            background: #fff3cd;
+            border-color: #ffc107;
+            color: #856404;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .status-badge.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-badge.warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .row .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        .hint {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏 -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>🎯 交易与积分测试</h2>
+            <p>Transaction & Points Test</p>
+            <div class="platform-selector">
+                <label>平台选择</label>
+                <select id="globalPlatform">
+                    <option value="WEB">WEB</option>
+                    <option value="MINI_PROGRAM">MINI_PROGRAM</option>
+                </select>
+            </div>
+        </div>
+        <div class="sidebar-menu">
+            <div class="menu-item active" onclick="showSection('merchant')">
+                👨‍💼 商家测试
+            </div>
+            <div class="menu-item" onclick="showSection('staff')">
+                👔 员工测试
+            </div>
+            <div class="menu-item" onclick="showSection('user')">
+                👤 普通用户测试
+            </div>
+        </div>
+    </div>
+
+    <!-- 主内容区域 -->
+    <div class="main-content">
+        <!-- ==================== 商家测试 ==================== -->
+        <div id="merchant-section" class="content-section active">
+            <div class="header">
+                <h1>👨‍💼 商家测试</h1>
+                <p>测试商家角色的交易管理和积分管理功能</p>
+            </div>
+
+            <!-- 商家登录 -->
+            <div class="card">
+                <h2>1. 商家登录（获取普通令牌）</h2>
+                <div class="row">
+                    <div class="form-group">
+                        <label>手机号:</label>
+                        <input type="text" id="merchantPhone" placeholder="请输入商家手机号" value="13800137000">
+                    </div>
+                    <div class="form-group">
+                        <label>密码:</label>
+                        <input type="password" id="merchantPassword" placeholder="请输入密码" value="zhouge666">
+                    </div>
+                </div>
+                <button class="btn" onclick="merchantLogin()">登录</button>
+                <div class="token-display empty" id="merchantNormalToken">普通令牌将在登录后显示</div>
+                <div class="result-box" id="merchantLoginResult">登录结果将显示在这里...</div>
+            </div>
+
+            <!-- 获取工作令牌 -->
+            <div class="card">
+                <h2>2. 获取工作令牌</h2>
+                <div class="form-group">
+                    <label>店铺ID:</label>
+                    <input type="text" id="merchantStoreId" placeholder="请输入店铺ID">
+                    <div class="hint">提示：需要先登录获取普通令牌</div>
+                </div>
+                <button class="btn" onclick="merchantGetWorkToken()">获取工作令牌</button>
+                <div class="token-display empty" id="merchantWorkToken">工作令牌将在获取后显示</div>
+                <div class="result-box" id="merchantWorkTokenResult">获取结果将显示在这里...</div>
+            </div>
+
+            <!-- 积分变动 -->
+            <div class="card">
+                <h2>3. 积分变动</h2>
+                <div class="row">
+                    <div class="form-group">
+                        <label>会员卡ID:</label>
+                        <input type="text" id="merchantPointsCardId" placeholder="请输入会员卡ID (UUID格式)">
+                    </div>
+                    <div class="form-group">
+                        <label>店铺ID:</label>
+                        <input type="text" id="merchantPointsStoreId" placeholder="请输入操作店铺ID">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>积分变动值:</label>
+                        <input type="number" id="merchantPointsChange" placeholder="正数为增加，负数为扣减" value="100">
+                        <div class="hint">范围：-10000 到 10000</div>
+                    </div>
+                    <div class="form-group">
+                        <label>使用令牌:</label>
+                        <select id="merchantPointsTokenType">
+                            <option value="work">工作令牌</option>
+                            <option value="normal">普通令牌</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>变动原因:</label>
+                    <textarea id="merchantPointsRemark" placeholder="请输入变动原因（5-200字符）">积分调整测试</textarea>
+                </div>
+                <button class="btn" onclick="merchantAdjustPoints()">提交积分变动</button>
+                <div class="result-box" id="merchantPointsResult">结果将显示在这里...</div>
+            </div>
+
+            <!-- 积分记录查询 -->
+            <div class="card">
+                <h2>4. 积分记录查询</h2>
+                <div class="row">
+                    <div class="form-group">
+                        <label>会员卡ID:</label>
+                        <input type="text" id="merchantQueryCardId" placeholder="请输入会员卡ID">
+                    </div>
+                    <div class="form-group">
+                        <label>店铺ID:</label>
+                        <input type="text" id="merchantQueryStoreId" placeholder="工作令牌时必填">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>开始日期:</label>
+                        <input type="date" id="merchantQueryStartDate">
+                    </div>
+                    <div class="form-group">
+                        <label>结束日期:</label>
+                        <input type="date" id="merchantQueryEndDate">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>页码:</label>
+                        <input type="number" id="merchantQueryPageNum" value="1" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label>每页条数:</label>
+                        <input type="number" id="merchantQueryPageSize" value="10" min="1" max="100">
+                    </div>
+                    <div class="form-group">
+                        <label>使用令牌:</label>
+                        <select id="merchantQueryTokenType">
+                            <option value="work">工作令牌</option>
+                            <option value="normal">普通令牌</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="btn" onclick="merchantQueryPoints()">查询积分记录</button>
+                <div class="result-box" id="merchantQueryResult">查询结果将显示在这里...</div>
+            </div>
+
+            <!-- 会员卡充值 -->
+            <div class="card">
+                <h2>5. 会员卡充值</h2>
+                <div class="row">
+                    <div class="form-group">
+                        <label>会员卡ID:</label>
+                        <input type="text" id="merchantRechargeCardId" placeholder="请输入会员卡ID (UUID格式)">
+                    </div>
+                    <div class="form-group">
+                        <label>店铺ID:</label>
+                        <input type="text" id="merchantRechargeStoreId" placeholder="请输入交易店铺ID">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>充值类型:</label>
+                        <select id="merchantRechargeType">
+                            <option value="1">金额充值（余额卡）</option>
+                            <option value="2">次数充值（次数卡）</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>充值金额/次数:</label>
+                        <input type="number" id="merchantRechargeAmount" placeholder="余额卡填金额，次数卡填次数" value="100" step="0.01" min="0.01" max="10000">
+                        <div class="hint">最大值：10000</div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>使用令牌:</label>
+                        <select id="merchantRechargeTokenType">
+                            <option value="work">工作令牌</option>
+                            <option value="normal">普通令牌</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>充值备注:</label>
+                    <textarea id="merchantRechargeRemark" placeholder="请输入充值备注（5-200字符）">会员卡充值测试</textarea>
+                </div>
+                <button class="btn" onclick="merchantRecharge()">提交充值</button>
+                <div class="result-box" id="merchantRechargeResult">结果将显示在这里...</div>
+            </div>
+
+            <!-- 时效调整 -->
+            <div class="card">
+                <h2>6. 时效调整</h2>
+                <div class="row">
+                    <div class="form-group">
+                        <label>会员卡ID:</label>
+                        <input type="text" id="merchantExpireCardId" placeholder="请输入会员卡ID (UUID格式)">
+                    </div>
+                    <div class="form-group">
+                        <label>店铺ID:</label>
+                        <input type="text" id="merchantExpireStoreId" placeholder="请输入操作店铺ID">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>调整类型:</label>
+                        <select id="merchantAdjustType" onchange="toggleExpireFields('merchant')">
+                            <option value="1">相对延期</option>
+                            <option value="2">绝对设置</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>使用令牌:</label>
+                        <select id="merchantExpireTokenType">
+                            <option value="work">工作令牌</option>
+                            <option value="normal">普通令牌</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group" id="merchantDaysGroup">
+                        <label>延期天数:</label>
+                        <input type="number" id="merchantExpireDays" placeholder="请输入延期天数" value="30" min="1">
+                    </div>
+                    <div class="form-group" id="merchantExpireTimeGroup" style="display:none;">
+                        <label>到期日期:</label>
+                        <input type="date" id="merchantExpireTime">
+                        <div class="hint">时间将自动设置为 23:59:59</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>调整原因:</label>
+                    <textarea id="merchantExpireRemark" placeholder="请输入调整原因（5-200字符）">时效调整测试</textarea>
+                </div>
+                <button class="btn" onclick="merchantExpireAdjust()">提交时效调整</button>
+                <div class="result-box" id="merchantExpireResult">结果将显示在这里...</div>
+            </div>
+
+            <!-- 会员卡消费 -->
+            <div class="card">
+                <h2>7. 会员卡消费</h2>
+                <div class="row">
+                    <div class="form-group">
+                        <label>会员卡ID:</label>
+                        <input type="text" id="merchantConsumeCardId" placeholder="请输入会员卡ID (UUID格式)">
+                    </div>
+                    <div class="form-group">
+                        <label>店铺ID:</label>
+                        <input type="text" id="merchantConsumeStoreId" placeholder="请输入交易店铺ID">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>消费类型:</label>
+                        <select id="merchantConsumeType">
+                            <option value="1">金额消费（余额卡）</option>
+                            <option value="2">次数消费（次数卡）</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>消费金额/次数:</label>
+                        <input type="number" id="merchantConsumeAmount" placeholder="余额卡填金额，次数卡填次数" value="50" step="0.01" min="0.01" max="10000">
+                        <div class="hint">最大值：10000</div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>获得积分（可选）:</label>
+                        <input type="number" id="merchantConsumePoints" placeholder="余额卡不填为消费值向下取整，次数卡不填为0" min="0" max="10000">
+                        <div class="hint">不填则自动计算，填0则不获得积分</div>
+                    </div>
+                    <div class="form-group">
+                        <label>使用令牌:</label>
+                        <select id="merchantConsumeTokenType">
+                            <option value="work">工作令牌</option>
+                            <option value="normal">普通令牌</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>消费备注:</label>
+                    <textarea id="merchantConsumeRemark" placeholder="请输入消费备注（5-200字符）">会员卡消费测试</textarea>
+                </div>
+                <button class="btn" onclick="merchantConsume()">提交消费</button>
+                <div class="result-box" id="merchantConsumeResult">结果将显示在这里...</div>
+            </div>
+
+            <!-- 单卡交易记录查询 -->
+            <div class="card">
+                <h2>9. 单卡交易记录查询</h2>
+                <div class="row">
+                    <div class="form-group">
+                        <label>会员卡ID:</label>
+                        <input type="text" id="merchantCardRecordsCardId" placeholder="请输入会员卡ID">
+                    </div>
+                    <div class="form-group">
+                        <label>交易类型:</label>
+                        <select id="merchantCardRecordsType">
+                            <option value="">全部</option>
+                            <option value="1">充值</option>
+                            <option value="2">消费</option>
+                            <option value="3">退款</option>
+                            <option value="4">延期</option>
+                            <option value="5">日期变动</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>开始日期:</label>
+                        <input type="date" id="merchantCardRecordsStart">
+                    </div>
+                    <div class="form-group">
+                        <label>结束日期:</label>
+                        <input type="date" id="merchantCardRecordsEnd">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>页码:</label>
+                        <input type="number" id="merchantCardRecordsPage" value="1" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label>每页条数:</label>
+                        <input type="number" id="merchantCardRecordsSize" value="20" min="1" max="100">
+                    </div>
+                </div>
+                <button class="btn" onclick="merchantQueryCardRecords()">查询记录</button>
+                <div class="result-box" id="merchantCardRecordsResult">查询结果将显示在这里...</div>
+            </div>
+
+            <!-- 店铺交易统计 -->
+            <div class="card">
+                <h2>10. 店铺交易统计</h2>
+                <div class="row">
+                    <div class="form-group">
+                        <label>店铺ID:</label>
+                        <input type="text" id="merchantStoreStatsStoreId" placeholder="请输入店铺ID">
+                    </div>
+                    <div class="form-group">
+                        <label>交易类型:</label>
+                        <select id="merchantStoreStatsType">
+                            <option value="">全部</option>
+                            <option value="1">充值</option>
+                            <option value="2">消费</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>开始日期:</label>
+                        <input type="date" id="merchantStoreStatsStart">
+                    </div>
+                    <div class="form-group">
+                        <label>结束日期:</label>
+                        <input type="date" id="merchantStoreStatsEnd">
+                    </div>
+                </div>
+                <button class="btn" onclick="merchantQueryStoreStats()">查询统计</button>
+                <div class="result-box" id="merchantStoreStatsResult">统计结果将显示在这里...</div>
+            </div>
+
+            <!-- 商家交易统计 -->
+            <div class="card">
+                <h2>11. 商家交易统计（所有店铺）</h2>
+                <div class="row">
+                    <div class="form-group">
+                        <label>开始日期:</label>
+                        <input type="date" id="merchantMerchantStatsStart">
+                    </div>
+                    <div class="form-group">
+                        <label>结束日期:</label>
+                        <input type="date" id="merchantMerchantStatsEnd">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>交易类型:</label>
+                    <select id="merchantMerchantStatsType">
+                        <option value="">全部</option>
+                        <option value="1">充值</option>
+                        <option value="2">消费</option>
+                    </select>
+                </div>
+                <button class="btn" onclick="merchantQueryMerchantStats()">查询统计</button>
+                <div class="result-box" id="merchantMerchantStatsResult">统计结果将显示在这里...</div>
+            </div>
+        </div>
+
+        <!-- ==================== 员工测试 ==================== -->
+        <div id="staff-section" class="content-section">
+            <div class="header">
+                <h1>👔 员工测试</h1>
+                <p>测试员工角色的交易管理和积分管理功能</p>
+            </div>
+
+            <!-- 员工登录 -->
+            <div class="card">
+                <h2>1. 员工登录（获取普通令牌）</h2>
+                <div class="row">
+                    <div class="form-group">
+                        <label>手机号:</label>
+                        <input type="text" id="staffPhone" placeholder="请输入员工手机号" value="13800137001">
+                    </div>
+                    <div class="form-group">
+                        <label>密码:</label>
+                        <input type="password" id="staffPassword" placeholder="请输入密码" value="zhouge666">
+                    </div>
+                </div>
+                <button class="btn" onclick="staffLogin()">登录</button>
+                <div class="token-display empty" id="staffNormalToken">普通令牌将在登录后显示</div>
+                <div class="result-box" id="staffLoginResult">登录结果将显示在这里...</div>
+            </div>
+
+            <!-- 获取工作令牌 -->
+            <div class="card">
+                <h2>2. 获取工作令牌</h2>
+                <div class="form-group">
+                    <label>店铺ID:</label>
+                    <input type="text" id="staffStoreId" placeholder="请输入店铺ID">
+                    <div class="hint">提示：需要先登录获取普通令牌</div>
+                </div>
+                <button class="btn" onclick="staffGetWorkToken()">获取工作令牌</button>
+                <div class="token-display empty" id="staffWorkToken">工作令牌将在获取后显示</div>
+                <div class="result-box" id="staffWorkTokenResult">获取结果将显示在这里...</div>
+            </div>
+
+            <!-- 积分变动 -->
+            <div class="card">
+                <h2>3. 积分变动</h2>
+                <div class="row">
+                    <div class="form-group">
+                        <label>会员卡ID:</label>
+                        <input type="text" id="staffPointsCardId" placeholder="请输入会员卡ID (UUID格式)">
+                    </div>
+                    <div class="form-group">
+                        <label>店铺ID:</label>
+                        <input type="text" id="staffPointsStoreId" placeholder="请输入操作店铺ID">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>积分变动值:</label>
+                        <input type="number" id="staffPointsChange" placeholder="正数为增加，负数为扣减" value="50">
+                        <div class="hint">范围：-10000 到 10000</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>变动原因:</label>
+                    <textarea id="staffPointsRemark" placeholder="请输入变动原因（5-200字符）">员工积分操作测试</textarea>
+                </div>
+                <button class="btn" onclick="staffAdjustPoints()">提交积分变动（使用工作令牌）</button>
+                <div class="result-box" id="staffPointsResult">结果将显示在这里...</div>
+            </div>
+
+            <!-- 积分记录查询 -->
+            <div class="card">
+                <h2>4. 积分记录查询</h2>
+                <div class="row">
+                    <div class="form-group">
+                        <label>会员卡ID:</label>
+                        <input type="text" id="staffQueryCardId" placeholder="请输入会员卡ID">
+                    </div>
+                    <div class="form-group">
+                        <label>店铺ID:</label>
+                        <input type="text" id="staffQueryStoreId" placeholder="必填">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>开始日期:</label>
+                        <input type="date" id="staffQueryStartDate">
+                    </div>
+                    <div class="form-group">
+                        <label>结束日期:</label>
+                        <input type="date" id="staffQueryEndDate">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>页码:</label>
+                        <input type="number" id="staffQueryPageNum" value="1" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label>每页条数:</label>
+                        <input type="number" id="staffQueryPageSize" value="10" min="1" max="100">
+                    </div>
+                </div>
+                <button class="btn" onclick="staffQueryPoints()">查询积分记录（使用工作令牌）</button>
+                <div class="result-box" id="staffQueryResult">查询结果将显示在这里...</div>
+            </div>
+
+            <!-- 会员卡充值 -->
+            <div class="card">
+                <h2>5. 会员卡充值（需要transaction_recharge权限）</h2>
+                <div class="row">
+                    <div class="form-group">
+                        <label>会员卡ID:</label>
+                        <input type="text" id="staffRechargeCardId" placeholder="请输入会员卡ID (UUID格式)">
+                    </div>
+                    <div class="form-group">
+                        <label>店铺ID:</label>
+                        <input type="text" id="staffRechargeStoreId" placeholder="请输入交易店铺ID">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>充值类型:</label>
+                        <select id="staffRechargeType">
+                            <option value="1">金额充值（余额卡）</option>
+                            <option value="2">次数充值（次数卡）</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>充值金额/次数:</label>
+                        <input type="number" id="staffRechargeAmount" placeholder="余额卡填金额，次数卡填次数" value="100" step="0.01" min="0.01" max="10000">
+                        <div class="hint">最大值：10000</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>充值备注:</label>
+                    <textarea id="staffRechargeRemark" placeholder="请输入充值备注（5-200字符）">会员卡充值测试</textarea>
+                </div>
+                <button class="btn" onclick="staffRecharge()">提交充值（使用工作令牌）</button>
+                <div class="result-box" id="staffRechargeResult">结果将显示在这里...</div>
+            </div>
+
+            <!-- 时效调整 -->
+            <div class="card">
+                <h2>6. 时效调整（需要transaction_recharge权限）</h2>
+                <div class="row">
+                    <div class="form-group">
+                        <label>会员卡ID:</label>
+                        <input type="text" id="staffExpireCardId" placeholder="请输入会员卡ID (UUID格式)">
+                    </div>
+                    <div class="form-group">
+                        <label>店铺ID:</label>
+                        <input type="text" id="staffExpireStoreId" placeholder="请输入操作店铺ID">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>调整类型:</label>
+                    <select id="staffAdjustType" onchange="toggleExpireFields('staff')">
+                        <option value="1">相对延期</option>
+                        <option value="2">绝对设置</option>
+                    </select>
+                </div>
+                <div class="row">
+                    <div class="form-group" id="staffDaysGroup">
+                        <label>延期天数:</label>
+                        <input type="number" id="staffExpireDays" placeholder="请输入延期天数" value="30" min="1">
+                    </div>
+                    <div class="form-group" id="staffExpireTimeGroup" style="display:none;">
+                        <label>到期日期:</label>
+                        <input type="date" id="staffExpireTime">
+                        <div class="hint">时间将自动设置为 23:59:59</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>调整原因:</label>
+                    <textarea id="staffExpireRemark" placeholder="请输入调整原因（5-200字符）">时效调整测试</textarea>
+                </div>
+                <button class="btn" onclick="staffExpireAdjust()">提交时效调整（使用工作令牌）</button>
+                <div class="result-box" id="staffExpireResult">结果将显示在这里...</div>
+            </div>
+
+            <!-- 会员卡消费 -->
+            <div class="card">
+                <h2>7. 会员卡消费（店员默认权限）</h2>
+                <div class="row">
+                    <div class="form-group">
+                        <label>会员卡ID:</label>
+                        <input type="text" id="staffConsumeCardId" placeholder="请输入会员卡ID (UUID格式)">
+                    </div>
+                    <div class="form-group">
+                        <label>店铺ID:</label>
+                        <input type="text" id="staffConsumeStoreId" placeholder="请输入交易店铺ID">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>消费类型:</label>
+                        <select id="staffConsumeType">
+                            <option value="1">金额消费（余额卡）</option>
+                            <option value="2">次数消费（次数卡）</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>消费金额/次数:</label>
+                        <input type="number" id="staffConsumeAmount" placeholder="余额卡填金额，次数卡填次数" value="50" step="0.01" min="0.01" max="10000">
+                        <div class="hint">最大值：10000</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>获得积分（可选）:</label>
+                    <input type="number" id="staffConsumePoints" placeholder="余额卡不填为消费值向下取整，次数卡不填为0" min="0" max="10000">
+                    <div class="hint">不填则自动计算，填0则不获得积分</div>
+                </div>
+                <div class="form-group">
+                    <label>消费备注:</label>
+                    <textarea id="staffConsumeRemark" placeholder="请输入消费备注（5-200字符）">会员卡消费测试</textarea>
+                </div>
+                <button class="btn" onclick="staffConsume()">提交消费（使用工作令牌）</button>
+                <div class="result-box" id="staffConsumeResult">结果将显示在这里...</div>
+            </div>
+
+            <!-- 单卡交易记录查询 -->
+            <div class="card">
+                <h2>9. 单卡交易记录查询</h2>
+                <div class="row">
+                    <div class="form-group">
+                        <label>会员卡ID:</label>
+                        <input type="text" id="staffCardRecordsCardId" placeholder="请输入会员卡ID">
+                    </div>
+                    <div class="form-group">
+                        <label>交易类型:</label>
+                        <select id="staffCardRecordsType">
+                            <option value="">全部</option>
+                            <option value="1">充值</option>
+                            <option value="2">消费</option>
+                            <option value="3">退款</option>
+                            <option value="4">延期</option>
+                            <option value="5">日期变动</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>开始日期:</label>
+                        <input type="date" id="staffCardRecordsStart">
+                    </div>
+                    <div class="form-group">
+                        <label>结束日期:</label>
+                        <input type="date" id="staffCardRecordsEnd">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>页码:</label>
+                        <input type="number" id="staffCardRecordsPage" value="1" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label>每页条数:</label>
+                        <input type="number" id="staffCardRecordsSize" value="20" min="1" max="100">
+                    </div>
+                </div>
+                <button class="btn" onclick="staffQueryCardRecords()">查询记录</button>
+                <div class="result-box" id="staffCardRecordsResult">查询结果将显示在这里...</div>
+            </div>
+
+            <!-- 店铺交易统计 -->
+            <div class="card">
+                <h2>10. 店铺交易统计</h2>
+                <div class="row">
+                    <div class="form-group">
+                        <label>店铺ID:</label>
+                        <input type="text" id="staffStoreStatsStoreId" placeholder="请输入店铺ID（通常是工作店铺）">
+                    </div>
+                    <div class="form-group">
+                        <label>交易类型:</label>
+                        <select id="staffStoreStatsType">
+                            <option value="">全部</option>
+                            <option value="1">充值</option>
+                            <option value="2">消费</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>开始日期:</label>
+                        <input type="date" id="staffStoreStatsStart">
+                    </div>
+                    <div class="form-group">
+                        <label>结束日期:</label>
+                        <input type="date" id="staffStoreStatsEnd">
+                    </div>
+                </div>
+                <button class="btn" onclick="staffQueryStoreStats()">查询统计（使用工作令牌）</button>
+                <div class="result-box" id="staffStoreStatsResult">统计结果将显示在这里...</div>
+            </div>
+        </div>
+
+        <!-- ==================== 普通用户测试 ==================== -->
+        <div id="user-section" class="content-section">
+            <div class="header">
+                <h1>👤 普通用户测试</h1>
+                <p>测试普通用户查询自己的积分记录</p>
+            </div>
+
+            <!-- 用户登录 -->
+            <div class="card">
+                <h2>1. 用户登录（获取普通令牌）</h2>
+                <div class="row">
+                    <div class="form-group">
+                        <label>手机号:</label>
+                        <input type="text" id="userPhone" placeholder="请输入手机号" value="13800137002">
+                    </div>
+                    <div class="form-group">
+                        <label>密码:</label>
+                        <input type="password" id="userPassword" placeholder="请输入密码" value="zhouge666">
+                    </div>
+                </div>
+                <button class="btn" onclick="userLogin()">登录</button>
+                <div class="token-display empty" id="userNormalToken">普通令牌将在登录后显示</div>
+                <div class="result-box" id="userLoginResult">登录结果将显示在这里...</div>
+            </div>
+
+            <!-- 积分记录查询 -->
+            <div class="card">
+                <h2>2. 查询我的积分记录</h2>
+                <div class="form-group">
+                    <label>会员卡ID:</label>
+                    <input type="text" id="userQueryCardId" placeholder="请输入我的会员卡ID">
+                    <div class="hint">只能查询本人的会员卡积分记录</div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>开始日期:</label>
+                        <input type="date" id="userQueryStartDate">
+                    </div>
+                    <div class="form-group">
+                        <label>结束日期:</label>
+                        <input type="date" id="userQueryEndDate">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>页码:</label>
+                        <input type="number" id="userQueryPageNum" value="1" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label>每页条数:</label>
+                        <input type="number" id="userQueryPageSize" value="10" min="1" max="100">
+                    </div>
+                </div>
+                <button class="btn" onclick="userQueryPoints()">查询我的积分记录</button>
+                <div class="result-box" id="userQueryResult">查询结果将显示在这里...</div>
+            </div>
+
+            <!-- 单卡交易记录查询 -->
+            <div class="card">
+                <h2>3. 查询单卡交易记录</h2>
+                <div class="row">
+                    <div class="form-group">
+                        <label>会员卡ID:</label>
+                        <input type="text" id="userCardRecordsCardId" placeholder="请输入我的会员卡ID">
+                    </div>
+                    <div class="form-group">
+                        <label>交易类型:</label>
+                        <select id="userCardRecordsType">
+                            <option value="">全部</option>
+                            <option value="1">充值</option>
+                            <option value="2">消费</option>
+                            <option value="3">退款</option>
+                            <option value="4">延期</option>
+                            <option value="5">日期变动</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>开始日期:</label>
+                        <input type="date" id="userCardRecordsStart">
+                    </div>
+                    <div class="form-group">
+                        <label>结束日期:</label>
+                        <input type="date" id="userCardRecordsEnd">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>页码:</label>
+                        <input type="number" id="userCardRecordsPage" value="1" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label>每页条数:</label>
+                        <input type="number" id="userCardRecordsSize" value="20" min="1" max="100">
+                    </div>
+                </div>
+                <button class="btn" onclick="userQueryCardRecords()">查询记录</button>
+                <div class="result-box" id="userCardRecordsResult">查询结果将显示在这里...</div>
+            </div>
+
+            <!-- 个人交易记录查询 -->
+            <div class="card">
+                <h2>4. 查询我的所有交易记录</h2>
+                <div class="row">
+                    <div class="form-group">
+                        <label>交易类型:</label>
+                        <select id="userMyRecordsType">
+                            <option value="">全部</option>
+                            <option value="1">充值</option>
+                            <option value="2">消费</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>开始日期:</label>
+                        <input type="date" id="userMyRecordsStart">
+                    </div>
+                    <div class="form-group">
+                        <label>结束日期:</label>
+                        <input type="date" id="userMyRecordsEnd">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>页码:</label>
+                        <input type="number" id="userMyRecordsPage" value="1" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label>每页条数:</label>
+                        <input type="number" id="userMyRecordsSize" value="20" min="1" max="100">
+                    </div>
+                </div>
+                <button class="btn" onclick="userQueryMyRecords()">查询我的交易记录</button>
+                <div class="result-box" id="userMyRecordsResult">查询结果将显示在这里...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入CryptoJS库用于AES加密 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script>
+        // API基础URL
+        const API_BASE_URL = 'http://localhost:8087';
+        const DEVICE_ID = 'test-device-' + Date.now();
+        const AES_KEY = 'oUDKf7+y6SrpeJ+GCJHL31HKlRFJ1mM/1MhGB4HF/94='; // 与后端一致（32字节）
+
+        // 生成UUID（用于Request-ID）
+        function generateUUID() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                const r = Math.random() * 16 | 0;
+                const v = c === 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+
+        // AES加密（使用CBC模式）
+        function encryptAES(plaintext) {
+            const key = CryptoJS.enc.Base64.parse(AES_KEY);
+            const iv = CryptoJS.lib.WordArray.random(16);
+            const encrypted = CryptoJS.AES.encrypt(plaintext, key, {
+                iv: iv,
+                mode: CryptoJS.mode.CBC,
+                padding: CryptoJS.pad.Pkcs7
+            });
+            
+            // 返回 IV + Ciphertext 的Base64编码
+            const combined = iv.concat(encrypted.ciphertext);
+            return CryptoJS.enc.Base64.stringify(combined);
+        }
+
+        // 存储令牌
+        let merchantTokens = { normal: null, work: null };
+        let staffTokens = { normal: null, work: null };
+        let userTokens = { normal: null };
+
+        // 切换侧边栏菜单
+        function showSection(section) {
+            // 更新菜单激活状态
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // 切换内容区域
+            document.querySelectorAll('.content-section').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(section + '-section').classList.add('active');
+        }
+
+        // 通用API请求函数
+        async function apiRequest(url, method, data, token, needIdempotent = false) {
+            const headers = {
+                'Content-Type': 'application/json',
+                'Device-Id': DEVICE_ID
+            };
+
+            // 只有需要幂等性的接口才添加 X-Request-ID
+            if (needIdempotent) {
+                headers['X-Request-ID'] = generateUUID();
+            }
+
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
+
+            const options = {
+                method: method,
+                headers: headers
+            };
+
+            if (data && method !== 'GET') {
+                options.body = JSON.stringify(data);
+            } else if (data && method === 'GET') {
+                const params = new URLSearchParams(data);
+                url += '?' + params.toString();
+            }
+
+            try {
+                const response = await fetch(API_BASE_URL + url, options);
+                return await response.json();
+            } catch (error) {
+                return {
+                    code: 99999,
+                    message: '网络错误: ' + error.message,
+                    timestamp: Date.now()
+                };
+            }
+        }
+
+        // 格式化日期为 yyyy-MM-dd
+        function formatDate(dateInput) {
+            if (!dateInput) return null;
+            const date = new Date(dateInput);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        // ==================== 商家测试函数 ====================
+        
+        async function merchantLogin() {
+            const phone = document.getElementById('merchantPhone').value;
+            const password = document.getElementById('merchantPassword').value;
+            const platform = document.getElementById('globalPlatform').value;
+            const resultDiv = document.getElementById('merchantLoginResult');
+
+            if (!phone || !password) {
+                alert('请输入手机号和密码');
+                return;
+            }
+
+            resultDiv.textContent = '登录中...';
+
+            const encryptedPhone = encryptAES(phone);
+
+            const result = await apiRequest('/api/v1/users/login', 'POST', {
+                phone: encryptedPhone,
+                password: password,
+                rememberMe: false,
+                platform: platform
+            });
+
+            resultDiv.textContent = JSON.stringify(result, null, 2);
+
+            if (result.code === 200 && result.data) {
+                merchantTokens.normal = result.data.normalToken;
+                const tokenDisplay = document.getElementById('merchantNormalToken');
+                tokenDisplay.className = 'token-display';
+                tokenDisplay.textContent = '普通令牌: ' + result.data.normalToken;
+                
+                let alertMessage = `✅ 商家登录成功！\n用户ID: ${result.data.userInfo.userId}\n昵称: ${result.data.userInfo.nickname}`;
+                if (result.data.userInfo.merchantInfo) {
+                    alertMessage += `\n\n商户ID: ${result.data.userInfo.merchantInfo.merchantId}\n商户名称: ${result.data.userInfo.merchantInfo.merchantName}`;
+                }
+                alert(alertMessage);
+            }
+        }
+
+        async function merchantGetWorkToken() {
+            const storeId = document.getElementById('merchantStoreId').value;
+            const resultDiv = document.getElementById('merchantWorkTokenResult');
+
+            if (!storeId) {
+                alert('请输入店铺ID');
+                return;
+            }
+
+            if (!merchantTokens.normal) {
+                alert('请先登录获取普通令牌');
+                return;
+            }
+
+            resultDiv.textContent = '获取工作令牌中...';
+
+            const result = await apiRequest('/api/v1/tokens/work', 'POST', {
+                storeId: storeId
+            }, merchantTokens.normal);
+
+            resultDiv.textContent = JSON.stringify(result, null, 2);
+
+            if (result.code === 200 && result.data) {
+                merchantTokens.work = result.data.token;
+                const tokenDisplay = document.getElementById('merchantWorkToken');
+                tokenDisplay.className = 'token-display';
+                tokenDisplay.textContent = '工作令牌: ' + result.data.token;
+                
+                let alertMessage = `✅ 工作令牌获取成功！\n店铺ID: ${result.data.storeId}\n过期时间: ${result.data.expireTime}`;
+                alert(alertMessage);
+            }
+        }
+
+        async function merchantAdjustPoints() {
+            const cardId = document.getElementById('merchantPointsCardId').value;
+            const storeId = document.getElementById('merchantPointsStoreId').value;
+            const pointsChange = parseInt(document.getElementById('merchantPointsChange').value);
+            const remark = document.getElementById('merchantPointsRemark').value;
+            const tokenType = document.getElementById('merchantPointsTokenType').value;
+            const resultDiv = document.getElementById('merchantPointsResult');
+
+            if (!cardId || !storeId || !pointsChange || !remark) {
+                alert('请填写完整信息');
+                return;
+            }
+
+            if (remark.length < 5 || remark.length > 200) {
+                alert('变动原因长度必须在5-200字符之间');
+                return;
+            }
+
+            const token = tokenType === 'work' ? merchantTokens.work : merchantTokens.normal;
+            if (!token) {
+                alert(`请先获取${tokenType === 'work' ? '工作令牌' : '普通令牌'}`);
+                return;
+            }
+
+            // 防重复提交：查找并禁用按钮
+            const buttons = document.querySelectorAll('button');
+            let submitButton = null;
+            buttons.forEach(btn => {
+                if (btn.textContent.includes('提交积分变动') && !btn.textContent.includes('工作令牌')) {
+                    submitButton = btn;
+                }
+            });
+
+            if (submitButton) {
+                submitButton.disabled = true;
+                submitButton.textContent = '提交中...';
+            }
+
+            resultDiv.textContent = '提交中...';
+
+            try {
+                const result = await apiRequest('/api/v1/points/adjust', 'POST', {
+                    memberCardId: cardId,
+                    storeId: storeId,
+                    pointsChange: pointsChange,
+                    remark: remark
+                }, token, true); // 需要幂等性控制
+
+                resultDiv.textContent = JSON.stringify(result, null, 2);
+
+                if (result.code === 200) {
+                    alert(`✅ 积分变动成功！\n变动值: ${result.data.pointsChange}\n当前积分: ${result.data.pointsSnapshot}`);
+                } else if (result.code === 11002) {
+                    alert('⚠️ 请勿重复提交！');
+                }
+            } finally {
+                // 3秒后恢复按钮
+                if (submitButton) {
+                    setTimeout(() => {
+                        submitButton.disabled = false;
+                        submitButton.textContent = '提交积分变动';
+                    }, 3000);
+                }
+            }
+        }
+
+        async function merchantQueryPoints() {
+            const cardId = document.getElementById('merchantQueryCardId').value;
+            const storeId = document.getElementById('merchantQueryStoreId').value;
+            const startDate = formatDate(document.getElementById('merchantQueryStartDate').value);
+            const endDate = formatDate(document.getElementById('merchantQueryEndDate').value);
+            const pageNum = parseInt(document.getElementById('merchantQueryPageNum').value);
+            const pageSize = parseInt(document.getElementById('merchantQueryPageSize').value);
+            const tokenType = document.getElementById('merchantQueryTokenType').value;
+            const resultDiv = document.getElementById('merchantQueryResult');
+
+            if (!cardId) {
+                alert('请输入会员卡ID');
+                return;
+            }
+
+            const token = tokenType === 'work' ? merchantTokens.work : merchantTokens.normal;
+            if (!token) {
+                alert(`请先获取${tokenType === 'work' ? '工作令牌' : '普通令牌'}`);
+                return;
+            }
+
+            if (tokenType === 'work' && !storeId) {
+                alert('使用工作令牌时必须提供店铺ID');
+                return;
+            }
+
+            resultDiv.textContent = '查询中...';
+
+            const params = {
+                memberCardId: cardId,
+                pageNum: pageNum,
+                pageSize: pageSize
+            };
+
+            if (storeId) params.storeId = storeId;
+            if (startDate) params.startDate = startDate;
+            if (endDate) params.endDate = endDate;
+
+            const result = await apiRequest('/api/v1/points/records', 'GET', params, token);
+
+            resultDiv.textContent = JSON.stringify(result, null, 2);
+
+            if (result.code === 200) {
+                alert(`✅ 查询成功！\n当前积分: ${result.data.currentPoints}\n记录总数: ${result.data.total}`);
+            }
+        }
+
+        // ==================== 员工测试函数 ====================
+        
+        async function staffLogin() {
+            const phone = document.getElementById('staffPhone').value;
+            const password = document.getElementById('staffPassword').value;
+            const platform = document.getElementById('globalPlatform').value;
+            const resultDiv = document.getElementById('staffLoginResult');
+
+            if (!phone || !password) {
+                alert('请输入手机号和密码');
+                return;
+            }
+
+            resultDiv.textContent = '登录中...';
+
+            const encryptedPhone = encryptAES(phone);
+
+            const result = await apiRequest('/api/v1/users/login', 'POST', {
+                phone: encryptedPhone,
+                password: password,
+                rememberMe: false,
+                platform: platform
+            });
+
+            resultDiv.textContent = JSON.stringify(result, null, 2);
+
+            if (result.code === 200 && result.data) {
+                staffTokens.normal = result.data.normalToken;
+                const tokenDisplay = document.getElementById('staffNormalToken');
+                tokenDisplay.className = 'token-display';
+                tokenDisplay.textContent = '普通令牌: ' + result.data.normalToken;
+                
+                let alertMessage = `✅ 员工登录成功！\n用户ID: ${result.data.userInfo.userId}\n昵称: ${result.data.userInfo.nickname}`;
+                alert(alertMessage);
+            }
+        }
+
+        async function staffGetWorkToken() {
+            const storeId = document.getElementById('staffStoreId').value;
+            const resultDiv = document.getElementById('staffWorkTokenResult');
+
+            if (!storeId) {
+                alert('请输入店铺ID');
+                return;
+            }
+
+            if (!staffTokens.normal) {
+                alert('请先登录获取普通令牌');
+                return;
+            }
+
+            resultDiv.textContent = '获取工作令牌中...';
+
+            const result = await apiRequest('/api/v1/tokens/work', 'POST', {
+                storeId: storeId
+            }, staffTokens.normal);
+
+            resultDiv.textContent = JSON.stringify(result, null, 2);
+
+            if (result.code === 200 && result.data) {
+                staffTokens.work = result.data.token;
+                const tokenDisplay = document.getElementById('staffWorkToken');
+                tokenDisplay.className = 'token-display';
+                tokenDisplay.textContent = '工作令牌: ' + result.data.token;
+                
+                let alertMessage = `✅ 工作令牌获取成功！\n店铺ID: ${result.data.storeId}\n过期时间: ${result.data.expireTime}`;
+                alert(alertMessage);
+            }
+        }
+
+        async function staffAdjustPoints() {
+            const cardId = document.getElementById('staffPointsCardId').value;
+            const storeId = document.getElementById('staffPointsStoreId').value;
+            const pointsChange = parseInt(document.getElementById('staffPointsChange').value);
+            const remark = document.getElementById('staffPointsRemark').value;
+            const resultDiv = document.getElementById('staffPointsResult');
+
+            if (!cardId || !storeId || !pointsChange || !remark) {
+                alert('请填写完整信息');
+                return;
+            }
+
+            if (remark.length < 5 || remark.length > 200) {
+                alert('变动原因长度必须在5-200字符之间');
+                return;
+            }
+
+            if (!staffTokens.work) {
+                alert('请先获取工作令牌');
+                return;
+            }
+
+            // 防重复提交：查找并禁用按钮
+            const buttons = document.querySelectorAll('button');
+            let submitButton = null;
+            buttons.forEach(btn => {
+                if (btn.textContent.includes('提交积分变动') && btn.textContent.includes('工作令牌')) {
+                    submitButton = btn;
+                }
+            });
+
+            if (submitButton) {
+                submitButton.disabled = true;
+                submitButton.textContent = '提交中...';
+            }
+
+            resultDiv.textContent = '提交中...';
+
+            try {
+                const result = await apiRequest('/api/v1/points/adjust', 'POST', {
+                    memberCardId: cardId,
+                    storeId: storeId,
+                    pointsChange: pointsChange,
+                    remark: remark
+                }, staffTokens.work, true); // 需要幂等性控制
+
+                resultDiv.textContent = JSON.stringify(result, null, 2);
+
+                if (result.code === 200) {
+                    alert(`✅ 积分变动成功！\n变动值: ${result.data.pointsChange}\n当前积分: ${result.data.pointsSnapshot}`);
+                } else if (result.code === 11002) {
+                    alert('⚠️ 请勿重复提交！');
+                }
+            } finally {
+                // 3秒后恢复按钮
+                if (submitButton) {
+                    setTimeout(() => {
+                        submitButton.disabled = false;
+                        submitButton.textContent = '提交积分变动（使用工作令牌）';
+                    }, 3000);
+                }
+            }
+        }
+
+        async function staffQueryPoints() {
+            const cardId = document.getElementById('staffQueryCardId').value;
+            const storeId = document.getElementById('staffQueryStoreId').value;
+            const startDate = formatDate(document.getElementById('staffQueryStartDate').value);
+            const endDate = formatDate(document.getElementById('staffQueryEndDate').value);
+            const pageNum = parseInt(document.getElementById('staffQueryPageNum').value);
+            const pageSize = parseInt(document.getElementById('staffQueryPageSize').value);
+            const resultDiv = document.getElementById('staffQueryResult');
+
+            if (!cardId || !storeId) {
+                alert('请输入会员卡ID和店铺ID');
+                return;
+            }
+
+            if (!staffTokens.work) {
+                alert('请先获取工作令牌');
+                return;
+            }
+
+            resultDiv.textContent = '查询中...';
+
+            const params = {
+                memberCardId: cardId,
+                storeId: storeId,
+                pageNum: pageNum,
+                pageSize: pageSize
+            };
+
+            if (startDate) params.startDate = startDate;
+            if (endDate) params.endDate = endDate;
+
+            const result = await apiRequest('/api/v1/points/records', 'GET', params, staffTokens.work);
+
+            resultDiv.textContent = JSON.stringify(result, null, 2);
+
+            if (result.code === 200) {
+                alert(`✅ 查询成功！\n当前积分: ${result.data.currentPoints}\n记录总数: ${result.data.total}`);
+            }
+        }
+
+        // ==================== 普通用户测试函数 ====================
+        
+        async function userLogin() {
+            const phone = document.getElementById('userPhone').value;
+            const password = document.getElementById('userPassword').value;
+            const platform = document.getElementById('globalPlatform').value;
+            const resultDiv = document.getElementById('userLoginResult');
+
+            if (!phone || !password) {
+                alert('请输入手机号和密码');
+                return;
+            }
+
+            resultDiv.textContent = '登录中...';
+
+            const encryptedPhone = encryptAES(phone);
+
+            const result = await apiRequest('/api/v1/users/login', 'POST', {
+                phone: encryptedPhone,
+                password: password,
+                rememberMe: false,
+                platform: platform
+            });
+
+            resultDiv.textContent = JSON.stringify(result, null, 2);
+
+            if (result.code === 200 && result.data) {
+                userTokens.normal = result.data.normalToken;
+                const tokenDisplay = document.getElementById('userNormalToken');
+                tokenDisplay.className = 'token-display';
+                tokenDisplay.textContent = '普通令牌: ' + result.data.normalToken;
+                
+                let alertMessage = `✅ 用户登录成功！\n用户ID: ${result.data.userInfo.userId}\n昵称: ${result.data.userInfo.nickname}`;
+                alert(alertMessage);
+            }
+        }
+
+        async function userQueryPoints() {
+            const cardId = document.getElementById('userQueryCardId').value;
+            const startDate = formatDate(document.getElementById('userQueryStartDate').value);
+            const endDate = formatDate(document.getElementById('userQueryEndDate').value);
+            const pageNum = parseInt(document.getElementById('userQueryPageNum').value);
+            const pageSize = parseInt(document.getElementById('userQueryPageSize').value);
+            const resultDiv = document.getElementById('userQueryResult');
+
+            if (!cardId) {
+                alert('请输入会员卡ID');
+                return;
+            }
+
+            if (!userTokens.normal) {
+                alert('请先登录');
+                return;
+            }
+
+            resultDiv.textContent = '查询中...';
+
+            const params = {
+                memberCardId: cardId,
+                pageNum: pageNum,
+                pageSize: pageSize
+            };
+
+            if (startDate) params.startDate = startDate;
+            if (endDate) params.endDate = endDate;
+
+            const result = await apiRequest('/api/v1/points/records', 'GET', params, userTokens.normal);
+
+            resultDiv.textContent = JSON.stringify(result, null, 2);
+
+            if (result.code === 200) {
+                alert(`✅ 查询成功！\n当前积分: ${result.data.currentPoints}\n记录总数: ${result.data.total}`);
+            }
+        }
+
+        // ==================== 交易管理：切换时效调整字段 ====================
+        
+        function toggleExpireFields(role) {
+            const adjustType = document.getElementById(role + 'AdjustType').value;
+            const daysGroup = document.getElementById(role + 'DaysGroup');
+            const expireTimeGroup = document.getElementById(role + 'ExpireTimeGroup');
+            
+            if (adjustType == '1') {
+                daysGroup.style.display = 'block';
+                expireTimeGroup.style.display = 'none';
+            } else {
+                daysGroup.style.display = 'none';
+                expireTimeGroup.style.display = 'block';
+            }
+        }
+
+        // ==================== 商家交易管理测试函数 ====================
+        
+        async function merchantRecharge() {
+            const cardId = document.getElementById('merchantRechargeCardId').value;
+            const storeId = document.getElementById('merchantRechargeStoreId').value;
+            const rechargeType = parseInt(document.getElementById('merchantRechargeType').value);
+            const amount = parseFloat(document.getElementById('merchantRechargeAmount').value);
+            const remark = document.getElementById('merchantRechargeRemark').value;
+            const tokenType = document.getElementById('merchantRechargeTokenType').value;
+            const resultDiv = document.getElementById('merchantRechargeResult');
+
+            if (!cardId || !storeId || !rechargeType || !amount || !remark) {
+                alert('请填写所有必填字段');
+                return;
+            }
+
+            const token = tokenType === 'work' ? merchantTokens.work : merchantTokens.normal;
+            if (!token) {
+                alert(`请先获取${tokenType === 'work' ? '工作' : '普通'}令牌`);
+                return;
+            }
+
+            resultDiv.textContent = '充值中...';
+
+            const result = await apiRequest('/api/v1/transactions/recharge', 'POST', {
+                memberCardId: cardId,
+                storeId: storeId,
+                rechargeType: rechargeType,
+                amount: amount,
+                remark: remark
+            }, token, true);  // 需要幂等性
+
+            resultDiv.textContent = JSON.stringify(result, null, 2);
+
+            if (result.code === 200 && result.data) {
+                alert(`✅ 充值成功！\n交易ID: ${result.data.transactionId}\n充值金额: ${result.data.rechargeAmount}\n余额快照: ${result.data.balanceSnapshot}`);
+            } else if (result.code === 11002) {
+                alert('⚠️ 重复请求，请勿重复提交！');
+            }
+        }
+
+        async function merchantExpireAdjust() {
+            const cardId = document.getElementById('merchantExpireCardId').value;
+            const storeId = document.getElementById('merchantExpireStoreId').value;
+            const adjustType = parseInt(document.getElementById('merchantAdjustType').value);
+            const remark = document.getElementById('merchantExpireRemark').value;
+            const tokenType = document.getElementById('merchantExpireTokenType').value;
+            const resultDiv = document.getElementById('merchantExpireResult');
+
+            if (!cardId || !storeId || !remark) {
+                alert('请填写所有必填字段');
+                return;
+            }
+
+            const token = tokenType === 'work' ? merchantTokens.work : merchantTokens.normal;
+            if (!token) {
+                alert(`请先获取${tokenType === 'work' ? '工作' : '普通'}令牌`);
+                return;
+            }
+
+            const requestData = {
+                memberCardId: cardId,
+                storeId: storeId,
+                adjustType: adjustType,
+                remark: remark
+            };
+
+            if (adjustType === 1) {
+                const days = parseInt(document.getElementById('merchantExpireDays').value);
+                if (!days) {
+                    alert('请输入延期天数');
+                    return;
+                }
+                requestData.days = days;
+            } else {
+                const expireDate = document.getElementById('merchantExpireTime').value;
+                if (!expireDate) {
+                    alert('请选择到期日期');
+                    return;
+                }
+                // 拼接 23:59:59 时间
+                requestData.expireTime = expireDate + ' 23:59:59';
+            }
+
+            resultDiv.textContent = '调整中...';
+
+            const result = await apiRequest('/api/v1/transactions/expire-adjust', 'POST', requestData, token, true);  // 需要幂等性
+
+            resultDiv.textContent = JSON.stringify(result, null, 2);
+
+            if (result.code === 200 && result.data) {
+                alert(`✅ 时效调整成功！\n交易ID: ${result.data.transactionId}\n原到期时间: ${result.data.oldExpireTime}\n新到期时间: ${result.data.newExpireTime}`);
+            } else if (result.code === 11002) {
+                alert('⚠️ 重复请求，请勿重复提交！');
+            }
+        }
+
+        async function merchantConsume() {
+            const cardId = document.getElementById('merchantConsumeCardId').value;
+            const storeId = document.getElementById('merchantConsumeStoreId').value;
+            const consumeType = parseInt(document.getElementById('merchantConsumeType').value);
+            const amount = parseFloat(document.getElementById('merchantConsumeAmount').value);
+            const remark = document.getElementById('merchantConsumeRemark').value;
+            const points = document.getElementById('merchantConsumePoints').value;
+            const tokenType = document.getElementById('merchantConsumeTokenType').value;
+            const resultDiv = document.getElementById('merchantConsumeResult');
+
+            if (!cardId || !storeId || !consumeType || !amount || !remark) {
+                alert('请填写所有必填字段');
+                return;
+            }
+
+            const token = tokenType === 'work' ? merchantTokens.work : merchantTokens.normal;
+            if (!token) {
+                alert(`请先获取${tokenType === 'work' ? '工作' : '普通'}令牌`);
+                return;
+            }
+
+            resultDiv.textContent = '消费中...';
+
+            const requestData = {
+                memberCardId: cardId,
+                storeId: storeId,
+                consumeType: consumeType,
+                amount: amount,
+                remark: remark
+            };
+
+            // 只有填写了积分值才添加到请求中
+            if (points !== '' && points !== null) {
+                requestData.points = parseInt(points);
+            }
+
+            const result = await apiRequest('/api/v1/transactions/consume', 'POST', requestData, token, true);  // 需要幂等性
+
+            resultDiv.textContent = JSON.stringify(result, null, 2);
+
+            if (result.code === 200 && result.data) {
+                alert(`✅ 消费成功！\n交易ID: ${result.data.transactionId}\n消费金额: ${result.data.consumeAmount}\n余额快照: ${result.data.balanceSnapshot}\n获得积分: ${result.data.earnedPoints || 0}`);
+            } else if (result.code === 11002) {
+                alert('⚠️ 重复请求，请勿重复提交！');
+            }
+        }
+
+        // ==================== 员工交易管理测试函数 ====================
+        
+        async function staffRecharge() {
+            const cardId = document.getElementById('staffRechargeCardId').value;
+            const storeId = document.getElementById('staffRechargeStoreId').value;
+            const rechargeType = parseInt(document.getElementById('staffRechargeType').value);
+            const amount = parseFloat(document.getElementById('staffRechargeAmount').value);
+            const remark = document.getElementById('staffRechargeRemark').value;
+            const resultDiv = document.getElementById('staffRechargeResult');
+
+            if (!cardId || !storeId || !rechargeType || !amount || !remark) {
+                alert('请填写所有必填字段');
+                return;
+            }
+
+            if (!staffTokens.work) {
+                alert('请先获取工作令牌');
+                return;
+            }
+
+            resultDiv.textContent = '充值中...';
+
+            const result = await apiRequest('/api/v1/transactions/recharge', 'POST', {
+                memberCardId: cardId,
+                storeId: storeId,
+                rechargeType: rechargeType,
+                amount: amount,
+                remark: remark
+            }, staffTokens.work, true);  // 需要幂等性
+
+            resultDiv.textContent = JSON.stringify(result, null, 2);
+
+            if (result.code === 200 && result.data) {
+                alert(`✅ 充值成功！\n交易ID: ${result.data.transactionId}\n充值金额: ${result.data.rechargeAmount}\n余额快照: ${result.data.balanceSnapshot}`);
+            } else if (result.code === 11002) {
+                alert('⚠️ 重复请求，请勿重复提交！');
+            }
+        }
+
+        async function staffExpireAdjust() {
+            const cardId = document.getElementById('staffExpireCardId').value;
+            const storeId = document.getElementById('staffExpireStoreId').value;
+            const adjustType = parseInt(document.getElementById('staffAdjustType').value);
+            const remark = document.getElementById('staffExpireRemark').value;
+            const resultDiv = document.getElementById('staffExpireResult');
+
+            if (!cardId || !storeId || !remark) {
+                alert('请填写所有必填字段');
+                return;
+            }
+
+            if (!staffTokens.work) {
+                alert('请先获取工作令牌');
+                return;
+            }
+
+            const requestData = {
+                memberCardId: cardId,
+                storeId: storeId,
+                adjustType: adjustType,
+                remark: remark
+            };
+
+            if (adjustType === 1) {
+                const days = parseInt(document.getElementById('staffExpireDays').value);
+                if (!days) {
+                    alert('请输入延期天数');
+                    return;
+                }
+                requestData.days = days;
+            } else {
+                const expireDate = document.getElementById('staffExpireTime').value;
+                if (!expireDate) {
+                    alert('请选择到期日期');
+                    return;
+                }
+                // 拼接 23:59:59 时间
+                requestData.expireTime = expireDate + ' 23:59:59';
+            }
+
+            resultDiv.textContent = '调整中...';
+
+            const result = await apiRequest('/api/v1/transactions/expire-adjust', 'POST', requestData, staffTokens.work, true);  // 需要幂等性
+
+            resultDiv.textContent = JSON.stringify(result, null, 2);
+
+            if (result.code === 200 && result.data) {
+                alert(`✅ 时效调整成功！\n交易ID: ${result.data.transactionId}\n原到期时间: ${result.data.oldExpireTime}\n新到期时间: ${result.data.newExpireTime}`);
+            } else if (result.code === 11002) {
+                alert('⚠️ 重复请求，请勿重复提交！');
+            }
+        }
+
+        async function staffConsume() {
+            const cardId = document.getElementById('staffConsumeCardId').value;
+            const storeId = document.getElementById('staffConsumeStoreId').value;
+            const consumeType = parseInt(document.getElementById('staffConsumeType').value);
+            const amount = parseFloat(document.getElementById('staffConsumeAmount').value);
+            const remark = document.getElementById('staffConsumeRemark').value;
+            const points = document.getElementById('staffConsumePoints').value;
+            const resultDiv = document.getElementById('staffConsumeResult');
+
+            if (!cardId || !storeId || !consumeType || !amount || !remark) {
+                alert('请填写所有必填字段');
+                return;
+            }
+
+            if (!staffTokens.work) {
+                alert('请先获取工作令牌');
+                return;
+            }
+
+            resultDiv.textContent = '消费中...';
+
+            const requestData = {
+                memberCardId: cardId,
+                storeId: storeId,
+                consumeType: consumeType,
+                amount: amount,
+                remark: remark
+            };
+
+            // 只有填写了积分值才添加到请求中
+            if (points !== '' && points !== null) {
+                requestData.points = parseInt(points);
+            }
+
+            const result = await apiRequest('/api/v1/transactions/consume', 'POST', requestData, staffTokens.work, true);  // 需要幂等性
+
+            resultDiv.textContent = JSON.stringify(result, null, 2);
+
+            if (result.code === 200 && result.data) {
+                alert(`✅ 消费成功！\n交易ID: ${result.data.transactionId}\n消费金额: ${result.data.consumeAmount}\n余额快照: ${result.data.balanceSnapshot}\n获得积分: ${result.data.earnedPoints || 0}`);
+            } else if (result.code === 11002) {
+                alert('⚠️ 重复请求，请勿重复提交！');
+            }
+        }
+
+        // ==================== 商家查询和统计函数 ====================
+
+        async function merchantQueryCardRecords() {
+            const cardId = document.getElementById('merchantCardRecordsCardId').value;
+            const type = document.getElementById('merchantCardRecordsType').value;
+            const startDate = document.getElementById('merchantCardRecordsStart').value;
+            const endDate = document.getElementById('merchantCardRecordsEnd').value;
+            const pageNum = parseInt(document.getElementById('merchantCardRecordsPage').value);
+            const pageSize = parseInt(document.getElementById('merchantCardRecordsSize').value);
+            const resultDiv = document.getElementById('merchantCardRecordsResult');
+
+            if (!cardId) {
+                alert('请输入会员卡ID');
+                return;
+            }
+
+            if (!merchantTokens.normal && !merchantTokens.work) {
+                alert('请先登录或获取工作令牌');
+                return;
+            }
+
+            resultDiv.textContent = '查询中...';
+
+            const params = { memberCardId: cardId, pageNum, pageSize };
+            if (type) params.transactionType = parseInt(type);
+            if (startDate) params.startDate = startDate;
+            if (endDate) params.endDate = endDate;
+
+            const token = merchantTokens.work || merchantTokens.normal;
+            const result = await apiRequest('/api/v1/transactions/card-records', 'GET', params, token);
+
+            resultDiv.textContent = JSON.stringify(result, null, 2);
+
+            if (result.code === 200) {
+                alert(`✅ 查询成功！\n卡种: ${result.data.cardInfo.cardTypeName}\n当前余额: ${result.data.cardInfo.currentBalance}\n记录总数: ${result.data.total}`);
+            }
+        }
+
+        async function merchantQueryStoreStats() {
+            const storeId = document.getElementById('merchantStoreStatsStoreId').value;
+            const type = document.getElementById('merchantStoreStatsType').value;
+            const startDate = document.getElementById('merchantStoreStatsStart').value;
+            const endDate = document.getElementById('merchantStoreStatsEnd').value;
+            const resultDiv = document.getElementById('merchantStoreStatsResult');
+
+            if (!storeId || !startDate || !endDate) {
+                alert('请输入店铺ID、开始日期和结束日期');
+                return;
+            }
+
+            if (!merchantTokens.normal && !merchantTokens.work) {
+                alert('请先登录或获取工作令牌');
+                return;
+            }
+
+            resultDiv.textContent = '查询中...';
+
+            const params = { storeId, startDate, endDate };
+            if (type) params.transactionType = parseInt(type);
+
+            const token = merchantTokens.work || merchantTokens.normal;
+            const result = await apiRequest('/api/v1/transactions/store-statistics', 'GET', params, token);
+
+            resultDiv.textContent = JSON.stringify(result, null, 2);
+
+            if (result.code === 200) {
+                alert(`✅ 查询成功！\n店铺: ${result.data.storeInfo.storeName}\n充值总额: ${result.data.rechargeStats.totalAmount}\n消费总额: ${result.data.consumeStats.totalAmount}`);
+            }
+        }
+
+        async function merchantQueryMerchantStats() {
+            const type = document.getElementById('merchantMerchantStatsType').value;
+            const startDate = document.getElementById('merchantMerchantStatsStart').value;
+            const endDate = document.getElementById('merchantMerchantStatsEnd').value;
+            const resultDiv = document.getElementById('merchantMerchantStatsResult');
+
+            if (!startDate || !endDate) {
+                alert('请输入开始日期和结束日期');
+                return;
+            }
+
+            if (!merchantTokens.normal) {
+                alert('请先登录获取普通令牌');
+                return;
+            }
+
+            resultDiv.textContent = '查询中...';
+
+            const params = { startDate, endDate };
+            if (type) params.transactionType = parseInt(type);
+
+            const result = await apiRequest('/api/v1/transactions/merchant-statistics', 'GET', params, merchantTokens.normal);
+
+            resultDiv.textContent = JSON.stringify(result, null, 2);
+
+            if (result.code === 200) {
+                alert(`✅ 查询成功！\n商家: ${result.data.merchantInfo.merchantName}\n充值总额: ${result.data.rechargeStats.totalAmount}\n消费总额: ${result.data.consumeStats.totalAmount}`);
+            }
+        }
+
+        // ==================== 员工查询和统计函数 ====================
+
+        async function staffQueryCardRecords() {
+            const cardId = document.getElementById('staffCardRecordsCardId').value;
+            const type = document.getElementById('staffCardRecordsType').value;
+            const startDate = document.getElementById('staffCardRecordsStart').value;
+            const endDate = document.getElementById('staffCardRecordsEnd').value;
+            const pageNum = parseInt(document.getElementById('staffCardRecordsPage').value);
+            const pageSize = parseInt(document.getElementById('staffCardRecordsSize').value);
+            const resultDiv = document.getElementById('staffCardRecordsResult');
+
+            if (!cardId) {
+                alert('请输入会员卡ID');
+                return;
+            }
+
+            if (!staffTokens.work) {
+                alert('请先获取工作令牌');
+                return;
+            }
+
+            resultDiv.textContent = '查询中...';
+
+            const params = { memberCardId: cardId, pageNum, pageSize };
+            if (type) params.transactionType = parseInt(type);
+            if (startDate) params.startDate = startDate;
+            if (endDate) params.endDate = endDate;
+
+            const result = await apiRequest('/api/v1/transactions/card-records', 'GET', params, staffTokens.work);
+
+            resultDiv.textContent = JSON.stringify(result, null, 2);
+
+            if (result.code === 200) {
+                alert(`✅ 查询成功！\n卡种: ${result.data.cardInfo.cardTypeName}\n当前余额: ${result.data.cardInfo.currentBalance}\n记录总数: ${result.data.total}`);
+            }
+        }
+
+        async function staffQueryStoreStats() {
+            const storeId = document.getElementById('staffStoreStatsStoreId').value;
+            const type = document.getElementById('staffStoreStatsType').value;
+            const startDate = document.getElementById('staffStoreStatsStart').value;
+            const endDate = document.getElementById('staffStoreStatsEnd').value;
+            const resultDiv = document.getElementById('staffStoreStatsResult');
+
+            if (!storeId || !startDate || !endDate) {
+                alert('请输入店铺ID、开始日期和结束日期');
+                return;
+            }
+
+            if (!staffTokens.work) {
+                alert('请先获取工作令牌');
+                return;
+            }
+
+            resultDiv.textContent = '查询中...';
+
+            const params = { storeId, startDate, endDate };
+            if (type) params.transactionType = parseInt(type);
+
+            const result = await apiRequest('/api/v1/transactions/store-statistics', 'GET', params, staffTokens.work);
+
+            resultDiv.textContent = JSON.stringify(result, null, 2);
+
+            if (result.code === 200) {
+                alert(`✅ 查询成功！\n店铺: ${result.data.storeInfo.storeName}\n充值总额: ${result.data.rechargeStats.totalAmount}\n消费总额: ${result.data.consumeStats.totalAmount}`);
+            }
+        }
+
+        // ==================== 普通用户查询函数 ====================
+
+        async function userQueryCardRecords() {
+            const cardId = document.getElementById('userCardRecordsCardId').value;
+            const type = document.getElementById('userCardRecordsType').value;
+            const startDate = document.getElementById('userCardRecordsStart').value;
+            const endDate = document.getElementById('userCardRecordsEnd').value;
+            const pageNum = parseInt(document.getElementById('userCardRecordsPage').value);
+            const pageSize = parseInt(document.getElementById('userCardRecordsSize').value);
+            const resultDiv = document.getElementById('userCardRecordsResult');
+
+            if (!cardId) {
+                alert('请输入会员卡ID');
+                return;
+            }
+
+            if (!userTokens.normal) {
+                alert('请先登录');
+                return;
+            }
+
+            resultDiv.textContent = '查询中...';
+
+            const params = { memberCardId: cardId, pageNum, pageSize };
+            if (type) params.transactionType = parseInt(type);
+            if (startDate) params.startDate = startDate;
+            if (endDate) params.endDate = endDate;
+
+            const result = await apiRequest('/api/v1/transactions/card-records', 'GET', params, userTokens.normal);
+
+            resultDiv.textContent = JSON.stringify(result, null, 2);
+
+            if (result.code === 200) {
+                alert(`✅ 查询成功！\n卡种: ${result.data.cardInfo.cardTypeName}\n当前余额: ${result.data.cardInfo.currentBalance}\n记录总数: ${result.data.total}`);
+            }
+        }
+
+        async function userQueryMyRecords() {
+            const type = document.getElementById('userMyRecordsType').value;
+            const startDate = document.getElementById('userMyRecordsStart').value;
+            const endDate = document.getElementById('userMyRecordsEnd').value;
+            const pageNum = parseInt(document.getElementById('userMyRecordsPage').value);
+            const pageSize = parseInt(document.getElementById('userMyRecordsSize').value);
+            const resultDiv = document.getElementById('userMyRecordsResult');
+
+            if (!userTokens.normal) {
+                alert('请先登录');
+                return;
+            }
+
+            resultDiv.textContent = '查询中...';
+
+            const params = { pageNum, pageSize };
+            if (type) params.transactionType = parseInt(type);
+            if (startDate) params.startDate = startDate;
+            if (endDate) params.endDate = endDate;
+
+            const result = await apiRequest('/api/v1/transactions/my-records', 'GET', params, userTokens.normal);
+
+            resultDiv.textContent = JSON.stringify(result, null, 2);
+
+            if (result.code === 200) {
+                alert(`✅ 查询成功！\n记录总数: ${result.data.total}\n当前页: ${result.data.pageNum}`);
+            }
+        }
+    </script>
+</body>
+</html>

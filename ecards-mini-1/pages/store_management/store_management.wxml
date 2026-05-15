@@ -1,0 +1,66 @@
+<!--pages/store_management/store_management.wxml-->
+<view class="page-container">
+  <!-- 页面头部 -->
+  <view class="header-section">
+    <view class="header-content">
+      <text class="header-title">我的店铺</text>
+      <text class="header-subtitle">共 {{storeList.length}} 家店铺</text>
+    </view>
+  </view>
+
+  <!-- 店铺列表 -->
+  <view class="store-list" wx:if="{{storeList.length > 0}}">
+    <view class="store-card" wx:for="{{storeList}}" wx:key="storeId">
+      <!-- 店铺信息 -->
+      <view class="store-info">
+        <view class="store-header">
+          <text class="store-name">{{item.storeName}}</text>
+          <view class="store-status {{item.storeStatus === 1 ? 'active' : 'inactive'}}">
+            {{item.storeStatus === 1 ? '营业中' : '已停业'}}
+          </view>
+        </view>
+        <view class="store-meta">
+          <text class="store-type">{{item.storeType || '未分类'}}</text>
+          <text class="store-time">创建于 {{item.createTime}}</text>
+        </view>
+      </view>
+      
+      <!-- 操作按钮 -->
+      <view class="store-actions">
+        <view class="action-btn bind-btn" bindtap="goBindEmployee" data-storeid="{{item.storeId}}" data-storename="{{item.storeName}}">
+          <text class="action-icon">👥</text>
+          <text class="action-text">员工管理</text>
+        </view>
+        <view class="action-btn card-btn" bindtap="goCardTypeManage" data-storeid="{{item.storeId}}" data-storename="{{item.storeName}}">
+          <text class="action-icon">💳</text>
+          <text class="action-text">卡种管理</text>
+        </view>
+        <view class="action-btn detail-btn" bindtap="goStoreDetail" data-storeid="{{item.storeId}}">
+          <text class="action-icon">📋</text>
+          <text class="action-text">店铺设置</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:else>
+    <text class="empty-icon">🏪</text>
+    <text class="empty-text">暂无店铺</text>
+    <text class="empty-hint">点击右下角按钮创建您的第一家店铺</text>
+  </view>
+
+  <!-- 悬浮添加按钮 -->
+  <view class="fab-button" bindtap="goCreateStore">
+    <text class="fab-icon">+</text>
+  </view>
+
+  <!-- OSS测试入口（开发用） -->
+  <view class="dev-entry" bindtap="goOssTest">
+    <text class="dev-icon">🔧</text>
+    <text class="dev-text">OSS测试</text>
+  </view>
+
+  <!-- 自定义Toast组件 -->
+  <custom-toast id="customToast" />
+</view>

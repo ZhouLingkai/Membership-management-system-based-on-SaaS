@@ -1,0 +1,91 @@
+<!--pages/my-cards/my-cards.wxml-->
+<view class="page-container">
+  <!-- 加载状态 -->
+  <view class="loading-container" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-container" wx:elif="{{!loading && cardList.length === 0}}">
+    <image class="empty-icon" src="/assets/images/empty-card.png" mode="aspectFit"></image>
+    <text class="empty-text">暂无会员卡</text>
+    <text class="empty-hint">快去商家办理会员卡吧~</text>
+  </view>
+
+  <!-- 会员卡列表 -->
+  <scroll-view 
+    class="card-list-container" 
+    scroll-y="{{true}}" 
+    wx:else
+    bindscrolltolower="loadMore"
+    enhanced="{{true}}"
+    show-scrollbar="{{false}}">
+    
+    <view class="card-item" wx:for="{{cardList}}" wx:key="memberCardId" bindtap="goToDetail" data-card="{{item}}">
+      <!-- 左侧：会员卡图片 -->
+      <view class="card-preview">
+        <card-display 
+          width="{{200}}" 
+          cardBgc="{{item.cardBgc}}" 
+          cardMask="{{item.cardMask}}" />
+        <!-- 状态标签 -->
+        <view class="status-tag {{item.status === 1 ? 'status-normal' : item.status === 3 ? 'status-frozen' : 'status-other'}}">
+          {{item.statusName}}
+        </view>
+      </view>
+      
+      <!-- 右侧：卡片信息 -->
+      <view class="card-info">
+        <view class="card-header">
+          <text class="card-type-name">{{item.cardTypeName}}</text>
+          <text class="card-ttype-tag">{{item.cardTtypeName}}</text>
+        </view>
+        <text class="store-name">{{item.storeName}}</text>
+        
+        <!-- 数值展示（根据卡种类型显示不同内容） -->
+        <view class="card-value">
+          <!-- 余额卡 -->
+          <block wx:if="{{item.cardTtype === 1}}">
+            <text class="value-label">余额</text>
+            <text class="value-number">¥{{item.balance || '0.00'}}</text>
+          </block>
+          <!-- 次数卡 -->
+          <block wx:elif="{{item.cardTtype === 2}}">
+            <text class="value-label">剩余次数</text>
+            <text class="value-number">{{item.times || 0}}次</text>
+          </block>
+          <!-- 时效卡 -->
+          <block wx:elif="{{item.cardTtype === 3}}">
+            <text class="value-label">到期时间</text>
+            <text class="value-number expire-time">{{item.expireTimeFormatted || '--'}}</text>
+          </block>
+          <!-- 积分卡 -->
+          <block wx:elif="{{item.cardTtype === 4}}">
+            <text class="value-label">积分</text>
+            <text class="value-number">{{item.points || 0}}</text>
+          </block>
+        </view>
+      </view>
+      
+      <!-- 箭头 -->
+      <view class="arrow-icon">
+        <text class="arrow">›</text>
+      </view>
+    </view>
+
+    <!-- 加载更多 -->
+    <view class="load-more" wx:if="{{hasMore}}">
+      <view class="loading-spinner small"></view>
+      <text class="load-more-text">加载更多...</text>
+    </view>
+    
+    <!-- 没有更多 -->
+    <view class="no-more" wx:if="{{!hasMore && cardList.length > 0}}">
+      <text class="no-more-text">— 没有更多了 —</text>
+    </view>
+  </scroll-view>
+</view>
+
+<!-- 自定义消息组件 -->
+<custom-toast id="customToast" message="{{toastMessage}}" type="{{toastType}}" animation-type="{{toastAnimationType}}" show="{{showToast}}" />

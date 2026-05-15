@@ -1,0 +1,209 @@
+<!--pages/merchant-info/merchant-info.wxml-->
+<view class="page-container">
+  <!-- 商户信息列表（框架始终显示，数据延时加载） -->
+  <view class="info-list">
+
+    <!-- 商户名称 -->
+    <view class="info-item">
+      <text class="info-label">商户名称</text>
+      <text class="info-value">{{merchantInfo.merchantName || '--'}}</text>
+    </view>
+
+    <!-- 认证状态 -->
+    <view class="info-item">
+      <text class="info-label">认证状态</text>
+      <view class="info-value">
+        <text wx:if="{{merchantInfo.certification === 1}}" class="status-success">已认证</text>
+        <text wx:elif="{{merchantInfo.certification === 2}}" class="status-warning">测试中</text>
+        <text wx:elif="{{merchantInfo.certification === 3}}" class="status-info">审核中</text>
+        <text wx:elif="{{merchantInfo.certification === 4}}" class="status-danger">审核拒绝</text>
+        <text wx:elif="{{merchantInfo.certification === 5}}" class="status-danger">测试期过</text>
+        <text wx:elif="{{!merchantInfo.certification}}">--</text>
+        <text wx:else>未知</text>
+      </view>
+    </view>
+
+    <!-- 测试期剩余天数（仅certification=2时显示） -->
+    <view wx:if="{{merchantInfo.certification === 2}}" class="info-item">
+      <text class="info-label">测试期剩余</text>
+      <text class="info-value status-warning">{{merchantInfo.remainingDays || '--'}}天</text>
+    </view>
+
+    <!-- 测试期过期时间 -->
+    <view wx:if="{{merchantInfo.testExpireTime}}" class="info-item">
+      <text class="info-label">测试期过期</text>
+      <text class="info-value">{{merchantInfo.testExpireTime}}</text>
+    </view>
+
+    <!-- 联系电话 -->
+    <view class="info-item">
+      <text class="info-label">联系电话</text>
+      <text class="info-value">{{merchantInfo.contactPhone || '--'}}</text>
+    </view>
+
+    <!-- 店铺数量 -->
+    <view class="info-item">
+      <text class="info-label">店铺数量</text>
+      <text class="info-value">{{merchantInfo.storeCount !== undefined ? merchantInfo.storeCount : '--'}}</text>
+    </view>
+
+    <!-- 联系邮箱（可修改） -->
+    <view class="info-item editable" bindtap="onInfoItemTap" data-field="contactEmail" data-title="修改联系邮箱" data-value="{{merchantInfo.contactEmail}}" data-editable="{{true}}">
+      <text class="info-label">联系邮箱</text>
+      <view class="info-value-row">
+        <text class="info-value">{{merchantInfo.contactEmail || '未设置'}}</text>
+        <text class="arrow">></text>
+      </view>
+    </view>
+    
+    <!-- 商户简介（可修改） -->
+    <view class="info-item editable" bindtap="onInfoItemTap" data-field="merchantIntro" data-title="修改商户简介" data-value="{{merchantInfo.merchantIntro}}" data-editable="{{true}}">
+      <text class="info-label">商户简介</text>
+      <view class="info-value-row">
+        <text class="info-value">{{merchantInfo.merchantIntro || '未设置'}}</text>
+        <text class="arrow">></text>
+      </view>
+    </view>
+
+    <!-- 二级密码管理（合并为一行） -->
+    <view class="info-item password-row">
+      <text class="info-label">二级密码</text>
+      <view class="password-btns">
+        <view class="inline-btn primary" bindtap="showPasswordModal">修改</view>
+        <view class="inline-btn secondary" bindtap="showResetModal">找回</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 退出登录按钮 -->
+  <view class="logout-section">
+    <button class="btn btn-danger" bindtap="handleLogout">退出登录</button>
+  </view>
+
+  <!-- 编辑信息弹窗 -->
+  <view wx:if="{{showEditMask}}" class="mask" bindtap="onMaskTap">
+    <view class="modal-card" catchtap="stopPropagation">
+      <view class="modal-title">{{editTitle}}</view>
+      <view class="modal-content">
+        <input 
+          class="modal-input" 
+          value="{{editValue}}" 
+          bindinput="onEditInput" 
+          placeholder="请输入内容" 
+          maxlength="{{editField === 'merchantIntro' ? 500 : 100}}"
+        />
+      </view>
+      <view class="modal-footer">
+        <button class="modal-btn cancel" bindtap="closeEditMask">取消</button>
+        <button class="modal-btn confirm" bindtap="submitEdit">确定</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 修改二级密码弹窗 -->
+  <view wx:if="{{showPasswordMask}}" class="mask" bindtap="onMaskTap">
+    <view class="modal-card" catchtap="stopPropagation">
+      <view class="modal-title">修改二级密码</view>
+      <view class="modal-content">
+        <input 
+          class="modal-input" 
+          type="password" 
+          value="{{oldPassword}}" 
+          bindinput="onPasswordInput" 
+          data-field="oldPassword"
+          placeholder="请输入原密码" 
+          maxlength="50"
+        />
+        <input 
+          class="modal-input" 
+          type="password" 
+          value="{{newPassword}}" 
+          bindinput="onPasswordInput" 
+          data-field="newPassword"
+          placeholder="请输入新密码（至少8位）" 
+          maxlength="50"
+        />
+        <input 
+          class="modal-input" 
+          type="password" 
+          value="{{confirmPassword}}" 
+          bindinput="onPasswordInput" 
+          data-field="confirmPassword"
+          placeholder="请再次输入新密码" 
+          maxlength="50"
+        />
+      </view>
+      <view class="modal-footer">
+        <button class="modal-btn cancel" bindtap="closePasswordMask">取消</button>
+        <button class="modal-btn confirm" bindtap="submitPasswordChange">确定</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 重置二级密码弹窗 -->
+  <view wx:if="{{showResetMask}}" class="mask" bindtap="onMaskTap">
+    <view class="modal-card" catchtap="stopPropagation">
+      <view class="modal-title">找回二级密码</view>
+      <view class="modal-content">
+        <view class="input-row">
+          <input 
+            class="modal-input flex-1" 
+            value="{{resetPhone}}" 
+            disabled
+            placeholder="手机号"
+          />
+        </view>
+        <view class="input-row">
+          <input 
+            class="modal-input flex-1" 
+            type="number" 
+            value="{{resetCode}}" 
+            bindinput="onResetInput" 
+            data-field="resetCode"
+            placeholder="验证码" 
+            maxlength="6"
+          />
+          <button class="code-btn" bindtap="sendVerifyCode">发送</button>
+        </view>
+        <input 
+          class="modal-input" 
+          type="password" 
+          value="{{resetNewPassword}}" 
+          bindinput="onResetInput" 
+          data-field="resetNewPassword"
+          placeholder="请输入新密码（至少8位）" 
+          maxlength="50"
+        />
+        <input 
+          class="modal-input" 
+          type="password" 
+          value="{{resetConfirmPassword}}" 
+          bindinput="onResetInput" 
+          data-field="resetConfirmPassword"
+          placeholder="请再次输入新密码" 
+          maxlength="50"
+        />
+      </view>
+      <view class="modal-footer">
+        <button class="modal-btn cancel" bindtap="closeResetMask">取消</button>
+        <button class="modal-btn confirm" bindtap="submitPasswordReset">确定</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 图片查看弹窗 -->
+  <view wx:if="{{showImageMask}}" class="mask" bindtap="onMaskTap">
+    <view class="image-viewer" catchtap="stopPropagation">
+      <image class="view-image" src="{{viewImageUrl}}" mode="widthFix"></image>
+      <view class="close-icon" bindtap="closeImageMask">×</view>
+    </view>
+  </view>
+
+  <!-- 自定义Toast组件 -->
+  <custom-toast 
+    id="customToast" 
+    message="{{toastMessage}}" 
+    type="{{toastType}}" 
+    animation-type="{{toastAnimationType}}" 
+    show="{{showToast}}" />
+</view>

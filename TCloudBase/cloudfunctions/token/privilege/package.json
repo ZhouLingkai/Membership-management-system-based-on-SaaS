@@ -1,0 +1,12 @@
+{
+  "name": "token-privilege",
+  "version": "1.0.0",
+  "description": "获取商家特权令牌（需二级密码验证）",
+  "main": "index.js",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@cloudbase/node-sdk": "^3.18.1",
+    "@node-rs/argon2": "^2.0.0"
+  }
+}

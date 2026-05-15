@@ -1,0 +1,515 @@
+/* pages/merchant-privilege/merchant-privilege.wxss */
+
+/* ==================== 自定义导航栏 ==================== */
+.custom-nav-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: linear-gradient(to bottom, #534839 0%, #2e2821 100%);
+  z-index: 9999;
+}
+
+.status-bar {
+  width: 100%;
+}
+
+.nav-bar-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20rpx;
+  position: relative;
+}
+
+/* 返回按钮 */
+.nav-back-btn {
+  width: 80rpx;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+}
+
+.nav-back-btn:active {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.nav-back-icon {
+  font-size: 48rpx;
+  color: #fcedd6;
+  line-height: 1;
+}
+
+/* 标题 */
+.nav-title {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #fcedd6;
+  white-space: nowrap;
+}
+
+/* 右侧占位 */
+.nav-placeholder {
+  width: 80rpx;
+  height: 80rpx;
+}
+
+page {
+    background: linear-gradient(to bottom, #2e2821 0%, #292220 100%);
+}
+
+/* 页面容器 */
+.page-container {
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #fafbfc 0%, #f5f6f8 100%);
+  padding: 30rpx 0;
+  box-sizing: border-box;
+}
+
+/* 页面内容区域（为导航栏留出空间） */
+.page-container > view:not(.custom-nav-bar) {
+  margin-top: 30rpx;
+}
+
+/* ==================== 1. 付费卡片 ==================== */
+.pricing-card {
+  width: 94%;
+  margin: 20rpx auto 30rpx;
+  background: linear-gradient(to bottom, #fffbf4 0%, #fff7ea 100%);
+  border-radius: 24rpx 24rpx 50% 50% / 24rpx 24rpx 8% 8%;
+  padding: 30rpx 20rpx 40rpx;
+  box-shadow: 0 8rpx 24rpx rgba(204, 163, 100, 0.15);
+  display: flex;
+  justify-content: space-between;
+  gap: 20rpx;
+  box-sizing: border-box;
+  position: relative;
+}
+
+/* 卡片边框 */
+.pricing-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 2rpx solid #cca364;
+  border-radius: 24rpx 24rpx 50% 50% / 24rpx 24rpx 8% 8%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* 选中状态边框 */
+.pricing-card.has-selected::before {
+  border-color: #a08362;
+}
+
+/* VIP 选项卡片 */
+.vip-option {
+  flex: 1;
+  position: relative;
+  border-radius: 20rpx;
+  overflow: visible;
+  background: linear-gradient(135deg, #f5e6d3 0%, #e8d4b8 100%);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  /* box-sizing: border-box; */
+  z-index: 2;
+  
+}
+
+/* 选中状态 */
+.vip-option.selected {
+  box-shadow: 0 4rpx 16rpx rgba(160, 131, 98, 0.3);
+  border: 2rpx solid #b28464;
+  box-sizing: border-box;
+}
+
+/* 上半部分 */
+.vip-upper {
+  flex: 3;
+  position: relative;
+  background: linear-gradient(135deg, #f5e6d3 0%, #e8d4b8 100%);
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 0;
+  min-height: 120rpx;
+  border-radius: 20rpx 20rpx 0 0;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* VIP 标签 */
+.vip-tag {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  padding: 8rpx 20rpx;
+  border-radius: 0 0 12rpx 0;
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #fefdfe;
+  background: linear-gradient(135deg, #ce9f7e 0%, #80552b 100%);
+  white-space: nowrap;
+}
+
+/* 预留图片位置 */
+.vip-bg-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.3;
+  z-index: 1;
+}
+
+/* 下半部分 */
+.vip-lower {
+  flex: 2;
+  background: linear-gradient(to bottom, #fef5e4 0%, #faedd3 100%);
+  padding: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  border-bottom-left-radius: 20rpx;
+  border-bottom-right-radius: 20rpx;
+}
+
+/* 价格区域 */
+.price-section {
+  display: flex;
+  align-items: baseline;
+  gap: 12rpx;
+}
+
+/* 现价 */
+.current-price {
+  font-size: 38rpx;
+  font-weight: 700;
+  background: linear-gradient(to right, #e47048 0%, #ec3e09 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  line-height: 1;
+}
+
+/* 现价符号 */
+.price-symbol {
+  font-size: 26rpx;
+  vertical-align: baseline;
+}
+
+/* 原价 */
+.original-price {
+  font-size: 28rpx;
+  color: #e39779;
+  text-decoration: line-through;
+  line-height: 1;
+}
+
+/* 每日价格 */
+.daily-price {
+  font-size: 24rpx;
+  color: #a49473;
+  white-space: nowrap;
+}
+
+/* 选中对勾图标 */
+.check-icon {
+  position: absolute;
+  top: 10rpx;
+  right: 10rpx;
+  width: 30rpx;
+  height: 30rpx;
+  border-radius: 50%;
+  background: #eeca90;
+  border: 2rpx solid #7f5632;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* transform: translate(50%, -50%); */
+  z-index: 10;
+}
+
+.check-mark {
+  font-size: 22rpx;
+  color: #7f5632;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* ==================== 2. 特权介绍卡片 ==================== */
+.privilege-intro-card {
+  width: 94%;
+  margin: 0 auto;
+  background: linear-gradient(to right, #322b23 0%, #292220 100%);
+  border-radius: 24rpx;
+  /* padding: 30rpx 20rpx; */
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.2);
+  box-sizing: border-box;
+  border: 4rpx solid #5b5650; 
+  overflow: hidden;
+}
+
+/* 标题 */
+.intro-title {
+  padding: 30rpx 0;
+  text-align: center;
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #fdf8f6;
+  margin-bottom: 8rpx;
+  background: linear-gradient(150deg, #5c4f3e 0%, #322b23 22%, #292220 100%);
+}
+
+/* 二级选项卡 */
+.sub-tab-bar {
+  position: relative;
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 40rpx;
+  padding: 0 60rpx 20rpx;
+}
+
+.sub-tab-item {
+  flex: 1;
+  font-size: 30rpx;
+  color: #c0beba;
+  padding: 10rpx 20rpx;
+  transition: all 0.3s ease;
+  position: relative;
+  text-align: center;
+}
+
+.sub-tab-item.active {
+  font-weight: 700;
+  color: #fcecca;
+}
+
+/* 每个选项卡自带下划线 */
+.sub-tab-item::after {
+  content: '';
+  position: absolute;
+  bottom: -20rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80rpx;
+  height: 4rpx;
+  background: #fcecca;
+  border-radius: 2rpx;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.sub-tab-item.active::after {
+  opacity: 1;
+}
+
+/* ==================== 2.1 权益对比表格 ==================== */
+.compare-content {
+  width: 100%;
+}
+
+.compare-table {
+  width: 100%;
+  border-radius: 12rpx;
+  overflow: hidden;
+}
+
+/* 表格行 */
+.table-row {
+  display: flex;
+  width: 100%;
+}
+
+/* 奇数行 */
+.odd-row {
+  background: linear-gradient(to right, #2a251f 0%, #231e18 100%);
+}
+
+/* 偶数行 */
+.even-row {
+  background: linear-gradient(to right, #322d27 0%, #2a251f 100%);
+}
+
+/* 表头行 */
+.header-row {
+  background: linear-gradient(to right, #2a251f 0%, #231e18 100%);
+  font-weight: 700;
+}
+
+/* 表格单元格 */
+.table-cell {
+  flex: 1;
+  padding: 24rpx 12rpx;
+  font-size: 26rpx;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  word-break: break-all;
+  box-sizing: border-box;
+}
+
+/* 表头单元格 */
+.header-cell {
+  color: #fdf8f6;
+  font-weight: 700;
+}
+.svip {
+    color: #fdeed8;
+}
+.vip {
+    color: #f3ece2;
+}
+/* 免费商家列 */
+.free-cell {
+  color: #8d8885;
+}
+
+/* VIP商家列 */
+.vip-cell {
+  color: #fdf8f6;
+}
+
+/* SVIP商家列 */
+.svip-cell {
+  color: #fdeed8;
+}
+
+/* 第一列（权益项） */
+.table-row .table-cell:first-child {
+  color: #fdf8f6;
+}
+
+/* ==================== 2.2 功能特权（预留） ==================== */
+.features-content {
+  width: 100%;
+  min-height: 400rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.placeholder-area {
+  text-align: center;
+}
+
+.placeholder-text {
+  font-size: 28rpx;
+  color: #8d8885;
+}
+
+/* ==================== 3. 底部固定盒子 ==================== */
+.bottom-fixed-box {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background: linear-gradient(135deg, #281f19 0%, #281f19 100%);
+  padding: 10rpx 10rpx;
+  box-sizing: border-box;
+  z-index: 1000;
+}
+
+/* 橘色渐变按钮 */
+.purchase-btn {
+  width: 90%;
+  padding: 20rpx 0;
+  margin: 10rpx auto 15rpx;
+  background: linear-gradient(to right, #fe6f2d 0%, #f94f15 100%);
+  color: #ffffff;
+  font-size: 32rpx;
+  font-weight: 600;
+  border-radius: 50rpx;
+  border: none;
+  text-align: center;
+  transition: all 0.2s ease;
+  box-shadow: 0 4rpx 12rpx rgba(254, 111, 45, 0.3);
+  display: block;
+  box-sizing: border-box;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* 重置button默认样式 */
+.purchase-btn::after {
+  border: none;
+}
+
+.purchase-btn:active {
+  transform: scale(0.98);
+  box-shadow: 0 2rpx 8rpx rgba(254, 111, 45, 0.2);
+}
+
+/* 协议区域 */
+.agreement-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16rpx;
+}
+
+/* 圆形复选框 */
+.agreement-checkbox {
+  width: 32rpx;
+  height: 32rpx;
+  border-radius: 50%;
+  border: 2rpx solid #666;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.agreement-checkbox.checked {
+  background: #fbead7;
+  border-color: #fbead7;
+}
+
+.agreement-checkbox .check-dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+  background: #281f19;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.agreement-checkbox.checked .check-dot {
+  opacity: 1;
+}
+
+/* 协议文本 */
+.agreement-text {
+  font-size: 26rpx;
+  color: #999;
+}
+
+.agreement-link {
+  color: #3a7bd5;
+  text-decoration: underline;
+  transition: opacity 0.2s ease;
+}
+
+.agreement-link:active {
+  opacity: 0.6;
+}
+.pos {
+    width: 100%;
+    height: 200rpx;
+}

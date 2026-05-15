@@ -1,0 +1,11 @@
+{
+  "name": "token-logout",
+  "version": "1.0.0",
+  "description": "令牌注销（退出登录）",
+  "main": "index.js",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@cloudbase/node-sdk": "^3.18.1"
+  }
+}

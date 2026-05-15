@@ -1,0 +1,1768 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>高级预约系统测试页面</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            display: flex;
+            gap: 20px;
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            width: 320px;
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .sidebar h2 {
+            color: #764ba2;
+            margin-bottom: 20px;
+            font-size: 24px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .sidebar-section {
+            margin-bottom: 25px;
+        }
+
+        .sidebar-section h3 {
+            color: #667eea;
+            font-size: 16px;
+            margin-bottom: 12px;
+        }
+
+        .sidebar input,
+        .sidebar select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .sidebar input:focus,
+        .sidebar select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .platform-selector {
+            margin-bottom: 15px;
+        }
+
+        .platform-selector label {
+            display: block;
+            color: #667eea;
+            font-size: 13px;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .sidebar button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .sidebar button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .sidebar button:active {
+            transform: translateY(0);
+        }
+
+        .token-display {
+            background: #f5f5f5;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            word-break: break-all;
+            font-size: 12px;
+            color: #666;
+            max-height: 100px;
+            overflow-y: auto;
+        }
+
+        /* 主内容区 */
+        .main-content {
+            flex: 1;
+        }
+
+        .module-title {
+            color: white;
+            font-size: 28px;
+            margin-bottom: 20px;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        /* 宫格布局 */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .test-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .test-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .test-card h3 {
+            color: #764ba2;
+            margin-bottom: 15px;
+            font-size: 18px;
+            border-left: 4px solid #667eea;
+            padding-left: 10px;
+        }
+
+        .test-card label {
+            display: block;
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .test-card input,
+        .test-card select,
+        .test-card textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        .test-card input[type="number"],
+        .test-card input[type="text"] {
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .test-card textarea {
+            min-height: 60px;
+            resize: vertical;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .form-row > div {
+            flex: 1;
+        }
+
+        .hint {
+            font-size: 11px;
+            color: #999;
+            margin-top: -8px;
+            margin-bottom: 8px;
+        }
+
+        .add-btn {
+            padding: 5px 12px;
+            font-size: 12px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        .add-btn:hover {
+            background: #218838;
+        }
+
+        .time-slot-item,
+        .cancel-rule-item {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+            align-items: center;
+        }
+
+        .time-slot-item input,
+        .cancel-rule-item input {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        .remove-btn {
+            padding: 5px 10px;
+            font-size: 12px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .remove-btn:hover {
+            background: #c82333;
+        }
+
+        .test-card button {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .test-card button:hover {
+            transform: scale(1.02);
+            box-shadow: 0 3px 10px rgba(102, 126, 234, 0.4);
+        }
+
+        .result-box {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-family: 'Courier New', monospace;
+            max-height: 200px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .result-success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .result-error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+
+        .result-info {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            color: #666;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .status-200 {
+            background: #28a745;
+            color: white;
+        }
+
+        .status-error {
+            background: #dc3545;
+            color: white;
+        }
+
+        .time-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            background: #6c757d;
+            color: white;
+        }
+
+        /* 响应式 */
+        @media (max-width: 1400px) {
+            .grid-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 900px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                position: relative;
+            }
+
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* 分隔线 */
+        .section-divider {
+            margin: 40px 0;
+            text-align: center;
+        }
+
+        .section-divider h2 {
+            color: white;
+            font-size: 32px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            display: inline-block;
+            padding: 10px 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+        }
+
+        /* 未开发模块 */
+        .coming-soon {
+            text-align: center;
+            padding: 60px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+
+        .coming-soon h3 {
+            color: white;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .coming-soon p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 侧边栏 -->
+        <div class="sidebar">
+            <h2>🔐 登录令牌模块</h2>
+            
+            <div class="platform-selector">
+                <label>平台选择</label>
+                <select id="globalPlatform">
+                    <option value="WEB">WEB</option>
+                    <option value="MINI_PROGRAM">MINI_PROGRAM</option>
+                </select>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>用户登录</h3>
+                <input type="text" id="loginPhone" placeholder="手机号" value="13800137000">
+                <input type="password" id="loginPassword" placeholder="密码" value="zhouge666">
+                <button onclick="login()">登录获取普通令牌</button>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>工作令牌</h3>
+                <input type="text" id="storeIdForWork" placeholder="店铺ID" value="7c32821f-2476-4a75-89fc-61f19cf4d75c">
+                <button onclick="getWorkToken()">获取工作令牌</button>
+                <div class="token-display" id="workTokenDisplay">未获取</div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>当前状态</h3>
+                <div style="font-size: 12px; color: #666;">
+                    <p><strong>Device-Id:</strong> <span style="color: #667eea;">device_test_12345</span></p>
+                    <p><strong>用户ID:</strong> <span id="currentUserId">-</span></p>
+                    <p><strong>店铺ID:</strong> <span id="currentStoreId">-</span></p>
+                    <p><strong>角色:</strong> <span id="currentRole">-</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 主内容区 -->
+        <div class="main-content">
+            <!-- 模板测试模块 -->
+            <div class="section-divider">
+                <h2>📋 模板测试模块</h2>
+            </div>
+
+            <div class="grid-container">
+                <!-- 接口1：查询模板 -->
+                <div class="test-card">
+                    <h3>接口1：查询模板</h3>
+                    <label>店铺ID</label>
+                    <input type="text" id="queryTemplateStoreId" class="auto-fill-store">
+                    <button onclick="queryTemplate()">查询</button>
+                    <div class="result-box result-info" id="queryTemplateResult">等待测试...</div>
+                </div>
+
+                <!-- 接口2：创建模板 -->
+                <div class="test-card">
+                    <h3>接口2：创建模板</h3>
+                    <label>店铺ID</label>
+                    <input type="text" id="createTemplateStoreId" class="auto-fill-store">
+                    
+                    <label>reservationTimeList（数组）</label>
+                    <input type="text" id="createReservationTimeList" placeholder='["08:00-09:00","09:00-10:00"]' value='["08:00-09:00","09:00-10:00","10:00-11:00","11:00-12:00","13:00-14:00","14:00-15:00","15:00-16:00","16:00-17:00","17:00-18:00","18:00-19:00","19:00-20:00","20:00-21:00","21:00-22:00"]'>
+                    
+                    <label>cancelRule（数组）</label>
+                    <input type="text" id="createCancelRule" placeholder='["60:0.1","180:5"]' value='["60:0.1"]'>
+                    
+                    <label>advanceDays</label>
+                    <input type="text" id="createAdvanceDays" value="7">
+                    
+                    <label>forbiddenDays（数组）</label>
+                    <input type="text" id="createForbiddenDays" placeholder='["周六","周日"]' value='["周六"]'>
+                    
+                    <label>customizeForbidden</label>
+                    <input type="text" id="createCustomizeForbidden" value="0">
+                    
+                    <div class="hint">⚠️ 重要提示：<br>
+                    1. 接口2只能创建第一个模板，如果店铺已有模板则会返回错误码100024<br>
+                    2. effectiveStartTime由后端自动生成为创建时的日期<br>
+                    3. effectiveEndTime默认为NULL（长期有效）</div>
+                    
+                    <button onclick="createTemplate()">创建</button>
+                    <div class="result-box result-info" id="createTemplateResult">等待测试...</div>
+                </div>
+
+                <!-- 接口3：修改模板 -->
+                <div class="test-card">
+                    <h3>接口3：修改模板</h3>
+                    <label>模板ID</label>
+                    <input type="text" id="updateTemplateId">
+                    
+                    <label>reservationTimeList（可选，数组）</label>
+                    <input type="text" id="updateReservationTimeList" placeholder='["08:00-09:00"]'>
+                    
+                    <label>cancelRule（可选，数组）</label>
+                    <input type="text" id="updateCancelRule" placeholder='["60:0.1"]'>
+                    
+                    <label>advanceDays（可选）</label>
+                    <input type="text" id="updateAdvanceDays" placeholder="10">
+                    
+                    <label>forbiddenDays（可选，数组）</label>
+                    <input type="text" id="updateForbiddenDays" placeholder='["周六","周日"]'>
+                    
+                    <div class="hint">⚠️ 注意：<br>
+                    1. reservationTimeList修改需要无未使用的用户预约记录<br>
+                    2. customizeForbidden和effectiveEndTime不可修改</div>
+                    
+                    <button onclick="updateTemplate()">修改</button>
+                    <div class="result-box result-info" id="updateTemplateResult">等待测试...</div>
+                </div>
+
+                <!-- 接口18：查询不一致预约记录 -->
+                <div class="test-card">
+                    <h3>接口18：查询不一致预约记录</h3>
+                    <label>店铺ID</label>
+                    <input type="text" id="inconsistentStoreId" class="auto-fill-store">
+                    
+                    <label>开始日期（>=今天）</label>
+                    <input type="date" id="inconsistentStartDate">
+                    
+                    <label>结束日期（最多10天）</label>
+                    <input type="date" id="inconsistentEndDate">
+                    
+                    <div class="hint">💡 查询未使用的用户预约记录中，那一天不能被预约的记录（因商家修改导致的不一致）</div>
+                    
+                    <button onclick="queryInconsistentReservations()">查询</button>
+                    <div class="result-box result-info" id="inconsistentResult">等待测试...</div>
+                </div>
+            </div>
+
+            <!-- 资源测试模块 -->
+            <div class="section-divider">
+                <h2>🏢 资源测试模块</h2>
+            </div>
+
+            <div class="grid-container">
+                <!-- 接口4：查询资源列表 -->
+                <div class="test-card">
+                    <h3>接口4：查询资源列表</h3>
+                    <label>店铺ID</label>
+                    <input type="text" id="queryResourceStoreId" class="auto-fill-store">
+                    <label>关键词（可选）</label>
+                    <input type="text" id="queryResourceKeyword" placeholder="资源名称">
+                    <label>是否可预约（可选）</label>
+                    <input type="text" id="queryResourceReservable" placeholder="0或1">
+                    <label>页码/页大小</label>
+                    <div style="display: flex; gap: 5px;">
+                        <input type="text" id="queryResourcePage" placeholder="页码" value="1" style="width: 50%;">
+                        <input type="text" id="queryResourcePageSize" placeholder="页大小" value="50" style="width: 50%;">
+                    </div>
+                    <button onclick="queryResourceList()">查询</button>
+                    <div class="result-box result-info" id="queryResourceResult">等待测试...</div>
+                </div>
+
+                <!-- 接口5：查询资源详情 -->
+                <div class="test-card">
+                    <h3>接口5：查询资源详情</h3>
+                    <label>资源ID</label>
+                    <input type="text" id="queryResourceDetailId">
+                    <button onclick="queryResourceDetail()">查询</button>
+                    <div class="result-box result-info" id="queryResourceDetailResult">等待测试...</div>
+                </div>
+
+                <!-- 接口6：创建资源 -->
+                <div class="test-card">
+                    <h3>接口6：创建资源</h3>
+                    <label>店铺ID</label>
+                    <input type="text" id="createResourceStoreId" class="auto-fill-store">
+                    
+                    <label>resourceName</label>
+                    <input type="text" id="createResourceName" value="1号桌">
+                    
+                    <label>supportCardTypes</label>
+                    <input type="text" id="createSupportCardTypes" value="1">
+                    
+                    <label>minContinuousTime</label>
+                    <input type="text" id="createMinTime" value="30">
+                    
+                    <label>maxContinuousTime</label>
+                    <input type="text" id="createMaxTime" value="180">
+                    
+                    <label>unitPrice</label>
+                    <input type="text" id="createUnitPrice" value="10.00">
+                    
+                    <label>resourceImg（可选）</label>
+                    <input type="text" id="createResourceImg" placeholder="https://example.com/1.jpg">
+                    
+                    <label>resourceDesc（可选）</label>
+                    <input type="text" id="createResourceDesc" value="靠窗位置">
+                    
+                    <label>forbiddenDays（可选，数组）</label>
+                    <input type="text" id="createResourceForbiddenDays" placeholder='["周六","周日","2025-12-25"]'>
+                    
+                    <button onclick="createResource()">创建</button>
+                    <div class="result-box result-info" id="createResourceResult">等待测试...</div>
+                </div>
+
+                <!-- 接口7：修改资源 -->
+                <div class="test-card">
+                    <h3>接口7：修改资源</h3>
+                    <label>资源ID</label>
+                    <input type="text" id="updateResourceId">
+                    
+                    <label>resourceName（可选）</label>
+                    <input type="text" id="updateResourceName" placeholder="2号桌">
+                    
+                    <label>minContinuousTime（可选）</label>
+                    <input type="text" id="updateMinTime" placeholder="60">
+                    
+                    <label>maxContinuousTime（可选）</label>
+                    <input type="text" id="updateMaxTime" placeholder="240">
+                    
+                    <label>unitPrice（可选）</label>
+                    <input type="text" id="updateUnitPrice" placeholder="25.00">
+                    
+                    <label>resourceImg（可选）</label>
+                    <input type="text" id="updateResourceImg" placeholder="https://example.com/2.jpg">
+                    
+                    <label>resourceDesc（可选）</label>
+                    <input type="text" id="updateResourceDesc" placeholder="已升级设备">
+                    
+                    <label>forbiddenDays（可选，数组）</label>
+                    <input type="text" id="updateResourceForbiddenDays" placeholder='["周一","2025-12-31"]'>
+                    
+                    <button onclick="updateResource()">修改</button>
+                    <div class="result-box result-info" id="updateResourceResult">等待测试...</div>
+                </div>
+
+                <!-- 接口8：删除资源 -->
+                <div class="test-card">
+                    <h3>接口8：删除资源</h3>
+                    <label>资源ID</label>
+                    <input type="text" id="deleteResourceId">
+                    <button onclick="deleteResource()">删除</button>
+                    <div class="result-box result-info" id="deleteResourceResult">等待测试...</div>
+                </div>
+
+                <!-- 接口9：启停用资源 -->
+                <div class="test-card">
+                    <h3>接口9：启停用资源</h3>
+                    <label>资源ID</label>
+                    <input type="number" id="toggleResourceId" placeholder="输入资源ID">
+                    <label>是否可预约</label>
+                    <select id="toggleIsReservable">
+                        <option value="1">启用(1)</option>
+                        <option value="0">停用(0)</option>
+                    </select>
+                    <button onclick="toggleResource()">启停用资源</button>
+                    <div class="result-box result-info" id="toggleResourceResult">等待测试...</div>
+                </div>
+            </div>
+
+            <!-- 预约测试模块 -->
+            <div class="section-divider">
+                <h2>📅 预约测试模块</h2>
+            </div>
+
+            <div class="test-section">
+                <!-- 接口10：查询某日预约情况 -->
+                <div class="test-card">
+                    <h3>接口10：查询某日预约情况</h3>
+                    <label>店铺ID</label>
+                    <input type="text" id="queryReservationsStoreId" class="auto-fill-store">
+                    <label>查询日期</label>
+                    <input type="date" id="queryReservationsDate">
+                    <label>资源名关键词（可选）</label>
+                    <input type="text" id="queryReservationsKeyword" placeholder="输入关键词">
+                    <button onclick="queryReservations()">查询预约情况</button>
+                    <div class="result-box result-info" id="queryReservationsResult">等待测试...</div>
+                </div>
+
+                <!-- 接口11：获取预约列表 -->
+                <div class="test-card">
+                    <h3>接口11：获取预约列表</h3>
+                    <label>预约状态（可选）</label>
+                    <select id="myReservationsStatus">
+                        <option value="">全部</option>
+                        <option value="0">未使用</option>
+                        <option value="1">已使用</option>
+                        <option value="2">用户取消</option>
+                        <option value="3">员工取消</option>
+                        <option value="4">已过期</option>
+                    </select>
+                    <label>开始日期（可选）</label>
+                    <input type="date" id="myReservationsStartDate">
+                    <label>结束日期（可选）</label>
+                    <input type="date" id="myReservationsEndDate">
+                    <label>页码</label>
+                    <input type="number" id="myReservationsPage" value="1" min="1">
+                    <label>每页数量</label>
+                    <input type="number" id="myReservationsPageSize" value="20" min="1">
+                    <button onclick="getMyReservations()">获取预约列表</button>
+                    <div class="result-box result-info" id="myReservationsResult">等待测试...</div>
+                </div>
+
+                <!-- 接口12：预约资源 -->
+                <div class="test-card">
+                    <h3>接口12：预约资源</h3>
+                    <label>店铺ID</label>
+                    <input type="text" id="reserveStoreId" placeholder="输入店铺ID（UUID格式）">
+                    <label>资源ID</label>
+                    <input type="number" id="reserveResourceId" placeholder="输入资源ID">
+                    <label>会员卡ID</label>
+                    <input type="text" id="reserveMemberCardId" placeholder="输入会员卡ID（UUID格式）">
+                    <label>预约日期</label>
+                    <input type="date" id="reserveDate">
+                    <label>预约时间段（JSON数组）</label>
+                    <input type="text" id="reserveTimeSlots" placeholder='["08:00-09:00","09:00-10:00"]'>
+                    <div class="hint">⚠️ 格式：["HH:mm-HH:mm", "HH:mm-HH:mm"]，时间段必须连续且在模板范围内</div>
+                    <label>备注（可选，0-50字符）</label>
+                    <input type="text" id="reserveRemark" placeholder="输入备注" maxlength="50">
+                    <button onclick="reserveResource()">预约资源</button>
+                    <div class="result-box result-info" id="reserveResourceResult">等待测试...</div>
+                </div>
+
+                <!-- 接口13：取消预约资源 -->
+                <div class="test-card">
+                    <h3>接口13：取消预约资源</h3>
+                    <label>预约ID</label>
+                    <input type="number" id="cancelReservationId" placeholder="输入预约ID">
+                    <label>取消原因（可选）</label>
+                    <input type="text" id="cancelRemark" placeholder="输入取消原因">
+                    <button onclick="cancelReservation()">取消预约</button>
+                    <div class="result-box result-info" id="cancelReservationResult">等待测试...</div>
+                </div>
+
+                <!-- 接口14：查询某会员预约情况 -->
+                <div class="test-card">
+                    <h3>📋 接口14：查询某会员预约情况（工作令牌）</h3>
+                    <label>会员手机号</label>
+                    <input type="text" id="memberPhone14" placeholder="输入会员手机号">
+                    <label>预约状态（可选）</label>
+                    <select id="memberStatus14">
+                        <option value="">全部</option>
+                        <option value="0">待使用</option>
+                        <option value="1">已使用</option>
+                        <option value="2">主动取消</option>
+                        <option value="3">员工取消</option>
+                        <option value="4">已过期</option>
+                    </select>
+                    <label>开始日期（可选）</label>
+                    <input type="date" id="memberStartDate14">
+                    <label>结束日期（可选）</label>
+                    <input type="date" id="memberEndDate14">
+                    <label>页码</label>
+                    <input type="number" id="memberPage14" value="1" min="1">
+                    <label>每页数量</label>
+                    <input type="number" id="memberPageSize14" value="20" min="1">
+                    <button onclick="queryMemberReservations()">查询会员预约</button>
+                    <div class="result-box result-info" id="memberReservationsResult">等待测试...</div>
+                </div>
+
+                <!-- 接口15：停用预约资源 -->
+                <div class="test-card">
+                    <h3>🚫 接口15：停用预约资源（工作令牌+权限）</h3>
+                    <label>资源ID</label>
+                    <input type="number" id="disableResourceId" placeholder="输入资源ID">
+                    <label>停用日期</label>
+                    <input type="date" id="disableDate">
+                    <label>停用时间段（逗号分隔）</label>
+                    <input type="text" id="disableTimeSlots" placeholder="例如：14:00-15:00,15:00-16:00">
+                    <label>停用原因</label>
+                    <input type="text" id="disableReason" placeholder="输入停用原因（5-100字符）">
+                    <button onclick="disableResource()">停用资源</button>
+                    <div class="result-box result-info" id="disableResourceResult">等待测试...</div>
+                </div>
+
+                <!-- 接口16：线下占用预约资源 -->
+                <div class="test-card">
+                    <h3>📝 接口16：线下占用预约资源（工作令牌+权限）</h3>
+                    <label>资源ID</label>
+                    <input type="number" id="occupyResourceId" placeholder="输入资源ID">
+                    <label>占用日期</label>
+                    <input type="date" id="occupyDate">
+                    <label>占用时间段（逗号分隔）</label>
+                    <input type="text" id="occupyTimeSlots" placeholder="例如：14:00-15:00,15:00-16:00">
+                    <label>客户手机号</label>
+                    <input type="text" id="customerPhone" placeholder="输入客户手机号">
+                    <label>备注（可选）</label>
+                    <input type="text" id="occupyRemark" placeholder="输入备注">
+                    <button onclick="occupyResource()">线下占用</button>
+                    <div class="result-box result-info" id="occupyResourceResult">等待测试...</div>
+                </div>
+
+                <!-- 接口17：员工取消预约 -->
+                <div class="test-card">
+                    <h3>❌ 接口17：员工取消预约（工作令牌+权限）</h3>
+                    <label>预约ID</label>
+                    <input type="number" id="staffCancelReservationId" placeholder="输入预约ID">
+                    <label>取消原因</label>
+                    <input type="text" id="staffCancelReason" placeholder="输入取消原因（5-100字符）">
+                    <label>是否使用取消规则</label>
+                    <select id="useCancelRule">
+                        <option value="true">是（扣除违约费）</option>
+                        <option value="false">否（全额退款）</option>
+                    </select>
+                    <button onclick="staffCancelReservation()">员工取消预约</button>
+                    <div class="result-box result-info" id="staffCancelResult">等待测试...</div>
+                </div>
+            </div>
+
+            <!-- 优惠策略测试模块 -->
+            <div class="section-divider">
+                <h2>💰 优惠策略测试模块</h2>
+            </div>
+
+            <div class="grid-container">
+                <!-- 接口19：创建/修改优惠策略 -->
+                <div class="test-card">
+                    <h3>💸 接口19：创建/修改优惠策略</h3>
+                    <label>资源ID列表（JSON数组）</label>
+                    <input type="text" id="promotionResourceIds" placeholder='[1001, 1002]' value='[1001]'>
+                    
+                    <label>生效星期（JSON数组）</label>
+                    <input type="text" id="promotionEffectiveWeek" placeholder='["周一","周二"]' value='["周一","周二","周三"]'>
+                    
+                    <label>优惠时间段（JSON数组）</label>
+                    <textarea id="promotionDiscountsTime" placeholder='[{"timeSlot":"08:00-16:00","discount":"*0.9"}]' rows="4">[
+  {"timeSlot":"08:00-16:00","discount":"*0.9"},
+  {"timeSlot":"16:00-19:00","discount":"^100-10"}
+]</textarea>
+                    
+                    <div class="hint">💡 优惠规则说明：<br>
+                    • *0.9 - 打9折<br>
+                    • -10 - 减10元<br>
+                    • :100*0.9 - 满100打9折<br>
+                    • ^100-10 - 满100减10元<br>
+                    ⚠️ 仅余额卡资源支持优惠策略</div>
+                    
+                    <button onclick="createOrUpdatePromotionStrategy()">创建/修改策略</button>
+                    <div class="result-box result-info" id="promotionStrategyResult">等待测试...</div>
+                </div>
+
+                <!-- 接口20：设置优惠策略不生效日期 -->
+                <div class="test-card">
+                    <h3>📅 接口20：设置不生效日期</h3>
+                    <label>资源ID列表（JSON数组）</label>
+                    <input type="text" id="nonEffectiveResourceIds" placeholder='[1001, 1002]' value='[1001]'>
+                    
+                    <label>操作类型</label>
+                    <select id="nonEffectiveOperation">
+                        <option value="add">添加（add）</option>
+                        <option value="replace">覆盖（replace）</option>
+                        <option value="remove">移除（remove）</option>
+                    </select>
+                    
+                    <label>日期列表（JSON数组，YYYY-MM-DD）</label>
+                    <input type="text" id="nonEffectiveDates" placeholder='["2025-12-25","2025-12-31"]' value='["2025-12-25","2025-12-31"]'>
+                    
+                    <div class="hint">💡 说明：<br>
+                    • 添加的日期不能早于今天<br>
+                    • 自动清理超过3天的过期日期<br>
+                    • 日期按降序排列</div>
+                    
+                    <button onclick="setNonEffectiveDates()">设置不生效日期</button>
+                    <div class="result-box result-info" id="nonEffectiveDatesResult">等待测试...</div>
+                </div>
+
+                <!-- 接口21：清空指定资源优惠策略 -->
+                <div class="test-card">
+                    <h3>🗑️ 接口21：清空优惠策略</h3>
+                    <label>资源ID列表（JSON数组）</label>
+                    <input type="text" id="clearPromotionResourceIds" placeholder='[1001, 1002]' value='[1001]'>
+                    
+                    <div class="hint">⚠️ 此操作将清空指定资源的所有优惠策略</div>
+                    
+                    <button onclick="clearPromotionStrategy()">清空策略</button>
+                    <div class="result-box result-info" id="clearPromotionResult">等待测试...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script>
+        // 配置常量
+        const DEVICE_ID = 'device_test_12345';
+        const AES_KEY = 'oUDKf7+y6SrpeJ+GCJHL31HKlRFJ1mM/1MhGB4HF/94='; // 与后端一致（32字节）
+
+        // 全局变量
+        let currentNormalToken = '';
+        let currentWorkToken = '';
+        let currentUserId = '';
+        let currentStoreId = '';
+        let currentRole = '';
+
+        // AES加密（与test.html完全一致）
+        function encryptAES(plaintext) {
+            // 注意：这里使用简化的AES加密，实际项目应使用AES-256-GCM
+            // 由于浏览器限制，这里使用AES-CBC模式模拟
+            const key = CryptoJS.enc.Base64.parse(AES_KEY);
+            const iv = CryptoJS.lib.WordArray.random(16);
+            const encrypted = CryptoJS.AES.encrypt(plaintext, key, {
+                iv: iv,
+                mode: CryptoJS.mode.CBC,
+                padding: CryptoJS.pad.Pkcs7
+            });
+            
+            // 返回 IV + Ciphertext 的Base64编码
+            const combined = iv.concat(encrypted.ciphertext);
+            return CryptoJS.enc.Base64.stringify(combined);
+        }
+
+        // API请求封装
+        async function apiRequest(url, method, body = null, useWorkToken = false, noToken = false) {
+            const startTime = Date.now();
+            
+            const headers = {
+                'Content-Type': 'application/json',
+                'Device-Id': DEVICE_ID
+            };
+
+            // 根据参数选择令牌类型
+            if (noToken) {
+                // 无需令牌的公开接口（如登录、注册等）
+                // 不添加Authorization头
+            } else if (useWorkToken) {
+                if (!currentWorkToken) {
+                    alert('请先申请工作令牌！');
+                    throw new Error('缺少工作令牌');
+                }
+                headers['Authorization'] = `Bearer ${currentWorkToken}`;
+            } else {
+                if (!currentNormalToken) {
+                    alert('请先登录获取普通令牌！');
+                    throw new Error('缺少普通令牌');
+                }
+                headers['Authorization'] = `Bearer ${currentNormalToken}`;
+            }
+
+            const options = {
+                method: method,
+                headers: headers
+            };
+
+            if (body && method !== 'GET') {
+                options.body = JSON.stringify(body);
+            }
+
+            try {
+                const response = await fetch(url, options);
+                const result = await response.json();
+                const endTime = Date.now();
+                const duration = endTime - startTime;
+
+                return {
+                    ...result,
+                    _statusCode: response.status,
+                    _duration: duration
+                };
+            } catch (error) {
+                const endTime = Date.now();
+                const duration = endTime - startTime;
+                
+                return {
+                    code: 500,
+                    message: error.message,
+                    _statusCode: 500,
+                    _duration: duration
+                };
+            }
+        }
+
+        // 显示结果
+        function showResult(elementId, result, isSuccess = null) {
+            const element = document.getElementById(elementId);
+            if (!element) return;
+
+            const statusCode = result._statusCode || result.code;
+            const duration = result._duration || 0;
+            
+            // 判断成功/失败
+            if (isSuccess === null) {
+                isSuccess = statusCode === 200;
+            }
+
+            // 构建显示内容
+            let displayText = '';
+            displayText += `<span class="status-badge ${isSuccess ? 'status-200' : 'status-error'}">HTTP ${statusCode}</span>`;
+            displayText += `<span class="time-badge">${duration}ms</span>\n\n`;
+            displayText += JSON.stringify(result, null, 2);
+
+            element.textContent = displayText;
+            element.className = `result-box ${isSuccess ? 'result-success' : 'result-error'}`;
+        }
+
+        // 自动填充店铺ID
+        function autoFillStoreId() {
+            if (currentStoreId) {
+                document.querySelectorAll('.auto-fill-store').forEach(input => {
+                    if (!input.value) {
+                        input.value = currentStoreId;
+                    }
+                });
+            }
+        }
+
+        // 1. 用户登录
+        async function login() {
+            const phone = document.getElementById('loginPhone').value;
+            const password = document.getElementById('loginPassword').value;
+            const platform = document.getElementById('globalPlatform').value;
+
+            if (!phone || !password) {
+                alert('请填写手机号和密码');
+                return;
+            }
+
+            const encryptedPhone = encryptAES(phone);
+
+            const result = await apiRequest('/api/v1/users/login', 'POST', {
+                phone: encryptedPhone,
+                password: password,
+                rememberMe: false,
+                platform: platform
+            }, false, true); // 第5个参数noToken=true，表示无需令牌
+
+            if (result.code === 200 && result.data) {
+                currentNormalToken = result.data.normalToken;
+                currentUserId = result.data.userInfo.userId;
+                
+                document.getElementById('currentUserId').textContent = currentUserId;
+                
+                alert('✅ 登录成功！\n用户ID: ' + currentUserId);
+            } else {
+                alert('❌ 登录失败: ' + result.message);
+            }
+        }
+
+        // 2. 获取工作令牌
+        async function getWorkToken() {
+            const storeId = document.getElementById('storeIdForWork').value;
+
+            if (!storeId) {
+                alert('请填写店铺ID');
+                return;
+            }
+
+            if (!currentNormalToken) {
+                alert('请先登录获取普通令牌');
+                return;
+            }
+
+            const result = await apiRequest('/api/v1/tokens/work', 'POST', {
+                storeId: storeId
+            }, false);
+
+            if (result.code === 200) {
+                currentWorkToken = result.data.token;
+                currentStoreId = result.data.storeId;
+                currentRole = result.data.role || '未知';
+
+                document.getElementById('workTokenDisplay').textContent = currentWorkToken;
+                document.getElementById('currentStoreId').textContent = currentStoreId;
+                document.getElementById('currentRole').textContent = currentRole;
+
+                // 自动填充店铺ID到所有需要的地方
+                autoFillStoreId();
+
+                alert('✅ 工作令牌获取成功！\n店铺ID: ' + currentStoreId + '\n角色: ' + currentRole);
+            } else {
+                alert('❌ 获取工作令牌失败: ' + result.message);
+            }
+        }
+
+        // ========== 模板测试接口 ==========
+
+        // 接口1：查询模板
+        async function queryTemplate() {
+            const storeId = document.getElementById('queryTemplateStoreId').value;
+            if (!storeId) {
+                alert('请填写店铺ID');
+                return;
+            }
+
+            const result = await apiRequest(
+                `/api/v1/advanced-reservation/template?storeId=${storeId}`,
+                'GET',
+                null,
+                true
+            );
+
+            showResult('queryTemplateResult', result);
+        }
+
+        // 接口2：创建模板
+        async function createTemplate() {
+            const storeId = document.getElementById('createTemplateStoreId').value;
+            
+            if (!storeId) {
+                alert('请填写店铺ID');
+                return;
+            }
+
+            try {
+                const body = {
+                    storeId: storeId,
+                    reservationTimeList: JSON.parse(document.getElementById('createReservationTimeList').value),
+                    cancelRule: JSON.parse(document.getElementById('createCancelRule').value),
+                    advanceDays: parseInt(document.getElementById('createAdvanceDays').value),
+                    forbiddenDays: JSON.parse(document.getElementById('createForbiddenDays').value),
+                    customizeForbidden: parseInt(document.getElementById('createCustomizeForbidden').value)
+                };
+
+                const result = await apiRequest(
+                    '/api/v1/advanced-reservation/template',
+                    'POST',
+                    body,
+                    true
+                );
+
+                showResult('createTemplateResult', result);
+            } catch (e) {
+                alert('JSON格式错误: ' + e.message);
+            }
+        }
+
+        // 接口3：修改模板
+        async function updateTemplate() {
+            const templateId = document.getElementById('updateTemplateId').value;
+
+            if (!templateId) {
+                alert('请填写模板ID');
+                return;
+            }
+
+            try {
+                const body = {};
+
+                const reservationTimeList = document.getElementById('updateReservationTimeList').value;
+                if (reservationTimeList) body.reservationTimeList = JSON.parse(reservationTimeList);
+
+                const cancelRule = document.getElementById('updateCancelRule').value;
+                if (cancelRule) body.cancelRule = JSON.parse(cancelRule);
+
+                const advanceDays = document.getElementById('updateAdvanceDays').value;
+                if (advanceDays) body.advanceDays = parseInt(advanceDays);
+
+                const forbiddenDays = document.getElementById('updateForbiddenDays').value;
+                if (forbiddenDays) body.forbiddenDays = JSON.parse(forbiddenDays);
+
+                if (Object.keys(body).length === 0) {
+                    alert('请至少填写一个要修改的字段');
+                    return;
+                }
+
+                const result = await apiRequest(
+                    `/api/v1/advanced-reservation/template/${templateId}`,
+                    'PUT',
+                    body,
+                    true
+                );
+
+                showResult('updateTemplateResult', result);
+            } catch (e) {
+                alert('JSON格式错误: ' + e.message);
+            }
+        }
+
+        // 接口18：查询不一致预约记录
+        async function queryInconsistentReservations() {
+            const storeId = document.getElementById('inconsistentStoreId').value;
+            const startDate = document.getElementById('inconsistentStartDate').value;
+            const endDate = document.getElementById('inconsistentEndDate').value;
+
+            if (!storeId || !startDate || !endDate) {
+                alert('请填写所有必填字段');
+                return;
+            }
+
+            const result = await apiRequest(
+                `/api/v1/advanced-reservation/inconsistent-reservations?storeId=${storeId}&startDate=${startDate}&endDate=${endDate}`,
+                'GET',
+                null,
+                true
+            );
+
+            showResult('inconsistentResult', result);
+        }
+
+        // ========== 资源测试接口 ==========
+
+        // 接口4：查询资源列表
+        async function queryResourceList() {
+            const storeId = document.getElementById('queryResourceStoreId').value;
+            const keyword = document.getElementById('queryResourceKeyword').value;
+            const isReservable = document.getElementById('queryResourceReservable').value;
+            const page = document.getElementById('queryResourcePage').value || '1';
+            const pageSize = document.getElementById('queryResourcePageSize').value || '50';
+
+            if (!storeId) {
+                alert('请填写店铺ID');
+                return;
+            }
+
+            let url = `/api/v1/advanced-reservation/resources?storeId=${storeId}&page=${page}&pageSize=${pageSize}`;
+            if (keyword) url += `&keyword=${keyword}`;
+            if (isReservable) url += `&isReservable=${isReservable}`;
+
+            const result = await apiRequest(url, 'GET', null, true);
+            showResult('queryResourceResult', result);
+        }
+
+        // 接口5：查询资源详情
+        async function queryResourceDetail() {
+            const resourceId = document.getElementById('queryResourceDetailId').value;
+
+            if (!resourceId) {
+                alert('请填写资源ID');
+                return;
+            }
+
+            const result = await apiRequest(
+                `/api/v1/advanced-reservation/resources/${resourceId}`,
+                'GET',
+                null,
+                true
+            );
+
+            showResult('queryResourceDetailResult', result);
+        }
+
+        // 接口6：创建资源
+        async function createResource() {
+            const storeId = document.getElementById('createResourceStoreId').value;
+            const resourceName = document.getElementById('createResourceName').value;
+
+            if (!storeId || !resourceName) {
+                alert('请填写店铺ID和资源名称');
+                return;
+            }
+
+            const resource = {
+                resourceName: resourceName,
+                supportCardTypes: parseInt(document.getElementById('createSupportCardTypes').value),
+                minContinuousTime: parseInt(document.getElementById('createMinTime').value),
+                maxContinuousTime: parseInt(document.getElementById('createMaxTime').value),
+                unitPrice: parseFloat(document.getElementById('createUnitPrice').value)
+            };
+
+            // 可选字段
+            const resourceImg = document.getElementById('createResourceImg').value;
+            if (resourceImg) resource.resourceImg = resourceImg;
+
+            const resourceDesc = document.getElementById('createResourceDesc').value;
+            if (resourceDesc) resource.resourceDesc = resourceDesc;
+
+            const forbiddenDaysInput = document.getElementById('createResourceForbiddenDays').value.trim();
+            if (forbiddenDaysInput !== '') {
+                try {
+                    resource.forbiddenDays = JSON.parse(forbiddenDaysInput);
+                    // 验证解析结果是数组
+                    if (!Array.isArray(resource.forbiddenDays)) {
+                        alert('forbiddenDays必须是数组格式，如：["周六","周日"] 或 []');
+                        return;
+                    }
+                } catch (e) {
+                    alert('forbiddenDays格式错误，应为数组格式，如：["周六","周日"] 或 []');
+                    return;
+                }
+            }
+
+            const body = {
+                storeId: storeId,
+                resources: [resource]
+            };
+
+            const result = await apiRequest(
+                '/api/v1/advanced-reservation/resources',
+                'POST',
+                body,
+                true
+            );
+
+            showResult('createResourceResult', result);
+        }
+
+        // 接口7：修改资源
+        async function updateResource() {
+            const resourceId = document.getElementById('updateResourceId').value;
+
+            if (!resourceId) {
+                alert('请填写资源ID');
+                return;
+            }
+
+            const body = {};
+
+            // 可选字段
+            const resourceName = document.getElementById('updateResourceName').value;
+            if (resourceName) body.resourceName = resourceName;
+
+            const minTime = document.getElementById('updateMinTime').value;
+            if (minTime) body.minContinuousTime = parseInt(minTime);
+
+            const maxTime = document.getElementById('updateMaxTime').value;
+            if (maxTime) body.maxContinuousTime = parseInt(maxTime);
+
+            const unitPrice = document.getElementById('updateUnitPrice').value;
+            if (unitPrice) body.unitPrice = parseFloat(unitPrice);
+
+            const resourceImg = document.getElementById('updateResourceImg').value;
+            if (resourceImg) body.resourceImg = resourceImg;
+
+            const resourceDesc = document.getElementById('updateResourceDesc').value;
+            if (resourceDesc) body.resourceDesc = resourceDesc;
+
+            const forbiddenDaysInput = document.getElementById('updateResourceForbiddenDays').value.trim();
+            console.log('forbiddenDaysInput:', forbiddenDaysInput);
+            console.log('forbiddenDaysInput !== "":', forbiddenDaysInput !== '');
+            
+            if (forbiddenDaysInput !== '') {  // 只要用户输入了内容（即使是空数组）
+                try {
+                    body.forbiddenDays = JSON.parse(forbiddenDaysInput);
+                    console.log('解析后的forbiddenDays:', body.forbiddenDays);
+                    console.log('是否为数组:', Array.isArray(body.forbiddenDays));
+                    
+                    // 验证解析结果是数组
+                    if (!Array.isArray(body.forbiddenDays)) {
+                        alert('forbiddenDays必须是数组格式，如：["周六","周日"] 或 []');
+                        return;
+                    }
+                } catch (e) {
+                    console.error('JSON解析错误:', e);
+                    alert('forbiddenDays格式错误，应为数组格式，如：["周六","周日"] 或 []\n错误详情: ' + e.message);
+                    return;
+                }
+            }
+
+            console.log('最终body对象:', body);
+            console.log('body字段数量:', Object.keys(body).length);
+
+            if (Object.keys(body).length === 0) {
+                alert('请至少填写一个要修改的字段');
+                return;
+            }
+
+            const result = await apiRequest(
+                `/api/v1/advanced-reservation/resources/${resourceId}`,
+                'PUT',
+                body,
+                true
+            );
+
+            showResult('updateResourceResult', result);
+        }
+
+        // 接口8：删除资源
+        async function deleteResource() {
+            const resourceId = document.getElementById('deleteResourceId').value;
+
+            if (!resourceId) {
+                alert('请填写资源ID');
+                return;
+            }
+
+            if (!confirm('确定要删除该资源吗？')) {
+                return;
+            }
+
+            const result = await apiRequest(
+                `/api/v1/advanced-reservation/resources/${resourceId}`,
+                'DELETE',
+                null,
+                true
+            );
+
+            showResult('deleteResourceResult', result);
+        }
+
+        // ==================== 接口9：启停用资源 ====================
+        async function toggleResource() {
+            const resourceId = document.getElementById('toggleResourceId').value;
+            const isReservable = parseInt(document.getElementById('toggleIsReservable').value);
+
+            if (!resourceId) {
+                alert('请输入资源ID');
+                return;
+            }
+
+            const result = await apiRequest(
+                `/api/v1/advanced-reservation/resources/${resourceId}/toggle`,
+                'PUT',
+                { isReservable },
+                true
+            );
+
+            showResult('toggleResourceResult', result);
+        }
+
+        // ==================== 接口10：查询某日预约情况 ====================
+        async function queryReservations() {
+            const storeId = document.getElementById('queryReservationsStoreId').value;
+            const requestDate = document.getElementById('queryReservationsDate').value;
+            const keyword = document.getElementById('queryReservationsKeyword').value;
+
+            if (!storeId || !requestDate) {
+                alert('请输入店铺ID和查询日期');
+                return;
+            }
+
+            let url = `/api/v1/advanced-reservation/query?storeId=${storeId}&requestDate=${requestDate}`;
+            if (keyword) {
+                url += `&keyword=${encodeURIComponent(keyword)}`;
+            }
+
+            const result = await apiRequest(url, 'GET', null, false);
+            showResult('queryReservationsResult', result);
+        }
+
+        // ==================== 接口11：获取预约列表 ====================
+        async function getMyReservations() {
+            const status = document.getElementById('myReservationsStatus').value;
+            const startDate = document.getElementById('myReservationsStartDate').value;
+            const endDate = document.getElementById('myReservationsEndDate').value;
+            const page = document.getElementById('myReservationsPage').value;
+            const pageSize = document.getElementById('myReservationsPageSize').value;
+
+            let url = `/api/v1/advanced-reservation/my-reservations?page=${page}&pageSize=${pageSize}`;
+            if (status) url += `&status=${status}`;
+            if (startDate) url += `&startDate=${startDate}`;
+            if (endDate) url += `&endDate=${endDate}`;
+
+            const result = await apiRequest(url, 'GET', null, false);
+            showResult('myReservationsResult', result);
+        }
+
+        // ==================== 接口12：预约资源 ====================
+        async function reserveResource() {
+            const storeId = document.getElementById('reserveStoreId').value.trim();
+            const resourceId = parseInt(document.getElementById('reserveResourceId').value);
+            const memberCardId = document.getElementById('reserveMemberCardId').value.trim();
+            const reservationDate = document.getElementById('reserveDate').value;
+            const timeSlotsInput = document.getElementById('reserveTimeSlots').value.trim();
+            const remark = document.getElementById('reserveRemark').value.trim();
+
+            // 必填字段校验
+            if (!storeId || !resourceId || !memberCardId || !reservationDate || !timeSlotsInput) {
+                alert('请填写所有必填字段（店铺ID、资源ID、会员卡ID、预约日期、时间段）');
+                return;
+            }
+
+            // 解析timeSlots
+            let timeSlots;
+            try {
+                timeSlots = JSON.parse(timeSlotsInput);
+                if (!Array.isArray(timeSlots) || timeSlots.length === 0) {
+                    alert('timeSlots必须是非空数组，如：["08:00-09:00","09:00-10:00"]');
+                    return;
+                }
+            } catch (e) {
+                alert('timeSlots格式错误，应为JSON数组，如：["08:00-09:00","09:00-10:00"]\n错误详情: ' + e.message);
+                return;
+            }
+
+            // 构建请求体
+            const body = {
+                storeId,
+                resourceId,
+                memberCardId,
+                reservationDate,
+                timeSlots
+            };
+
+            // 可选字段
+            if (remark) {
+                body.remark = remark;
+            }
+
+            const result = await apiRequest(
+                '/api/v1/advanced-reservation/reserve',
+                'POST',
+                body,
+                false  // 使用普通令牌
+            );
+
+            showResult('reserveResourceResult', result);
+        }
+
+        // ==================== 接口13：取消预约资源 ====================
+        async function cancelReservation() {
+            const reservationId = parseInt(document.getElementById('cancelReservationId').value);
+            const remark = document.getElementById('cancelRemark').value;
+
+            if (!reservationId) {
+                alert('请输入预约ID');
+                return;
+            }
+
+            const body = { reservationId };
+            if (remark) {
+                body.remark = remark;
+            }
+
+            const result = await apiRequest(
+                '/api/v1/advanced-reservation/cancel',
+                'PUT',
+                body,
+                false
+            );
+
+            showResult('cancelReservationResult', result);
+        }
+
+        // ==================== 接口14：查询某会员预约情况 ====================
+        async function queryMemberReservations() {
+            const userPhone = document.getElementById('memberPhone14').value.trim();
+            const status = document.getElementById('memberStatus14').value;
+            const startDate = document.getElementById('memberStartDate14').value;
+            const endDate = document.getElementById('memberEndDate14').value;
+            const page = document.getElementById('memberPage14').value;
+            const pageSize = document.getElementById('memberPageSize14').value;
+
+            if (!userPhone) {
+                alert('请输入会员手机号');
+                return;
+            }
+
+            // 加密手机号
+            const encryptedPhone = encryptAES(userPhone);
+
+            let url = `/api/v1/advanced-reservation/member-reservations?userPhone=${encodeURIComponent(encryptedPhone)}&page=${page}&pageSize=${pageSize}`;
+            if (status) url += `&status=${status}`;
+            if (startDate) url += `&startDate=${startDate}`;
+            if (endDate) url += `&endDate=${endDate}`;
+
+            const result = await apiRequest(url, 'GET', null, true); // 使用工作令牌
+            showResult('memberReservationsResult', result);
+        }
+
+        // ==================== 接口15：停用预约资源 ====================
+        async function disableResource() {
+            const resourceId = parseInt(document.getElementById('disableResourceId').value);
+            const reservationDate = document.getElementById('disableDate').value;
+            const timeSlotsInput = document.getElementById('disableTimeSlots').value.trim();
+            const reason = document.getElementById('disableReason').value.trim();
+
+            if (!resourceId || !reservationDate || !timeSlotsInput || !reason) {
+                alert('请填写所有必填字段');
+                return;
+            }
+
+            // 解析timeSlots（与接口12保持一致）
+            let timeSlots;
+            try {
+                timeSlots = JSON.parse(timeSlotsInput);
+                if (!Array.isArray(timeSlots) || timeSlots.length === 0) {
+                    alert('timeSlots必须是非空数组，如：["08:00-09:00","09:00-10:00"]');
+                    return;
+                }
+            } catch (e) {
+                alert('timeSlots格式错误，应为JSON数组，如：["08:00-09:00","09:00-10:00"]\n错误详情: ' + e.message);
+                return;
+            }
+
+            const body = {
+                resourceId,
+                reservationDate,
+                timeSlots,
+                reason
+            };
+
+            const result = await apiRequest(
+                '/api/v1/advanced-reservation/disable',
+                'POST',
+                body,
+                true  // 使用工作令牌
+            );
+
+            showResult('disableResourceResult', result);
+        }
+
+        // ==================== 接口16：线下占用预约资源 ====================
+        async function occupyResource() {
+            const resourceId = parseInt(document.getElementById('occupyResourceId').value);
+            const reservationDate = document.getElementById('occupyDate').value;
+            const timeSlotsInput = document.getElementById('occupyTimeSlots').value.trim();
+            const customerPhone = document.getElementById('customerPhone').value.trim();
+            const remark = document.getElementById('occupyRemark').value.trim();
+
+            if (!resourceId || !reservationDate || !timeSlotsInput || !customerPhone) {
+                alert('请填写所有必填字段');
+                return;
+            }
+
+            // 解析timeSlots（与接口12保持一致）
+            let timeSlots;
+            try {
+                timeSlots = JSON.parse(timeSlotsInput);
+                if (!Array.isArray(timeSlots) || timeSlots.length === 0) {
+                    alert('timeSlots必须是非空数组，如：["08:00-09:00","09:00-10:00"]');
+                    return;
+                }
+            } catch (e) {
+                alert('timeSlots格式错误，应为JSON数组，如：["08:00-09:00","09:00-10:00"]\n错误详情: ' + e.message);
+                return;
+            }
+
+            // 加密客户手机号
+            const encryptedPhone = encryptAES(customerPhone);
+
+            const body = {
+                resourceId,
+                reservationDate,
+                timeSlots,
+                customerPhone: encryptedPhone
+            };
+
+            if (remark) {
+                body.remark = remark;
+            }
+
+            const result = await apiRequest(
+                '/api/v1/advanced-reservation/occupy',
+                'POST',
+                body,
+                true  // 使用工作令牌
+            );
+
+            showResult('occupyResourceResult', result);
+        }
+
+        // ==================== 接口17：员工取消预约 ====================
+        async function staffCancelReservation() {
+            const reservationId = parseInt(document.getElementById('staffCancelReservationId').value);
+            const cancelReason = document.getElementById('staffCancelReason').value.trim();
+            const useCancelRule = document.getElementById('useCancelRule').value === 'true';
+
+            if (!reservationId || !cancelReason) {
+                alert('请填写所有必填字段');
+                return;
+            }
+
+            const body = {
+                reservationId,
+                cancelReason,
+                useCancelRule
+            };
+
+            const result = await apiRequest(
+                '/api/v1/advanced-reservation/staff-cancel',
+                'PUT',
+                body,
+                true  // 使用工作令牌
+            );
+
+            showResult('staffCancelResult', result);
+        }
+
+        // ==================== 接口19：创建/修改优惠策略 ====================
+        async function createOrUpdatePromotionStrategy() {
+            const resourceIdsInput = document.getElementById('promotionResourceIds').value.trim();
+            const effectiveWeekInput = document.getElementById('promotionEffectiveWeek').value.trim();
+            const discountsTimeInput = document.getElementById('promotionDiscountsTime').value.trim();
+
+            if (!resourceIdsInput || !effectiveWeekInput || !discountsTimeInput) {
+                alert('请填写所有必填字段');
+                return;
+            }
+
+            try {
+                const resourceIds = JSON.parse(resourceIdsInput);
+                const effectiveWeek = JSON.parse(effectiveWeekInput);
+                const discountsTime = JSON.parse(discountsTimeInput);
+
+                if (!Array.isArray(resourceIds) || resourceIds.length === 0) {
+                    alert('resourceIds必须是非空数组');
+                    return;
+                }
+
+                if (!Array.isArray(effectiveWeek) || effectiveWeek.length === 0) {
+                    alert('effectiveWeek必须是非空数组');
+                    return;
+                }
+
+                if (!Array.isArray(discountsTime) || discountsTime.length === 0) {
+                    alert('discountsTime必须是非空数组');
+                    return;
+                }
+
+                const body = {
+                    resourceIds,
+                    effectiveWeek,
+                    discountsTime
+                };
+
+                const result = await apiRequest(
+                    '/api/v1/advanced-reservation/promotion-strategy',
+                    'POST',
+                    body,
+                    true  // 使用工作令牌
+                );
+
+                showResult('promotionStrategyResult', result);
+            } catch (e) {
+                alert('JSON格式错误: ' + e.message);
+            }
+        }
+
+        // ==================== 接口20：设置优惠策略不生效日期 ====================
+        async function setNonEffectiveDates() {
+            const resourceIdsInput = document.getElementById('nonEffectiveResourceIds').value.trim();
+            const operation = document.getElementById('nonEffectiveOperation').value;
+            const datesInput = document.getElementById('nonEffectiveDates').value.trim();
+
+            if (!resourceIdsInput || !operation || !datesInput) {
+                alert('请填写所有必填字段');
+                return;
+            }
+
+            try {
+                const resourceIds = JSON.parse(resourceIdsInput);
+                const dates = JSON.parse(datesInput);
+
+                if (!Array.isArray(resourceIds) || resourceIds.length === 0) {
+                    alert('resourceIds必须是非空数组');
+                    return;
+                }
+
+                if (!Array.isArray(dates) || dates.length === 0) {
+                    alert('dates必须是非空数组');
+                    return;
+                }
+
+                const body = {
+                    resourceIds,
+                    operation,
+                    dates
+                };
+
+                const result = await apiRequest(
+                    '/api/v1/advanced-reservation/promotion-strategy/non-effective-dates',
+                    'PUT',
+                    body,
+                    true  // 使用工作令牌
+                );
+
+                showResult('nonEffectiveDatesResult', result);
+            } catch (e) {
+                alert('JSON格式错误: ' + e.message);
+            }
+        }
+
+        // ==================== 接口21：清空指定资源优惠策略 ====================
+        async function clearPromotionStrategy() {
+            const resourceIdsInput = document.getElementById('clearPromotionResourceIds').value.trim();
+
+            if (!resourceIdsInput) {
+                alert('请填写资源ID列表');
+                return;
+            }
+
+            try {
+                const resourceIds = JSON.parse(resourceIdsInput);
+
+                if (!Array.isArray(resourceIds) || resourceIds.length === 0) {
+                    alert('resourceIds必须是非空数组');
+                    return;
+                }
+
+                const body = {
+                    resourceIds
+                };
+
+                const result = await apiRequest(
+                    '/api/v1/advanced-reservation/promotion-strategy/clear',
+                    'DELETE',
+                    body,
+                    true  // 使用工作令牌
+                );
+
+                showResult('clearPromotionResult', result);
+            } catch (e) {
+                alert('JSON格式错误: ' + e.message);
+            }
+        }
+    </script>
+</body>
+</html>

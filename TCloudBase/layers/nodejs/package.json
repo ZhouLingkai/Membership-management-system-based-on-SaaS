@@ -1,0 +1,11 @@
+{
+  "name": "ecards-utils-layer",
+  "version": "1.0.0",
+  "description": "EcardsV1 CloudBase utility layer",
+  "main": "index.js",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "jsonwebtoken": "^9.0.2",
+    "uuid": "^9.0.1"
+  }
+}

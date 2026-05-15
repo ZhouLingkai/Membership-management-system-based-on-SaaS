@@ -1,0 +1,222 @@
+<!--pages/store-create/store-create.wxml-->
+<view class="page-container">
+  <!-- 顶部提示 -->
+  <view class="header-tip">
+    <text class="tip-icon">💡</text>
+    <text class="tip-text">请按步骤填写店铺信息，所有带*的为必填项</text>
+  </view>
+
+  <!-- 步骤表单 -->
+  <view class="form-wrapper">
+    <step-form 
+      id="storeStepForm"
+      steps="{{steps}}"
+      currentStep="{{currentStep}}"
+      bindstepchange="onStepChange">
+      
+      <!-- 步骤1: 基本信息 -->
+      <view class="step-panel" wx:if="{{currentStep === 0}}">
+        <view class="step-desc">请填写店铺基本信息</view>
+        
+        <view class="form-item">
+          <view class="form-label"><text class="required">*</text>店铺名称</view>
+          <input 
+            class="form-input" 
+            placeholder="请输入店铺名称（1-100字符）" 
+            value="{{formData.storeName}}" 
+            bindinput="onInputChange"
+            data-field="storeName"
+            maxlength="100"
+          />
+        </view>
+
+        <view class="form-item">
+          <view class="form-label">店铺类型</view>
+          <view class="store-type-section">
+            <input 
+              class="form-input store-type-input" 
+              placeholder="请选择或输入店铺类型" 
+              value="{{formData.storeType}}" 
+              bindinput="onInputChange"
+              data-field="storeType"
+              maxlength="50"
+              bindfocus="onStoreTypeFocus"
+            />
+            <view class="store-type-dropdown" wx:if="{{showStoreTypeList}}">
+              <view class="dropdown-item" wx:for="{{storeTypeOptions}}" wx:key="*this" 
+                    bindtap="onStoreTypeSelect" data-value="{{item}}">
+                {{item}}
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <view class="form-item">
+          <view class="form-label">店铺地址</view>
+          <view class="address-section">
+            <picker mode="region" bindchange="onRegionChange" value="{{region}}">
+              <view class="region-picker">
+                <text wx:if="{{region.length > 0}}">{{region[0]}} {{region[1]}} {{region[2]}}</text>
+                <text wx:else class="placeholder">请选择省市区</text>
+                <text class="picker-arrow">▼</text>
+              </view>
+            </picker>
+            <input 
+              class="form-input address-input" 
+              placeholder="请输入详细地址" 
+              value="{{detailAddress}}" 
+              bindinput="onDetailAddressInput"
+              maxlength="200"
+            />
+          </view>
+        </view>
+
+        <view class="btn-group">
+          <button class="next-btn" bindtap="nextStep" disabled="{{!formData.storeName}}">
+            下一步
+          </button>
+        </view>
+      </view>
+
+      <!-- 步骤2: 门头店照 -->
+      <view class="step-panel" wx:if="{{currentStep === 1}}">
+        <view class="step-desc">请上传一张门头店照</view>
+        
+        <view class="form-item">
+          <view class="form-label"><text class="required">*</text>门头店照</view>
+          <view class="upload-area" bindtap="uploadStorePhoto">
+            <image wx:if="{{formData.storePhotosLocal}}" 
+                   src="{{formData.storePhotosLocal}}" 
+                   mode="aspectFit" 
+                   class="uploaded-image" />
+            <view wx:else class="upload-placeholder">
+              <text class="upload-icon">📷</text>
+              <text class="upload-text">点击上传门头照</text>
+              <text class="upload-hint">支持JPG、PNG格式，不超过5MB</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="btn-group">
+          <button class="prev-btn" bindtap="prevStep">上一步</button>
+          <button class="next-btn" bindtap="nextStep" disabled="{{!formData.storePhotos}}">
+            下一步
+          </button>
+        </view>
+      </view>
+
+      <!-- 步骤3: 营业执照 -->
+      <view class="step-panel" wx:if="{{currentStep === 2}}">
+        <view class="step-desc">请上传一张营业执照</view>
+        
+        <view class="form-item">
+          <view class="form-label"><text class="required">*</text>营业执照</view>
+          <view class="upload-area" bindtap="uploadLicense">
+            <image wx:if="{{formData.businessLicenseLocal}}" 
+                   src="{{formData.businessLicenseLocal}}" 
+                   mode="aspectFit" 
+                   class="uploaded-image" />
+            <view wx:else class="upload-placeholder">
+              <text class="upload-icon">📄</text>
+              <text class="upload-text">点击上传营业执照</text>
+              <text class="upload-hint">支持JPG、PNG格式，不超过5MB</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="btn-group">
+          <button class="prev-btn" bindtap="prevStep">上一步</button>
+          <button class="next-btn" bindtap="nextStep" disabled="{{!formData.businessLicense}}">
+            下一步
+          </button>
+        </view>
+      </view>
+
+      <!-- 步骤4: 联系方式等 -->
+      <view class="step-panel" wx:if="{{currentStep === 3}}">
+        <view class="step-desc">请填写联系方式等信息</view>
+        
+        <view class="form-item">
+          <view class="form-label"><text class="required">*</text>联系电话</view>
+          <input 
+            class="form-input" 
+            type="number"
+            placeholder="请输入联系电话" 
+            value="{{formData.contactPhone}}" 
+            bindinput="onInputChange"
+            data-field="contactPhone"
+            maxlength="20"
+          />
+        </view>
+
+        <view class="form-item">
+          <view class="form-label"><text class="required">*</text>联系微信</view>
+          <input 
+            class="form-input" 
+            placeholder="请输入联系微信号" 
+            value="{{formData.contactWx}}" 
+            bindinput="onInputChange"
+            data-field="contactWx"
+            maxlength="20"
+          />
+        </view>
+
+        <view class="form-item">
+          <view class="form-label">是否需要预约功能</view>
+          <view class="radio-group-inline">
+            <view class="radio-item-inline {{formData.appointment === 0 ? 'active' : ''}}" 
+                  bindtap="onAppointmentChange" data-value="0">
+              <text>否</text>
+            </view>
+            <view class="radio-item-inline {{formData.appointment === 1 ? 'active' : ''}}" 
+                  bindtap="onAppointmentChange" data-value="1">
+              <text>是</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="form-item">
+          <view class="form-label">营业时间</view>
+          <input 
+            class="form-input" 
+            placeholder="如：08:00-22:00" 
+            value="{{formData.businessHours}}" 
+            bindinput="onInputChange"
+            data-field="businessHours"
+            maxlength="100"
+          />
+        </view>
+
+        <view class="form-item">
+          <view class="form-label">建店时间</view>
+          <picker mode="date" bindchange="onOpenTimeChange" value="{{openStoreDate}}">
+            <view class="picker-view">
+              <text wx:if="{{openStoreDate}}">{{openStoreDate}}</text>
+              <text wx:else class="placeholder">请选择建店时间</text>
+              <text class="picker-arrow">▼</text>
+            </view>
+          </picker>
+        </view>
+
+        <view class="btn-group">
+          <button class="prev-btn" bindtap="prevStep">上一步</button>
+          <button class="submit-btn" bindtap="submitForm" disabled="{{!canSubmit}}">
+            提交创建
+          </button>
+        </view>
+      </view>
+    </step-form>
+  </view>
+
+  <!-- 上传进度弹窗 -->
+  <view wx:if="{{showUploadProgress}}" class="mask">
+    <view class="progress-card">
+      <view class="progress-title">上传中...</view>
+      <progress percent="{{uploadProgress}}" stroke-width="6" activeColor="#667eea" />
+      <view class="progress-text">{{uploadProgress}}%</view>
+    </view>
+  </view>
+
+  <!-- 自定义Toast组件 -->
+  <custom-toast id="customToast" />
+</view>

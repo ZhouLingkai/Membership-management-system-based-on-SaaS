@@ -1,0 +1,12 @@
+{
+  "name": "merchant-snd-pswd-change",
+  "version": "1.0.0",
+  "description": "修改商家二级密码（短信验证码验证，需已登录）",
+  "main": "index.js",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@cloudbase/node-sdk": "^3.18.1",
+    "@node-rs/argon2": "^2.0.0"
+  }
+}

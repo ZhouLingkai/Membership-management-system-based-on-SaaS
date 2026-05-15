@@ -1,0 +1,8 @@
+{
+  "usingComponents": {
+    "custom-toast": "/components/custom-toast/custom-toast"
+  },
+  "navigationBarTitleText": "经营数据统计",
+  "enablePullDownRefresh": true,
+  "backgroundColor": "#F5F5F5"
+}

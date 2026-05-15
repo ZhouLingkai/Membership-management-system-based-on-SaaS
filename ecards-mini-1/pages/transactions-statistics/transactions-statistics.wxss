@@ -1,0 +1,327 @@
+/* pages/transactions-statistics/transactions-statistics.wxss */
+.page-container {
+  min-height: 100vh;
+  background: #F5F5F5;
+  padding: 15rpx;
+  padding-bottom: 40rpx;
+}
+
+.card {
+  background: #FFFFFF;
+  border-radius: 15rpx;
+  padding: 24rpx 12rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+}
+
+.cardt {
+    background: #FFFFFF;
+    border-radius: 15rpx;
+    padding: 24rpx;
+    margin-bottom: 20rpx;
+    box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+}
+/* 顶部标题 */
+.header-section {
+  text-align: center;
+  margin-bottom: 24rpx;
+}
+
+.title {
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.subtitle {
+  font-size: 28rpx;
+  color: #666;
+}
+
+/* 快捷选项（吸顶） */
+.quick-options {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-bottom: 10rpx;
+  background: #FFFFFF;
+  border-radius: 15rpx;
+  padding: 24rpx 12rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+}
+
+.sticky-top {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.option-item {
+  flex: 1;
+  text-align: center;
+  padding: 16rpx 0;
+  font-size: 32rpx;
+  color: #666;
+  border-radius: 12rpx;
+  margin: 0 8rpx;
+  transition: all 0.3s;
+}
+
+.option-item.active {
+  background-image: linear-gradient( 135deg, #3C8CE7 10%, #4987ce 100%);
+  color: #FFFFFF;
+  font-weight: bold;
+}
+
+/* 某日数据 */
+.day-data-section {
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6rpx 12rpx;
+  margin-bottom: 24rpx;
+}
+
+.section-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.day-options {
+  display: flex;
+  gap: 12rpx;
+}
+
+.day-option {
+  padding: 8rpx 20rpx;
+  font-size: 28rpx;
+  color: #666;
+  border: 2rpx solid #E0E0E0;
+  border-radius: 20rpx;
+  transition: all 0.3s;
+}
+
+.day-option.active {
+  background: #42A5F5;
+  color: #FFFFFF;
+  border-color: #42A5F5;
+}
+
+.data-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.data-item {
+  /* flex: 0 0 calc(50% - 8rpx); */
+  /* flex: ; */
+  width: 162rpx;
+  background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+  border-radius: 12rpx;
+  box-sizing: border-box;
+  padding: 24rpx 8rpx;
+  text-align: center;
+}
+
+.data-value {
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #1976D2;
+  margin-bottom: 8rpx;
+  line-height: 1.2;
+}
+
+.data-value.highlight {
+  color: #D32F2F;
+}
+
+.data-label {
+  font-size: 30rpx;
+  color: #666;
+  line-height: 1.4;
+}
+
+/* 数据汇总 */
+.summary-section {
+}
+
+.summary-section .data-item {
+  background: linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%);
+}
+
+.summary-section .data-value {
+  color: #F57C00;
+}
+
+.summary-section .data-value.highlight {
+  color: #E65100;
+}
+
+/* 指标趋势 */
+.trend-section {
+}
+
+.trend-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin-bottom: 24rpx;
+}
+
+.trend-option {
+  padding: 12rpx 24rpx;
+  font-size: 28rpx;
+  color: #666;
+  background: #F5F5F5;
+  border-radius: 20rpx;
+  transition: all 0.3s;
+}
+
+.trend-option.active {
+  background: linear-gradient( 135deg, #3C8CE7 10%, #4987ce 100%);
+  color: #FFFFFF;
+  font-weight: bold;
+}
+
+/* 图表容器 */
+.chart-container {
+  position: relative;
+  width: 100%;
+  margin-top: 20rpx;
+}
+
+.trend-canvas {
+  width: 96%;
+  height: 180px;
+  border-radius: 12rpx;
+}
+
+.point-tip {
+  position: absolute;
+  bottom: 20rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: #FFFFFF;
+  padding: 16rpx 24rpx;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  z-index: 10;
+}
+
+.point-tip-top {
+  position: absolute;
+  top: 10rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.85);
+  color: #FFFFFF;
+  padding: 16rpx 24rpx;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  z-index: 10;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.3);
+}
+
+.tip-content {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.tip-content text {
+  white-space: nowrap;
+}
+
+.close-btn {
+  font-size: 40rpx;
+  font-weight: bold;
+  cursor: pointer;
+  margin-left: 12rpx;
+}
+
+/* 加载状态 */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.loading-text {
+  font-size: 32rpx;
+  color: #666;
+}
+
+/* 日期选择弹窗 */
+.date-picker-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: flex-end;
+}
+
+.date-picker-modal .modal-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.date-picker-modal .modal-content {
+  position: relative;
+  width: 100%;
+  background: #FFFFFF;
+  border-radius: 24rpx 24rpx 0 0;
+  max-height: 60vh;
+  z-index: 1001;
+}
+
+.date-picker-modal .modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 32rpx;
+  border-bottom: 1rpx solid #E0E0E0;
+  font-size: 36rpx;
+  font-weight: bold;
+}
+
+.date-picker-modal .modal-header .close-btn {
+  font-size: 48rpx;
+  color: #999;
+}
+
+.date-picker-modal .date-list {
+  max-height: 50vh;
+  padding: 16rpx 0;
+}
+
+.date-picker-modal .date-item {
+  padding: 28rpx 32rpx;
+  font-size: 32rpx;
+  color: #333;
+  border-bottom: 1rpx solid #F0F0F0;
+}
+
+.date-picker-modal .date-item:active {
+  background: #F5F5F5;
+}

@@ -1,0 +1,227 @@
+<view class="page-container">
+  <!-- 会员卡信息 -->
+  <view class="card-info-section card">
+    <view class="info-row">
+      <view class="info-item">
+        <view class="info-label">卡种名称</view>
+        <view class="info-value">{{cardInfo.cardTypeName}}</view>
+      </view>
+      <view class="info-item">
+        <view class="info-label">卡种类型</view>
+        <view class="info-value">{{cardInfo.cardType}}</view>
+      </view>
+    </view>
+    
+    <view class="info-row">
+      <view class="info-item">
+        <view class="info-label">会员姓名</view>
+        <view class="info-value">{{cardInfo.memberName || '-'}}</view>
+      </view>
+      <view class="info-item">
+        <view class="info-label">会员手机</view>
+        <view class="info-value">{{cardInfo.phone}}</view>
+      </view>
+    </view>
+    
+    <!-- 余额卡：显示余额 -->
+    <view class="info-row" wx:if="{{cardInfo.cardType === '余额卡'}}">
+      <view class="info-item">
+        <view class="info-label">余额</view>
+        <view class="info-value highlight">{{cardInfo.balance}}元</view>
+      </view>
+      <view class="info-item">
+        <view class="info-label">积分</view>
+        <view class="info-value">{{cardInfo.points}}分</view>
+      </view>
+    </view>
+    
+    <!-- 次数卡：显示剩余次数 -->
+    <view class="info-row" wx:if="{{cardInfo.cardType === '次数卡'}}">
+      <view class="info-item">
+        <view class="info-label">剩余次数</view>
+        <view class="info-value highlight">{{cardInfo.times}}次</view>
+      </view>
+      <view class="info-item">
+        <view class="info-label">积分</view>
+        <view class="info-value">{{cardInfo.points}}分</view>
+      </view>
+    </view>
+    
+    <!-- 时效卡：显示到期时间和积分 -->
+    <view class="info-row" wx:if="{{cardInfo.cardType === '时效卡'}}">
+      <view class="info-item">
+        <view class="info-label">到期时间</view>
+        <view class="info-value highlight">
+          {{cardInfo.expireTime}}
+          <view wx:if="{{cardInfo.remainingDays > 0}}">⏰ 还剩{{cardInfo.remainingDays}}天</view>
+        </view>
+      </view>
+      <view class="info-item">
+        <view class="info-label">积分</view>
+        <view class="info-value">{{cardInfo.points}}分</view>
+      </view>
+    </view>
+    
+    <!-- 积分卡：显示积分 -->
+    <view class="info-row" wx:if="{{cardInfo.cardType === '积分卡'}}">
+      <view class="info-item full-width">
+        <view class="info-label">积分</view>
+        <view class="info-value highlight">{{cardInfo.points}}分</view>
+      </view>
+    </view>
+    
+    <view class="info-row">
+      <view class="info-item">
+        <view class="info-label">状态</view>
+        <view class="info-value status-{{cardInfo.status}}">{{statusMap[cardInfo.status]}}</view>
+      </view>
+      <view class="info-item" wx:if="{{cardInfo.originalStoreName}}">
+        <view class="info-label">办卡店铺</view>
+        <view class="info-value">{{cardInfo.originalStoreName}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 日期筛选 -->
+  <view class="filter-section card">
+    <view class="filter-title">
+      <text>日期筛选</text>
+      <text class="reset-all-btn" wx:if="{{startDate || endDate}}" bindtap="resetAllDates">重置</text>
+    </view>
+    <view class="date-filter-row">
+      <view class="date-item">
+        <text class="date-label">开始日期</text>
+        <picker mode="date" value="{{startDate}}" bindchange="onStartDateChange">
+          <view class="date-picker">
+            <text class="date-text">{{startDate || '选择日期'}}</text>
+          </view>
+        </picker>
+      </view>
+      
+      <view class="date-item">
+        <text class="date-label">结束日期</text>
+        <picker mode="date" value="{{endDate}}" bindchange="onEndDateChange">
+          <view class="date-picker">
+            <text class="date-text">{{endDate || '选择日期'}}</text>
+          </view>
+        </picker>
+      </view>
+    </view>
+    <button class="filter-btn" bindtap="handleFilter">筛选查询</button>
+  </view>
+
+  <!-- 记录列表 -->
+  <view class="records-section">
+    <view class="section-title">{{recordType === 'transaction' ? '交易记录' : '积分记录'}}（共{{total}}条）</view>
+    
+    <view class="empty-list" wx:if="{{recordList.length === 0 && !loading}}">
+      <text>暂无记录</text>
+    </view>
+
+    <view class="record-list" wx:else>
+      <view class="record-item card" wx:for="{{recordList}}" wx:key="index">
+        <!-- 交易记录 -->
+        <block wx:if="{{recordType === 'transaction'}}">
+          <view class="record-header">
+            <view class="record-type type-{{item.transactionType}}">{{item.transactionTypeName}}</view>
+            <view class="record-time">{{item.transactionTime}}</view>
+          </view>
+          <view class="record-body">
+            <!-- 余额卡 -->
+            <block wx:if="{{cardInfo.cardType === '余额卡'}}">
+              <view class="record-row">
+                <view class="record-label">交易金额</view>
+                <view class="record-value amount">{{item.amount}}</view>
+              </view>
+              <view class="record-row">
+                <view class="record-label">交易后余额</view>
+                <view class="record-value">{{item.balanceSnapshot}}</view>
+              </view>
+            </block>
+            
+            <!-- 次数卡 -->
+            <block wx:if="{{cardInfo.cardType === '次数卡'}}">
+              <view class="record-row">
+                <view class="record-label">交易次数</view>
+                <view class="record-value amount">{{item.amount}}</view>
+              </view>
+              <view class="record-row">
+                <view class="record-label">交易后次数</view>
+                <view class="record-value">{{item.balanceSnapshot}}</view>
+              </view>
+            </block>
+            
+            <!-- 时效卡 -->
+            <block wx:if="{{cardInfo.cardType === '时效卡'}}">
+              <!-- 延期类型显示变动值 -->
+              <view class="record-row" wx:if="{{item.transactionType === 4}}">
+                <view class="record-label">变动值</view>
+                <view class="record-value amount">{{item.amount}}天</view>
+              </view>
+              <!-- 日期变动类型不显示交易金额 -->
+            </block>
+            
+            <view class="record-row">
+              <view class="record-label">操作人</view>
+              <view class="record-value">{{item.operatorName}}</view>
+            </view>
+            <view class="record-row">
+              <view class="record-label">店铺</view>
+              <view class="record-value">{{item.storeName}}</view>
+            </view>
+            <view class="record-row" wx:if="{{item.remark}}">
+              <view class="record-label">备注</view>
+              <view class="record-value remark">{{item.remark}}</view>
+            </view>
+          </view>
+        </block>
+
+        <!-- 积分记录 -->
+        <block wx:if="{{recordType === 'points'}}">
+          <view class="record-header">
+            <view class="record-type type-{{item.pointsChange > 0 ? 'add' : 'reduce'}}">
+              {{item.pointsChange > 0 ? '积分增加' : '积分扣减'}}
+            </view>
+            <view class="record-time">{{item.createTime}}</view>
+          </view>
+          <view class="record-body">
+            <view class="record-row">
+              <view class="record-label">积分变动</view>
+              <view class="record-value amount {{item.pointsChange > 0 ? 'positive' : 'negative'}}">
+                {{item.pointsChange > 0 ? '+' : ''}}{{item.pointsChange}}
+              </view>
+            </view>
+            <view class="record-row">
+              <view class="record-label">变动后积分</view>
+              <view class="record-value">{{item.pointsSnapshot}}</view>
+            </view>
+            <view class="record-row">
+              <view class="record-label">操作人</view>
+              <view class="record-value">{{item.operatorName}}</view>
+            </view>
+            <view class="record-row">
+              <view class="record-label">店铺</view>
+              <view class="record-value">{{item.storeName}}</view>
+            </view>
+            <view class="record-row" wx:if="{{item.remark}}">
+              <view class="record-label">原因</view>
+              <view class="record-value remark">{{item.remark}}</view>
+            </view>
+          </view>
+        </block>
+      </view>
+    </view>
+
+    <!-- 加载状态 -->
+    <view class="loading-more" wx:if="{{loading && !refreshing}}">
+      <text>加载中...</text>
+    </view>
+    
+    <view class="no-more" wx:if="{{noMoreData && recordList.length > 0}}">
+      <text>没有更多数据了</text>
+    </view>
+  </view>
+</view>
+
+<!-- 自定义Toast -->
+<custom-toast id="customToast"></custom-toast>

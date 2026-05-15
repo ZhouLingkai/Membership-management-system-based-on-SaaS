@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "创建店铺",
+  "usingComponents": {
+    "step-form": "/components/step-form/step-form",
+    "custom-toast": "/components/custom-toast/custom-toast"
+  }
+}

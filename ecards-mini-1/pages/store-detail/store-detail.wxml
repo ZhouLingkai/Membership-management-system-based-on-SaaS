@@ -1,0 +1,211 @@
+<!--pages/store-detail/store-detail.wxml-->
+<view class="page-container">
+  <!-- 店铺头部信息 -->
+  <view class="header-section">
+    <view class="store-photo-wrapper" bindtap="onPhotoTap">
+      <image 
+        class="store-photo" 
+        src="{{storePhotoUrl || '/assets/icons/store-default.png'}}" 
+        mode="aspectFill"
+      />
+      <view class="photo-edit-icon" wx:if="{{isMerchant}}">
+        <text>📷</text>
+      </view>
+    </view>
+    <view class="store-name-section">
+      <text class="store-name">{{storeInfo.storeName || '未命名店铺'}}</text>
+      <view class="store-status {{storeInfo.storeStatus === 1 ? 'active' : 'inactive'}}">
+        {{storeInfo.storeStatus === 1 ? '营业中' : '已停业'}}
+      </view>
+    </view>
+  </view>
+
+  <!-- 店铺信息列表 -->
+  <view class="info-list">
+    <!-- 店铺名称 -->
+    <view class="info-item {{isMerchant ? 'editable' : ''}}" bindtap="onInfoItemTap" 
+          data-field="storeName" data-title="店铺名称" data-value="{{storeInfo.storeName}}" data-type="input">
+      <text class="info-label">店铺名称</text>
+      <view class="info-value-row">
+        <text class="info-value">{{storeInfo.storeName || '未设置'}}</text>
+        <text class="arrow" wx:if="{{isMerchant}}">></text>
+      </view>
+    </view>
+
+    <!-- 店铺类型 -->
+    <view class="info-item {{isMerchant ? 'editable' : ''}}" bindtap="onInfoItemTap"
+          data-field="storeType" data-title="店铺类型" data-value="{{storeInfo.storeType}}" data-type="input">
+      <text class="info-label">店铺类型</text>
+      <view class="info-value-row">
+        <text class="info-value">{{storeInfo.storeType || '未设置'}}</text>
+        <text class="arrow" wx:if="{{isMerchant}}">></text>
+      </view>
+    </view>
+
+    <!-- 店铺地址 -->
+    <view class="info-item {{isMerchant ? 'editable' : ''}}" bindtap="onInfoItemTap"
+          data-field="storeAddress" data-title="店铺地址" data-value="{{storeInfo.storeAddress}}" data-type="input">
+      <text class="info-label">店铺地址</text>
+      <view class="info-value-row">
+        <text class="info-value address">{{storeInfo.storeAddress || '未设置'}}</text>
+        <text class="arrow" wx:if="{{isMerchant}}">></text>
+      </view>
+    </view>
+
+    <!-- 联系电话 -->
+    <view class="info-item {{isMerchant ? 'editable' : ''}}" bindtap="onInfoItemTap"
+          data-field="contactPhone" data-title="联系电话" data-value="{{storeInfo.contactPhone}}" data-type="input">
+      <text class="info-label">联系电话</text>
+      <view class="info-value-row">
+        <text class="info-value">{{storeInfo.contactPhone || '未设置'}}</text>
+        <text class="arrow" wx:if="{{isMerchant}}">></text>
+      </view>
+    </view>
+
+    <!-- 联系微信 -->
+    <view class="info-item {{isMerchant ? 'editable' : ''}}" bindtap="onInfoItemTap"
+          data-field="contactWx" data-title="联系微信" data-value="{{storeInfo.contactWx}}" data-type="input">
+      <text class="info-label">联系微信</text>
+      <view class="info-value-row">
+        <text class="info-value">{{storeInfo.contactWx || '未设置'}}</text>
+        <text class="arrow" wx:if="{{isMerchant}}">></text>
+      </view>
+    </view>
+
+    <!-- 营业时间 -->
+    <view class="info-item {{isMerchant ? 'editable' : ''}}" bindtap="onInfoItemTap"
+          data-field="businessHours" data-title="营业时间" data-value="{{storeInfo.businessHours}}" data-type="input">
+      <text class="info-label">营业时间</text>
+      <view class="info-value-row">
+        <text class="info-value">{{storeInfo.businessHours || '未设置'}}</text>
+        <text class="arrow" wx:if="{{isMerchant}}">></text>
+      </view>
+    </view>
+
+    <!-- 建店时间 -->
+    <view class="info-item {{isMerchant ? 'editable' : ''}}" bindtap="onInfoItemTap"
+          data-field="openStoreTime" data-title="建店时间" data-value="{{storeInfo.openStoreTime}}" data-type="date">
+      <text class="info-label">建店时间</text>
+      <view class="info-value-row">
+        <text class="info-value">{{storeInfo.openStoreTime || '未设置'}}</text>
+        <text class="arrow" wx:if="{{isMerchant}}">></text>
+      </view>
+    </view>
+
+    <!-- 是否支持预约 -->
+    <view class="info-item {{isMerchant ? 'editable' : ''}}" bindtap="onInfoItemTap"
+          data-field="appointment" data-title="预约功能" data-value="{{storeInfo.appointment}}" data-type="switch">
+      <text class="info-label">预约功能</text>
+      <view class="info-value-row">
+        <text class="info-value">{{storeInfo.appointment === 1 ? '已开启' : '已关闭'}}</text>
+        <text class="arrow" wx:if="{{isMerchant}}">></text>
+      </view>
+    </view>
+
+    <!-- 门头店照 -->
+    <view class="info-item {{isMerchant ? 'editable' : ''}}" bindtap="onImageItemTap" data-type="storePhotos">
+      <text class="info-label">门头店照</text>
+      <view class="info-value-row">
+        <image wx:if="{{storePhotoUrl}}" class="info-image" src="{{storePhotoUrl}}" mode="aspectFill" />
+        <text wx:else class="info-value">{{isMerchant ? '点击上传' : '未上传'}}</text>
+        <text class="arrow" wx:if="{{isMerchant}}">></text>
+      </view>
+    </view>
+
+    <!-- 营业执照 -->
+    <view class="info-item {{isMerchant ? 'editable' : ''}}" bindtap="onImageItemTap" data-type="businessLicense">
+      <text class="info-label">营业执照</text>
+      <view class="info-value-row">
+        <image wx:if="{{licenseUrl}}" class="info-image" src="{{licenseUrl}}" mode="aspectFill" />
+        <text wx:else class="info-value">{{isMerchant ? '点击上传' : '未上传'}}</text>
+        <text class="arrow" wx:if="{{isMerchant}}">></text>
+      </view>
+    </view>
+
+    <!-- 创建时间（只读） -->
+    <view class="info-item">
+      <text class="info-label">创建时间</text>
+      <text class="info-value">{{storeInfo.createTime || '--'}}</text>
+    </view>
+
+    <!-- 更新时间（只读） -->
+    <view class="info-item">
+      <text class="info-label">更新时间</text>
+      <text class="info-value">{{storeInfo.lastUpdateTime || '--'}}</text>
+    </view>
+  </view>
+
+  <!-- 编辑弹窗 -->
+  <view wx:if="{{showEditMask}}" class="mask" bindtap="closeEditMask">
+    <view class="modal-card" catchtap="stopPropagation">
+      <view class="modal-title">{{editTitle}}</view>
+      <view class="modal-content">
+        <!-- 文本输入 -->
+        <block wx:if="{{editType === 'input'}}">
+          <input 
+            class="modal-input" 
+            value="{{editValue}}" 
+            bindinput="onEditInput" 
+            placeholder="请输入{{editTitle}}" 
+            maxlength="100"
+          />
+        </block>
+        
+        <!-- 日期选择 -->
+        <block wx:if="{{editType === 'date'}}">
+          <picker mode="date" value="{{editValue}}" bindchange="onDateChange">
+            <view class="picker-view">
+              <text>{{editValue || '请选择日期'}}</text>
+              <text class="picker-arrow">▼</text>
+            </view>
+          </picker>
+        </block>
+        
+        <!-- 开关选择 -->
+        <block wx:if="{{editType === 'switch'}}">
+          <view class="switch-options">
+            <view class="switch-option {{editValue === 1 ? 'active' : ''}}" bindtap="onSwitchChange" data-value="1">
+              <text>开启预约</text>
+            </view>
+            <view class="switch-option {{editValue === 0 ? 'active' : ''}}" bindtap="onSwitchChange" data-value="0">
+              <text>关闭预约</text>
+            </view>
+          </view>
+        </block>
+      </view>
+      <view class="modal-footer">
+        <view class="modal-btn cancel" bindtap="closeEditMask">取消</view>
+        <view class="modal-btn confirm" bindtap="submitEdit">确定</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 图片操作弹窗 -->
+  <view wx:if="{{showImageActionMask}}" class="mask" bindtap="closeImageActionMask">
+    <view class="action-sheet" catchtap="stopPropagation">
+      <view class="action-item" bindtap="onViewImage">查看大图</view>
+      <view class="action-item" bindtap="onUploadImage" wx:if="{{isMerchant}}">更换图片</view>
+      <view class="action-item cancel" bindtap="closeImageActionMask">取消</view>
+    </view>
+  </view>
+
+  <!-- 图片查看弹窗 -->
+  <view wx:if="{{showImageMask}}" class="mask" bindtap="closeImageMask">
+    <view class="image-viewer" catchtap="stopPropagation">
+      <image class="view-image" src="{{viewImageUrl}}" mode="widthFix" />
+      <view class="close-icon" bindtap="closeImageMask">×</view>
+    </view>
+  </view>
+
+  <!-- 上传进度弹窗 -->
+  <view wx:if="{{showUploadProgress}}" class="mask">
+    <view class="progress-card">
+      <view class="progress-title">上传中...</view>
+      <progress percent="{{uploadProgress}}" stroke-width="6" activeColor="#667eea" />
+      <view class="progress-text">{{uploadProgress}}%</view>
+    </view>
+  </view>
+
+  <!-- 自定义Toast组件 -->
+  <custom-toast id="customToast" />
+</view>

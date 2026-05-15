@@ -1,0 +1,213 @@
+<!--pages/apply-for-card/apply-for-card.wxml-->
+<custom-toast id="customToast"></custom-toast>
+
+<view class="page-container">
+  <!-- 店铺信息头部 -->
+  <view class="store-header">
+    <text class="store-name">{{storeName}}</text>
+    <text class="store-label">当前店铺</text>
+  </view>
+
+  <!-- 办卡表单 -->
+  <view class="form-card">
+    <view class="card-title">会员信息</view>
+    
+    <!-- 手机号 -->
+    <view class="form-item">
+      <view class="form-label required">会员手机号</view>
+      <input 
+        class="form-input" 
+        type="number" 
+        maxlength="11"
+        placeholder="请输入11位手机号" 
+        value="{{formData.memberPhone}}"
+        bindinput="onPhoneInput"
+        bindblur="validatePhone"
+      />
+      <text class="error-tip" wx:if="{{phoneError}}">{{phoneError}}</text>
+    </view>
+
+    <!-- 会员姓名 -->
+    <view class="form-item">
+      <view class="form-label">会员姓名</view>
+      <input 
+        class="form-input" 
+        type="text" 
+        maxlength="30"
+        placeholder="选填，最多30个字符" 
+        value="{{formData.memberName}}"
+        bindinput="onNameInput"
+      />
+    </view>
+  </view>
+
+  <!-- 卡种选择 -->
+  <view class="form-card">
+    <view class="card-title">选择卡种</view>
+    
+    <view class="card-type-loading" wx:if="{{cardTypeLoading}}">
+      <text>加载中...</text>
+    </view>
+
+    <view class="card-type-empty" wx:elif="{{cardTypeList.length === 0}}">
+      <text>暂无可用卡种</text>
+    </view>
+
+    <!-- 横向滚动卡种选择器 -->
+    <scroll-view class="card-type-scroll" scroll-x enable-flex wx:else>
+      <view 
+        class="card-type-option {{formData.cardTypeId === item.cardTypeId ? 'selected' : ''}}"
+        wx:for="{{cardTypeList}}" 
+        wx:key="cardTypeId"
+        bindtap="selectCardType"
+        data-card-type="{{item}}"
+      >
+        <view class="card-type-preview-wrapper">
+          <card-display width="{{225}}" cardBgc="{{item.cardBgc}}" cardMask="{{item.cardMask}}" />
+        </view>
+        <text class="card-type-name">{{item.cardTypeName}}</text>
+      </view>
+    </scroll-view>
+
+    <!-- 卡种详情 - 预设充值项目（余额卡、次数卡、时间卡显示） -->
+    <view class="card-type-detail" wx:if="{{selectedCardType && selectedCardType.cardTtype != 4}}">
+      <view class="detail-section-title">* 预设充值项目</view>
+      <view class="preset-recharge-list" wx:if="{{presetRechargeList.length > 0}}">
+        <view 
+          class="preset-recharge-item {{selectedPresetIndex === index ? 'selected' : ''}}"
+          wx:for="{{presetRechargeList}}" 
+          wx:key="index"
+          bindtap="selectPresetItem"
+          data-index="{{index}}"
+        >
+          <view class="preset-info">
+            <text class="preset-name">{{item.itemName}}</text>
+            <text class="preset-desc" wx:if="{{item.itemDesc}}">{{item.itemDesc}}</text>
+          </view>
+          <text class="preset-amount">{{item.amount}} {{units[selectedCardType.cardTtype]}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 初始值设置 -->
+  <view class="form-card" wx:if="{{selectedCardType}}">
+    <view class="card-title">初始设置</view>
+    
+    <!-- 余额卡：初始余额 -->
+    <view class="form-item" wx:if="{{selectedCardType.cardTtype === 1}}">
+      <view class="form-label">初始余额</view>
+      <view class="input-wrapper">
+        <input 
+          class="form-input" 
+          type="digit" 
+          placeholder="默认0.00" 
+          value="{{formData.initialBalance}}"
+          bindinput="onBalanceInput"
+        />
+        <text class="input-suffix">元</text>
+      </view>
+    </view>
+
+    <!-- 次数卡：初始次数 -->
+    <view class="form-item" wx:if="{{selectedCardType.cardTtype === 2}}">
+      <view class="form-label">初始次数</view>
+      <view class="input-wrapper">
+        <input 
+          class="form-input" 
+          type="number" 
+          placeholder="默认0" 
+          value="{{formData.initialTimes}}"
+          bindinput="onTimesInput"
+        />
+        <text class="input-suffix">次</text>
+      </view>
+    </view>
+
+    <!-- 时效卡：有效天数 -->
+    <view class="form-item" wx:if="{{selectedCardType.cardTtype === 3}}">
+      <view class="form-label required">有效天数</view>
+      <view class="input-wrapper">
+        <input 
+          class="form-input" 
+          type="number" 
+          placeholder="7代表7天后过期" 
+          value="{{formData.validDays}}"
+          bindinput="onValidDaysInput"
+        />
+        <text class="input-suffix">天</text>
+      </view>
+      <text class="form-hint">到期时间为第N天的 23:59:59</text>
+    </view>
+
+    <!-- 初始积分 -->
+    <view class="form-item">
+      <view class="form-label">初始积分</view>
+      <view class="input-wrapper">
+        <input 
+          class="form-input" 
+          type="number" 
+          placeholder="默认0" 
+          value="{{formData.initialPoints}}"
+          bindinput="onPointsInput"
+        />
+        <text class="input-suffix">分</text>
+      </view>
+    </view>
+
+    <!-- 到期时间 -->
+    <!-- <view class="form-item" >
+      <view class="form-label">到期时间</view>
+      <picker mode="date" start="{{minExpireDate}}" end="{{maxExpireDate}}" value="{{formData.expireDate}}" bindchange="onExpireDateChange">
+        <view class="picker-value">
+          <text>{{formData.expireDate || '默认60年后'}}</text>
+          <text class="picker-arrow">▼</text>
+        </view>
+      </picker>
+    </view> -->
+  </view>
+
+  <!-- 底部提交按钮 -->
+  <view class="bottom-action">
+    <button class="submit-btn {{canSubmit ? '' : 'disabled'}}" bindtap="handleSubmit" disabled="{{!canSubmit || submitting}}">
+      {{submitting ? '办理中...' : '确认办卡'}}
+    </button>
+  </view>
+
+  <!-- 办卡成功弹窗 -->
+  <view class="success-modal-mask" wx:if="{{showSuccessModal}}" bindtap="closeSuccessModal">
+    <view class="success-modal" catchtap="">
+      <view class="success-icon">✓</view>
+      <view class="success-title">办卡成功</view>
+      <view class="success-info">
+        <view class="info-row">
+          <text class="info-label">卡种名称</text>
+          <text class="info-value">{{successInfo.cardTypeName}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">会员手机</text>
+          <text class="info-value">{{successInfo.memberPhone}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">会员姓名</text>
+          <text class="info-value">{{successInfo.memberName || '-'}}</text>
+        </view>
+        <view class="info-row" wx:if="{{successInfo.expireTimeDisplay}}">
+          <text class="info-label">到期日期</text>
+          <text class="info-value">{{successInfo.expireTimeDisplay}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">状态</text>
+          <text class="info-value status-{{successInfo.status}}">{{successInfo.statusName}}</text>
+        </view>
+        <view class="info-row tip" wx:if="{{successInfo.message}}">
+          <text class="tip-text">{{successInfo.message}}</text>
+        </view>
+      </view>
+      <view class="success-actions">
+        <button class="action-btn continue" bindtap="continueApply">继续办卡</button>
+        <button class="action-btn back" bindtap="goBack">返回工作台</button>
+      </view>
+    </view>
+  </view>
+</view>

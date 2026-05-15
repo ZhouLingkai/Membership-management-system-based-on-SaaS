@@ -1,0 +1,96 @@
+<view class="page-container">
+  <!-- 页面提示 -->
+  <view class="page-tip card">
+    <view class="tip-icon">ℹ️</view>
+    <view class="tip-text">该页面用于快速查询余额卡、次数卡的交易记录，单卡查询、时效卡、积分卡相关记录功能请到我的会员卡→会员卡详情→卡片操作</view>
+  </view>
+
+  <!-- 筛选区域 -->
+  <view class="filter-section card">
+    <view class="filter-title">筛选条件</view>
+    
+    <!-- 交易类型 -->
+    <view class="filter-item">
+      <text class="filter-label">交易类型</text>
+      <picker mode="selector" range="{{transactionTypeOptions}}" range-key="label" value="{{transactionType}}" bindchange="onTransactionTypeChange">
+        <view class="picker-view">
+          <text>{{transactionTypeOptions[transactionType].label}}</text>
+          <text class="picker-arrow">▼</text>
+        </view>
+      </picker>
+    </view>
+    
+    <!-- 日期筛选 -->
+    <view class="date-filter-row">
+      <view class="date-item">
+        <text class="date-label">开始日期</text>
+        <picker mode="date" value="{{startDate}}" bindchange="onStartDateChange">
+          <view class="date-picker">
+            <text class="date-text">{{startDate || '选择日期'}}</text>
+          </view>
+        </picker>
+      </view>
+      
+      <view class="date-item">
+        <text class="date-label">结束日期</text>
+        <picker mode="date" value="{{endDate}}" bindchange="onEndDateChange">
+          <view class="date-picker">
+            <text class="date-text">{{endDate || '选择日期'}}</text>
+          </view>
+        </picker>
+      </view>
+    </view>
+    
+    <view class="filter-actions">
+      <button class="reset-btn-full" wx:if="{{startDate || endDate}}" bindtap="resetAllDates">重置日期</button>
+      <button class="filter-btn" bindtap="handleFilter">筛选查询</button>
+    </view>
+  </view>
+
+  <!-- 记录列表 -->
+  <view class="records-section">
+    <view class="section-title">交易记录（共{{total}}条）</view>
+    
+    <view class="empty-list" wx:if="{{recordList.length === 0 && !loading}}">
+      <text>暂无交易记录</text>
+    </view>
+
+    <view class="record-list" wx:else>
+      <view class="record-item card" wx:for="{{recordList}}" wx:key="transactionId">
+        <view class="record-header">
+          <view class="record-left">
+            <view class="card-name">{{item.cardTypeName}}</view>
+            <view class="store-name">{{item.storeName}}</view>
+          </view>
+          <view class="record-right">
+            <view class="record-type type-{{item.transactionType}}">{{item.transactionTypeName}}</view>
+          </view>
+        </view>
+        
+        <view class="record-body">
+          <view class="amount-row">
+            <view class="amount-label">{{item.transactionType === 1 ? '充值金额' : '消费金额'}}</view>
+            <view class="amount-value {{item.transactionType === 1 ? 'recharge' : 'consume'}}">
+              {{item.transactionType === 1 ? '+' : '-'}}{{item.amount}}
+            </view>
+          </view>
+          <view class="time-row">
+            <view class="time-text">{{item.transactionTime}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 加载状态 -->
+    <view class="loading-more" wx:if="{{loading && !refreshing}}">
+      <text>加载中...</text>
+    </view>
+    
+    <view class="no-more" wx:if="{{noMoreData && recordList.length > 0}}">
+      <text>没有更多数据了</text>
+    </view>
+  </view>
+</view>
+
+<!-- 自定义Toast -->
+<custom-toast id="customToast"></custom-toast>

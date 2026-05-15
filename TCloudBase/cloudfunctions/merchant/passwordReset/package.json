@@ -1,0 +1,12 @@
+{
+  "name": "merchant-password-reset",
+  "version": "1.0.0",
+  "description": "重置密码（忘记密码）",
+  "main": "index.js",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@node-rs/argon2": "^2.0.2",
+    "@cloudbase/node-sdk": "^3.18.1"
+  }
+}

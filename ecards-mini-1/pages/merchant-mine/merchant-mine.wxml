@@ -1,0 +1,53 @@
+<!--pages/merchant-mine/merchant-mine.wxml-->
+<view class="page-container">
+  <!-- 商户基本信息卡片 -->
+  <view class="merchant-info-card card" bindtap="goToMerchantInfo">
+    <view class="merchant-avatar">
+      <image class="avatar-img" src="{{avatarUrl || '/assets/images/default-avatar.png'}}" mode="aspectFill"></image>
+    </view>
+    <view class="merchant-details">
+      <view class="merchant-name">{{merchantInfo.merchantName || '商户名称'}}</view>
+      <view class="merchant-status">
+        <text class="certification-status">{{certificationText}}</text>
+        <text class="merchant-level">{{merchantLevelText}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 商家升级VIP卡片 -->
+  <view class="vip-upgrade-card card" bindtap="goToPrivilege">
+    <!-- 上半部分：商户VIP + 查看权益按钮 -->
+    <view class="vip-header">
+      <view class="vip-text">
+        <text class="vip-title">商户VIP</text>
+      </view>
+      <view class="vip-button">
+        <button class="vip-btn">查看权益</button>
+      </view>
+    </view>
+
+    <!-- 分割线 -->
+    <view class="divider"></view>
+
+    <!-- 下半部分：VIP特权展示 -->
+    <view class="vip-privileges-grid">
+      <view class="vip-privilege-item" wx:for="{{vipPrivileges}}" wx:key="index">
+        <image class="vip-privilege-icon" src="{{item.icon}}" mode="aspectFit"></image>
+        <text class="vip-privilege-text">{{item.text}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 推荐功能卡片 -->
+  <view class="recommend-card card">
+    <view class="recommend-header">
+      <text class="recommend-title">推荐功能</text>
+    </view>
+    <view class="recommend-grid">
+      <view class="recommend-item" wx:for="{{recommendFeatures}}" wx:key="index" bindtap="handleRecommendTap" data-type="{{item.type}}">
+        <image class="recommend-icon" src="{{item.icon}}" mode="aspectFit"></image>
+        <text class="recommend-text">{{item.text}}</text>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,7 @@
+<!--components/custom-toast/custom-toast.wxml-->
+<view class="custom-toast {{show ? 'show' : ''}} {{animationType === 'slide' ? 'slide-animation' : 'fade-animation'}}" wx:if="{{show}}">
+  <view class="toast-content {{type === 'success' ? 'success' : 'danger'}}">
+    {{message}}
+  </view>
+</view>
+

@@ -1,0 +1,102 @@
+{
+    "pages": [
+      "pages/member-home/member-home",
+      "pages/merchant-home/merchant-home", 
+      "pages/card-manage/card-manage",
+      "pages/workspace/workspace",
+      "pages/store_management/store_management",
+      "pages/store-detail/store-detail",
+      "pages/store-create/store-create",
+      "pages/bind-employee/bind-employee",
+      "pages/card-type-manage/card-type-manage",
+      "pages/apply-for-card/apply-for-card",
+      "pages/use-member-card/use-member-card",
+      "pages/member-search-center/member-search-center",
+      "pages/profile/profile",
+      "pages/merchant-mine/merchant-mine",
+      "pages/merchant-privilege/merchant-privilege",
+      "pages/merchant-workspace/merchant-workspace",
+      "pages/merchant-info/merchant-info",
+      "pages/member-info/member-info",
+      "pages/upgrade-merchant/upgrade-merchant",
+      "pages/my-cards/my-cards",
+      "pages/cards-detail/cards-detail",
+      "pages/trans-card-records/trans-card-records",
+      "pages/trans-my-records/trans-my-records",
+      "pages/transactions-statistics/transactions-statistics",
+      "pages/login/index",
+      "pages/test-utils/test-utils",
+      "pages/oss-test/oss-test",
+      "pages/advanced-reservation/advanced-reservation",
+      "pages/advanced-reservation-create/advanced-reservation-create",
+      "pages/adreserv-resource/adreserv-resource",
+      "pages/adreserv-resource/adreserv-resource-create"
+    ],
+    "subpackages": [
+      {
+        "root": "packageCardType",
+        "name": "cardType",
+        "pages": [
+          "pages/card-type-create/card-type-create",
+          "pages/card-type-update/card-type-update",
+          "pages/index/index"
+        ]
+      }
+    ],
+    "preloadRule": {
+      "pages/store_management/store_management": {
+        "network": "all",
+        "packages": ["cardType"]
+      }
+    },
+    "window": {
+      "navigationBarTextStyle": "white",
+      "navigationBarTitleText": "会员管理",
+      "navigationBarBackgroundColor": "#1976d2"
+    },
+    "tabBar": {
+      "custom": true,
+      "color": "#7A7E83",
+      "selectedColor": "#397dd6",
+      "backgroundColor": "#ffffff",
+      "list": [
+        {
+          "pagePath": "pages/member-home/member-home",
+          "text": "会员首页"
+        },
+        {
+          "pagePath": "pages/merchant-home/merchant-home",
+          "text": "商家首页"
+        },
+        {
+          "pagePath": "pages/card-manage/card-manage",
+          "text": "卡管理"
+        },
+        {
+          "pagePath": "pages/workspace/workspace",
+          "text": "工作台"
+        },
+        {
+          "pagePath": "pages/store_management/store_management",
+          "text": "后台管理"
+        },
+        {
+          "pagePath": "pages/profile/profile",
+          "text": "我的"
+        },
+        {
+          "pagePath": "pages/merchant-mine/merchant-mine",
+          "text": "商家中心"
+        },
+        {
+          "pagePath": "pages/merchant-workspace/merchant-workspace",
+          "text": "商家工作台"
+        }
+      ]
+    },
+    "style": "v2",
+    "componentFramework": "glass-easel",
+    "sitemapLocation": "sitemap.json",
+    "lazyCodeLoading": "requiredComponents"
+  }
+  

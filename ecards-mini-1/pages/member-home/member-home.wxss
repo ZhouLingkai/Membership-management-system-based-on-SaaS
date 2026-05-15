@@ -1,0 +1,53 @@
+/* pages/member-home/member-home.wxss */
+.container {
+  padding: 20rpx;
+  padding-bottom: 100rpx; /* 为 tabBar 留出空间 */
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 40rpx;
+}
+
+.title {
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #333;
+  display: block;
+  margin-bottom: 10rpx;
+}
+
+.subtitle {
+  font-size: 28rpx;
+  color: #666;
+  display: block;
+}
+
+.content {
+  padding: 0 20rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20rpx;
+  display: block;
+}
+
+.card-section {
+  margin-bottom: 40rpx;
+}
+
+.card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.card-item {
+  background: #f8f8f8;
+  padding: 30rpx;
+  border-radius: 12rpx;
+  border: 1px solid #eee;
+}

@@ -1,0 +1,232 @@
+/* pages/my-cards/my-cards.wxss */
+
+.page-container {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #f0f4f8 0%, #e8eef3 100%);
+  padding: 24rpx;
+  box-sizing: border-box;
+}
+
+/* 加载状态 */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+}
+
+.loading-spinner {
+  width: 60rpx;
+  height: 60rpx;
+  border: 4rpx solid #e0e0e0;
+  border-top-color: #1976d2;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.loading-spinner.small {
+  width: 32rpx;
+  height: 32rpx;
+  border-width: 3rpx;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-text {
+  margin-top: 20rpx;
+  font-size: 28rpx;
+  color: #999;
+}
+
+/* 空状态 */
+.empty-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+}
+
+.empty-icon {
+  width: 200rpx;
+  height: 200rpx;
+  opacity: 0.6;
+}
+
+.empty-text {
+  margin-top: 32rpx;
+  font-size: 32rpx;
+  color: #666;
+  font-weight: 500;
+}
+
+.empty-hint {
+  margin-top: 16rpx;
+  font-size: 26rpx;
+  color: #999;
+}
+
+/* 卡片列表 */
+.card-list-container {
+  height: calc(100vh - 48rpx);
+}
+
+.card-item {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 24rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-item:active {
+  transform: scale(0.98);
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.08);
+}
+
+/* 左侧卡片预览 */
+.card-preview {
+  position: relative;
+  flex-shrink: 0;
+  width: 200rpx;
+  margin-right: 24rpx;
+}
+
+.status-tag {
+  position: absolute;
+  top: 8rpx;
+  left: 8rpx;
+  font-size: 20rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
+  color: #fff;
+  font-weight: 500;
+}
+
+.status-normal {
+  background: linear-gradient(135deg, #4caf50, #66bb6a);
+}
+
+.status-frozen {
+  background: linear-gradient(135deg, #ff9800, #ffb74d);
+}
+
+.status-other {
+  background: linear-gradient(135deg, #9e9e9e, #bdbdbd);
+}
+
+/* 右侧卡片信息 */
+.card-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 120rpx;
+  overflow: hidden;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  flex-wrap: wrap;
+}
+
+.card-type-name {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 200rpx;
+}
+
+.card-ttype-tag {
+  font-size: 22rpx;
+  color: #1976d2;
+  background: rgba(25, 118, 210, 0.1);
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
+  flex-shrink: 0;
+}
+
+.store-name {
+  font-size: 26rpx;
+  color: #666;
+  margin-top: 8rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.card-value {
+  display: flex;
+  align-items: baseline;
+  gap: 8rpx;
+  margin-top: 12rpx;
+}
+
+.value-label {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.value-number {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1976d2;
+}
+
+.value-number.expire-time {
+  font-size: 26rpx;
+  font-weight: 500;
+}
+
+/* 箭头 */
+.arrow-icon {
+  flex-shrink: 0;
+  width: 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.arrow {
+  font-size: 40rpx;
+  color: #ccc;
+  font-weight: 300;
+}
+
+/* 加载更多 */
+.load-more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30rpx 0;
+  gap: 16rpx;
+}
+
+.load-more-text {
+  font-size: 26rpx;
+  color: #999;
+}
+
+/* 没有更多 */
+.no-more {
+  text-align: center;
+  padding: 40rpx 0;
+}
+
+.no-more-text {
+  font-size: 24rpx;
+  color: #ccc;
+}

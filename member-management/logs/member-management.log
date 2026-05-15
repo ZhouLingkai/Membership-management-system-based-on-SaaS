@@ -1,0 +1,318 @@
+2025-12-22 09:22:15.806 [main] INFO  c.e.m.MemberManagementApplication - Starting MemberManagementApplication using Java 17.0.17 with PID 3688 (D:\1.postgraduate\Ecards\EcardsV1\member-management\target\classes started by zlkyyds in D:\1.postgraduate\Ecards\EcardsV1\member-management)
+2025-12-22 09:22:15.814 [main] DEBUG c.e.m.MemberManagementApplication - Running with Spring Boot v3.4.11, Spring v6.2.12
+2025-12-22 09:22:15.817 [main] INFO  c.e.m.MemberManagementApplication - No active profile set, falling back to 1 default profile: "default"
+2025-12-22 09:22:17.498 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-12-22 09:22:17.506 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-12-22 09:22:18.064 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 541 ms. Found 16 JPA repository interfaces.
+2025-12-22 09:22:18.087 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-12-22 09:22:18.089 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2025-12-22 09:22:18.128 [main] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.ecards.member_management.repository.AdminOperationLogRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2025-12-22 09:22:18.130 [main] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.ecards.member_management.repository.AdminRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2025-12-22 09:22:18.130 [main] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.ecards.member_management.repository.McardStatusLogRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2025-12-22 09:22:18.131 [main] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.ecards.member_management.repository.MemberCardRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2025-12-22 09:22:18.132 [main] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.ecards.member_management.repository.MemberCardTypeRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2025-12-22 09:22:18.133 [main] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.ecards.member_management.repository.MerchantAuditRecordRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2025-12-22 09:22:18.134 [main] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.ecards.member_management.repository.MerchantExtendRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2025-12-22 09:22:18.134 [main] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.ecards.member_management.repository.PointsRecordRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2025-12-22 09:22:18.135 [main] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.ecards.member_management.repository.RegistrationCardRecordRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2025-12-22 09:22:18.135 [main] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.ecards.member_management.repository.ReservationRecordRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2025-12-22 09:22:18.136 [main] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.ecards.member_management.repository.ReservationResourceRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2025-12-22 09:22:18.137 [main] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.ecards.member_management.repository.ReservationTemplateRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2025-12-22 09:22:18.138 [main] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.ecards.member_management.repository.StoreRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2025-12-22 09:22:18.139 [main] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.ecards.member_management.repository.TransactionRecordRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2025-12-22 09:22:18.140 [main] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.ecards.member_management.repository.UserRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2025-12-22 09:22:18.142 [main] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.ecards.member_management.repository.WorkRelationRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2025-12-22 09:22:18.142 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 34 ms. Found 0 Redis repository interfaces.
+2025-12-22 09:22:19.614 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8087 (http)
+2025-12-22 09:22:19.639 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-12-22 09:22:19.641 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.48]
+2025-12-22 09:22:19.866 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-12-22 09:22:19.867 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 3986 ms
+2025-12-22 09:22:20.284 [main] INFO  org.redisson.Version - Redisson 3.24.3
+2025-12-22 09:22:20.926 [redisson-netty-2-5] INFO  o.r.c.p.MasterPubSubConnectionPool - 1 connections initialized for localhost/127.0.0.1:6379
+2025-12-22 09:22:20.972 [redisson-netty-2-24] INFO  o.r.c.pool.MasterConnectionPool - 10 connections initialized for localhost/127.0.0.1:6379
+2025-12-22 09:22:21.981 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-12-22 09:22:22.107 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.6.33.Final
+2025-12-22 09:22:22.178 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2025-12-22 09:22:22.622 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-12-22 09:22:22.668 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2025-12-22 09:22:22.909 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@26d02dc6
+2025-12-22 09:22:22.911 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2025-12-22 09:22:22.981 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-12-22 09:22:23.009 [main] INFO  o.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0.26
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-12-22 09:22:24.672 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-12-22 09:22:25.512 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-12-22 09:22:26.027 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-12-22 09:22:26.917 [main] DEBUG c.e.m.s.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
+2025-12-22 09:22:26.920 [main] DEBUG c.e.m.f.AdminJwtAuthenticationFilter - Filter 'adminJwtAuthenticationFilter' configured for use
+2025-12-22 09:22:31.333 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-12-22 09:22:31.452 [main] WARN  o.s.b.a.s.s.UserDetailsServiceAutoConfiguration - 
+
+Using generated security password: 8d3db40a-7d9e-4085-bd85-2f1982d50a63
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2025-12-22 09:22:31.500 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2025-12-22 09:22:32.557 [main] INFO  o.s.b.a.e.web.EndpointLinksResolver - Exposing 1 endpoint beneath base path '/actuator'
+2025-12-22 09:22:34.061 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8087 (http) with context path '/'
+2025-12-22 09:22:34.093 [main] INFO  c.e.m.MemberManagementApplication - Started MemberManagementApplication in 18.884 seconds (process running for 19.512)
+2025-12-22 09:22:34.324 [main] INFO  c.e.m.initializer.AdminInitializer - 管理员系统已初始化，跳过超管创建（当前管理员数量: 1）
+2025-12-22 09:23:13.870 [http-nio-8087-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-12-22 09:23:13.871 [http-nio-8087-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2025-12-22 09:23:13.873 [http-nio-8087-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 2 ms
+2025-12-22 09:23:14.049 [http-nio-8087-exec-1] INFO  c.e.m.controller.UserController - 收到用户登录请求: phone=AAAAAAAAAA..., platform=MINI_PROGRAM, rememberMe=false
+2025-12-22 09:23:14.060 [http-nio-8087-exec-1] INFO  c.e.m.utils.EncryptUtils - 解密后的明文: 13800137000
+2025-12-22 09:23:14.819 [http-nio-8087-exec-1] INFO  c.e.m.utils.EncryptUtils - 【Argon2性能】密码校验耗时: 674ms, 结果: 匹配
+2025-12-22 09:23:15.031 [http-nio-8087-exec-1] INFO  c.e.m.service.TokenRedisService - 自动登录令牌已保存: userId=8e2064c9-6526-4200-b026-1bda50d06707, platform=MINI_PROGRAM, deviceId=85686a86945899685888883a65e65856
+2025-12-22 09:23:17.052 [http-nio-8087-exec-2] DEBUG c.e.m.s.JwtAuthenticationFilter - 解析业务令牌: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=MERCHANT, tokenType=1
+2025-12-22 09:23:17.070 [http-nio-8087-exec-2] DEBUG c.e.m.s.JwtAuthenticationFilter - 令牌验证通过: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=MERCHANT, tokenType=1, jti=b1df224d-a576-44cf-8bf1-81c08c2db339
+2025-12-22 09:23:17.084 [http-nio-8087-exec-2] DEBUG c.e.m.a.MerchantPermissionAspect - 检查商户活跃状态: userId=8e2064c9-6526-4200-b026-1bda50d06707
+2025-12-22 09:23:17.115 [http-nio-8087-exec-2] DEBUG c.e.m.a.MerchantPermissionAspect - 从数据库获取certification并缓存: userId=8e2064c9-6526-4200-b026-1bda50d06707, certification=1
+2025-12-22 09:23:17.116 [http-nio-8087-exec-2] INFO  c.e.m.controller.StoreController - 接收到店铺列表查询请求：商户ID=11f53977-2114-4d4c-8685-b46303f75e76
+2025-12-22 09:23:17.117 [http-nio-8087-exec-2] INFO  c.e.m.service.StoreService - 查询店铺列表：商户ID=11f53977-2114-4d4c-8685-b46303f75e76
+2025-12-22 09:23:17.161 [http-nio-8087-exec-3] DEBUG c.e.m.s.JwtAuthenticationFilter - 解析业务令牌: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=MERCHANT, tokenType=1
+2025-12-22 09:23:17.176 [http-nio-8087-exec-3] DEBUG c.e.m.s.JwtAuthenticationFilter - 令牌验证通过: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=MERCHANT, tokenType=1, jti=b1df224d-a576-44cf-8bf1-81c08c2db339
+2025-12-22 09:23:17.200 [http-nio-8087-exec-3] INFO  c.e.m.service.TokenService - 商家获取工作令牌: userId=8e2064c9-6526-4200-b026-1bda50d06707, merchantId=11f53977-2114-4d4c-8685-b46303f75e76, storeId=7c32821f-2476-4a75-89fc-61f19cf4d75c
+2025-12-22 09:23:17.204 [http-nio-8087-exec-3] INFO  c.e.m.service.TokenService - 生成工作令牌成功: userId=8e2064c9-6526-4200-b026-1bda50d06707, storeId=7c32821f-2476-4a75-89fc-61f19cf4d75c, role=merchant, tokenVersion=0, jti=d3c149c8-42ac-4765-9fd8-3609ae5a4fcc
+2025-12-22 09:26:52.153 [http-nio-8087-exec-5] DEBUG c.e.m.s.JwtAuthenticationFilter - 解析业务令牌: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant, tokenType=3
+2025-12-22 09:26:52.154 [http-nio-8087-exec-5] DEBUG c.e.m.s.JwtAuthenticationFilter - 商家工作令牌跳过版本号检查: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant
+2025-12-22 09:26:52.154 [http-nio-8087-exec-5] DEBUG c.e.m.s.JwtAuthenticationFilter - 令牌验证通过: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant, tokenType=3, jti=d3c149c8-42ac-4765-9fd8-3609ae5a4fcc
+2025-12-22 09:26:52.158 [http-nio-8087-exec-5] INFO  c.e.m.s.ReservationTemplateServiceImpl - 查询预约模板：storeId=7c32821f-2476-4a75-89fc-61f19cf4d75c
+2025-12-22 09:26:58.381 [http-nio-8087-exec-6] DEBUG c.e.m.s.JwtAuthenticationFilter - 解析业务令牌: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant, tokenType=3
+2025-12-22 09:26:58.383 [http-nio-8087-exec-6] DEBUG c.e.m.s.JwtAuthenticationFilter - 商家工作令牌跳过版本号检查: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant
+2025-12-22 09:26:58.383 [http-nio-8087-exec-6] DEBUG c.e.m.s.JwtAuthenticationFilter - 令牌验证通过: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant, tokenType=3, jti=d3c149c8-42ac-4765-9fd8-3609ae5a4fcc
+2025-12-22 09:26:58.387 [http-nio-8087-exec-6] INFO  c.e.m.s.ReservationResourceServiceImpl - 查询资源列表：storeId=7c32821f-2476-4a75-89fc-61f19cf4d75c, keyword=null, page=1, pageSize=20
+2025-12-22 09:29:38.883 [http-nio-8087-exec-8] DEBUG c.e.m.s.JwtAuthenticationFilter - 解析业务令牌: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant, tokenType=3
+2025-12-22 09:29:38.884 [http-nio-8087-exec-8] DEBUG c.e.m.s.JwtAuthenticationFilter - 商家工作令牌跳过版本号检查: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant
+2025-12-22 09:29:38.885 [http-nio-8087-exec-8] DEBUG c.e.m.s.JwtAuthenticationFilter - 令牌验证通过: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant, tokenType=3, jti=d3c149c8-42ac-4765-9fd8-3609ae5a4fcc
+2025-12-22 09:29:38.905 [http-nio-8087-exec-8] INFO  c.e.m.s.ReservationTemplateServiceImpl - 修改预约模板：templateId=1
+2025-12-22 09:29:38.950 [http-nio-8087-exec-9] DEBUG c.e.m.s.JwtAuthenticationFilter - 解析业务令牌: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant, tokenType=3
+2025-12-22 09:29:38.952 [http-nio-8087-exec-9] DEBUG c.e.m.s.JwtAuthenticationFilter - 商家工作令牌跳过版本号检查: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant
+2025-12-22 09:29:38.952 [http-nio-8087-exec-9] DEBUG c.e.m.s.JwtAuthenticationFilter - 令牌验证通过: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant, tokenType=3, jti=d3c149c8-42ac-4765-9fd8-3609ae5a4fcc
+2025-12-22 09:29:38.955 [http-nio-8087-exec-9] INFO  c.e.m.s.ReservationTemplateServiceImpl - 查询预约模板：storeId=7c32821f-2476-4a75-89fc-61f19cf4d75c
+2025-12-22 09:41:51.535 [http-nio-8087-exec-1] DEBUG c.e.m.s.JwtAuthenticationFilter - 解析业务令牌: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant, tokenType=3
+2025-12-22 09:41:51.538 [http-nio-8087-exec-1] DEBUG c.e.m.s.JwtAuthenticationFilter - 商家工作令牌跳过版本号检查: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant
+2025-12-22 09:41:51.539 [http-nio-8087-exec-1] DEBUG c.e.m.s.JwtAuthenticationFilter - 令牌验证通过: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant, tokenType=3, jti=d3c149c8-42ac-4765-9fd8-3609ae5a4fcc
+2025-12-22 09:41:51.540 [http-nio-8087-exec-1] INFO  c.e.m.s.ReservationTemplateServiceImpl - 查询预约模板：storeId=7c32821f-2476-4a75-89fc-61f19cf4d75c
+2025-12-22 09:41:53.557 [http-nio-8087-exec-2] DEBUG c.e.m.s.JwtAuthenticationFilter - 解析业务令牌: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant, tokenType=3
+2025-12-22 09:41:53.560 [http-nio-8087-exec-2] DEBUG c.e.m.s.JwtAuthenticationFilter - 商家工作令牌跳过版本号检查: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant
+2025-12-22 09:41:53.560 [http-nio-8087-exec-2] DEBUG c.e.m.s.JwtAuthenticationFilter - 令牌验证通过: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant, tokenType=3, jti=d3c149c8-42ac-4765-9fd8-3609ae5a4fcc
+2025-12-22 09:41:53.562 [http-nio-8087-exec-2] INFO  c.e.m.s.ReservationResourceServiceImpl - 查询资源列表：storeId=7c32821f-2476-4a75-89fc-61f19cf4d75c, keyword=null, page=1, pageSize=20
+2025-12-22 10:25:05.291 [http-nio-8087-exec-4] DEBUG c.e.m.s.JwtAuthenticationFilter - 解析业务令牌: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=MERCHANT, tokenType=1
+2025-12-22 10:25:05.300 [http-nio-8087-exec-4] DEBUG c.e.m.s.JwtAuthenticationFilter - 令牌验证通过: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=MERCHANT, tokenType=1, jti=b1df224d-a576-44cf-8bf1-81c08c2db339
+2025-12-22 10:25:05.321 [http-nio-8087-exec-4] INFO  c.e.m.service.TokenService - 商家获取工作令牌: userId=8e2064c9-6526-4200-b026-1bda50d06707, merchantId=11f53977-2114-4d4c-8685-b46303f75e76, storeId=7c32821f-2476-4a75-89fc-61f19cf4d75c
+2025-12-22 10:25:05.322 [http-nio-8087-exec-4] INFO  c.e.m.service.TokenService - 生成工作令牌成功: userId=8e2064c9-6526-4200-b026-1bda50d06707, storeId=7c32821f-2476-4a75-89fc-61f19cf4d75c, role=merchant, tokenVersion=0, jti=ff4796cb-ca12-4bcf-9866-aeb232701e87
+2025-12-22 10:25:09.348 [http-nio-8087-exec-5] DEBUG c.e.m.s.JwtAuthenticationFilter - 解析业务令牌: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant, tokenType=3
+2025-12-22 10:25:09.350 [http-nio-8087-exec-5] DEBUG c.e.m.s.JwtAuthenticationFilter - 商家工作令牌跳过版本号检查: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant
+2025-12-22 10:25:09.350 [http-nio-8087-exec-5] DEBUG c.e.m.s.JwtAuthenticationFilter - 令牌验证通过: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant, tokenType=3, jti=ff4796cb-ca12-4bcf-9866-aeb232701e87
+2025-12-22 10:25:09.353 [http-nio-8087-exec-5] INFO  c.e.m.utils.EncryptUtils - 解密后的明文: 13053379392
+2025-12-22 10:25:13.559 [http-nio-8087-exec-6] DEBUG c.e.m.s.JwtAuthenticationFilter - 解析业务令牌: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=MERCHANT, tokenType=1
+2025-12-22 10:25:13.561 [http-nio-8087-exec-6] DEBUG c.e.m.s.JwtAuthenticationFilter - 令牌验证通过: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=MERCHANT, tokenType=1, jti=b1df224d-a576-44cf-8bf1-81c08c2db339
+2025-12-22 10:25:13.578 [http-nio-8087-exec-6] INFO  c.e.m.service.TokenService - 商家获取工作令牌: userId=8e2064c9-6526-4200-b026-1bda50d06707, merchantId=11f53977-2114-4d4c-8685-b46303f75e76, storeId=0058901d-d63a-4949-8151-1e9443dce801
+2025-12-22 10:25:13.579 [http-nio-8087-exec-6] INFO  c.e.m.service.TokenService - 生成工作令牌成功: userId=8e2064c9-6526-4200-b026-1bda50d06707, storeId=0058901d-d63a-4949-8151-1e9443dce801, role=merchant, tokenVersion=0, jti=97fa70a0-76bc-4201-b9f3-37c31d773246
+2025-12-22 10:25:22.425 [http-nio-8087-exec-7] DEBUG c.e.m.s.JwtAuthenticationFilter - 解析业务令牌: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant, tokenType=3
+2025-12-22 10:25:22.426 [http-nio-8087-exec-7] DEBUG c.e.m.s.JwtAuthenticationFilter - 商家工作令牌跳过版本号检查: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant
+2025-12-22 10:25:22.427 [http-nio-8087-exec-7] DEBUG c.e.m.s.JwtAuthenticationFilter - 令牌验证通过: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant, tokenType=3, jti=97fa70a0-76bc-4201-b9f3-37c31d773246
+2025-12-22 10:25:22.428 [http-nio-8087-exec-7] INFO  c.e.m.utils.EncryptUtils - 解密后的明文: 13053379392
+2025-12-22 10:25:23.667 [http-nio-8087-exec-8] DEBUG c.e.m.s.JwtAuthenticationFilter - 解析业务令牌: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant, tokenType=3
+2025-12-22 10:25:23.668 [http-nio-8087-exec-8] DEBUG c.e.m.s.JwtAuthenticationFilter - 商家工作令牌跳过版本号检查: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant
+2025-12-22 10:25:23.668 [http-nio-8087-exec-8] DEBUG c.e.m.s.JwtAuthenticationFilter - 令牌验证通过: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant, tokenType=3, jti=97fa70a0-76bc-4201-b9f3-37c31d773246
+2025-12-22 10:25:23.691 [http-nio-8087-exec-8] INFO  c.e.m.c.MemberCardTypeController - 收到会员卡种详情查询请求：卡种ID=4, 店铺ID=0058901d-d63a-4949-8151-1e9443dce801
+2025-12-22 10:25:23.692 [http-nio-8087-exec-8] INFO  c.e.m.service.MemberCardTypeService - 查询会员卡种详情：卡种ID=4, 店铺ID=0058901d-d63a-4949-8151-1e9443dce801
+2025-12-22 10:25:23.717 [http-nio-8087-exec-8] INFO  c.e.m.service.MemberCardTypeService - 会员卡种详情查询成功：卡种ID=4, 卡种名称=周卡
+2025-12-22 10:25:26.151 [http-nio-8087-exec-9] DEBUG c.e.m.s.JwtAuthenticationFilter - 解析业务令牌: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=MERCHANT, tokenType=1
+2025-12-22 10:25:26.152 [http-nio-8087-exec-9] DEBUG c.e.m.s.JwtAuthenticationFilter - 令牌验证通过: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=MERCHANT, tokenType=1, jti=b1df224d-a576-44cf-8bf1-81c08c2db339
+2025-12-22 10:25:26.155 [http-nio-8087-exec-9] INFO  c.e.m.controller.StsController - 普通用户获取STS临时凭证: userId=8e2064c9-6526-4200-b026-1bda50d06707, pathType=card
+2025-12-22 10:25:26.156 [http-nio-8087-exec-9] INFO  c.e.m.service.StsService - 使用AccessKey调用STS: accessKeyId=LTAI5tQk5C..., roleArn=acs:ram::1501661548160479:role/ecards-test2
+2025-12-22 10:25:27.254 [http-nio-8087-exec-9] INFO  c.e.m.service.StsService - STS临时凭证生成成功: userId=8e2064c965264200b0261bda50d06707, pathType=card, pathPrefix=card/8e2064c965264200b0261bda50d06707/, expiration=2025-12-22T02:55:27Z
+2025-12-22 10:25:27.255 [http-nio-8087-exec-9] INFO  c.e.m.controller.StsController - 普通用户STS临时凭证生成成功: userId=8e2064c9-6526-4200-b026-1bda50d06707, pathPrefix=card/8e2064c965264200b0261bda50d06707/
+2025-12-22 10:25:27.264 [http-nio-8087-exec-10] DEBUG c.e.m.s.JwtAuthenticationFilter - 解析业务令牌: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=MERCHANT, tokenType=1
+2025-12-22 10:25:27.266 [http-nio-8087-exec-10] DEBUG c.e.m.s.JwtAuthenticationFilter - 令牌验证通过: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=MERCHANT, tokenType=1, jti=b1df224d-a576-44cf-8bf1-81c08c2db339
+2025-12-22 10:25:27.268 [http-nio-8087-exec-10] INFO  c.e.m.controller.StsController - 普通用户获取STS临时凭证: userId=8e2064c9-6526-4200-b026-1bda50d06707, pathType=card
+2025-12-22 10:25:27.268 [http-nio-8087-exec-10] INFO  c.e.m.service.StsService - 使用AccessKey调用STS: accessKeyId=LTAI5tQk5C..., roleArn=acs:ram::1501661548160479:role/ecards-test2
+2025-12-22 10:25:27.325 [http-nio-8087-exec-10] INFO  c.e.m.service.StsService - STS临时凭证生成成功: userId=8e2064c965264200b0261bda50d06707, pathType=card, pathPrefix=card/8e2064c965264200b0261bda50d06707/, expiration=2025-12-22T02:55:27Z
+2025-12-22 10:25:27.326 [http-nio-8087-exec-10] INFO  c.e.m.controller.StsController - 普通用户STS临时凭证生成成功: userId=8e2064c9-6526-4200-b026-1bda50d06707, pathPrefix=card/8e2064c965264200b0261bda50d06707/
+2025-12-22 10:38:12.108 [http-nio-8087-exec-3] DEBUG c.e.m.s.JwtAuthenticationFilter - 解析业务令牌: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=MERCHANT, tokenType=1
+2025-12-22 10:38:12.117 [http-nio-8087-exec-3] DEBUG c.e.m.s.JwtAuthenticationFilter - 令牌验证通过: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=MERCHANT, tokenType=1, jti=b1df224d-a576-44cf-8bf1-81c08c2db339
+2025-12-22 10:38:12.118 [http-nio-8087-exec-3] INFO  c.e.m.service.UserService - 查询用户信息: userId=8e2064c9-6526-4200-b026-1bda50d06707
+2025-12-22 10:39:24.275 [http-nio-8087-exec-5] DEBUG c.e.m.s.JwtAuthenticationFilter - 解析业务令牌: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=MERCHANT, tokenType=1
+2025-12-22 10:39:24.276 [http-nio-8087-exec-5] DEBUG c.e.m.s.JwtAuthenticationFilter - 令牌验证通过: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=MERCHANT, tokenType=1, jti=b1df224d-a576-44cf-8bf1-81c08c2db339
+2025-12-22 10:39:24.278 [http-nio-8087-exec-5] INFO  c.e.m.service.UserService - 查询用户信息: userId=8e2064c9-6526-4200-b026-1bda50d06707
+2025-12-22 10:39:30.393 [http-nio-8087-exec-6] DEBUG c.e.m.s.JwtAuthenticationFilter - 解析业务令牌: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=MERCHANT, tokenType=1
+2025-12-22 10:39:30.394 [http-nio-8087-exec-6] DEBUG c.e.m.s.JwtAuthenticationFilter - 令牌验证通过: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=MERCHANT, tokenType=1, jti=b1df224d-a576-44cf-8bf1-81c08c2db339
+2025-12-22 10:39:30.396 [http-nio-8087-exec-6] INFO  c.e.m.service.UserService - 查询用户信息: userId=8e2064c9-6526-4200-b026-1bda50d06707
+2025-12-22 10:41:04.993 [http-nio-8087-exec-8] DEBUG c.e.m.s.JwtAuthenticationFilter - 解析业务令牌: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=MERCHANT, tokenType=1
+2025-12-22 10:41:04.994 [http-nio-8087-exec-8] DEBUG c.e.m.s.JwtAuthenticationFilter - 令牌验证通过: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=MERCHANT, tokenType=1, jti=b1df224d-a576-44cf-8bf1-81c08c2db339
+2025-12-22 10:41:04.998 [http-nio-8087-exec-8] DEBUG c.e.m.a.MerchantPermissionAspect - 检查商户活跃状态: userId=8e2064c9-6526-4200-b026-1bda50d06707
+2025-12-22 10:41:05.006 [http-nio-8087-exec-8] DEBUG c.e.m.a.MerchantPermissionAspect - 从数据库获取certification并缓存: userId=8e2064c9-6526-4200-b026-1bda50d06707, certification=1
+2025-12-22 10:41:05.006 [http-nio-8087-exec-8] INFO  c.e.m.controller.StoreController - 接收到店铺列表查询请求：商户ID=11f53977-2114-4d4c-8685-b46303f75e76
+2025-12-22 10:41:05.006 [http-nio-8087-exec-8] INFO  c.e.m.service.StoreService - 查询店铺列表：商户ID=11f53977-2114-4d4c-8685-b46303f75e76
+2025-12-22 10:41:07.292 [http-nio-8087-exec-9] DEBUG c.e.m.s.JwtAuthenticationFilter - 解析业务令牌: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant, tokenType=3
+2025-12-22 10:41:07.293 [http-nio-8087-exec-9] DEBUG c.e.m.s.JwtAuthenticationFilter - 商家工作令牌跳过版本号检查: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant
+2025-12-22 10:41:07.293 [http-nio-8087-exec-9] DEBUG c.e.m.s.JwtAuthenticationFilter - 令牌验证通过: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant, tokenType=3, jti=97fa70a0-76bc-4201-b9f3-37c31d773246
+2025-12-22 10:41:07.295 [http-nio-8087-exec-9] INFO  c.e.m.s.ReservationTemplateServiceImpl - 查询预约模板：storeId=0058901d-d63a-4949-8151-1e9443dce801
+2025-12-22 10:41:12.987 [http-nio-8087-exec-10] DEBUG c.e.m.s.JwtAuthenticationFilter - 解析业务令牌: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant, tokenType=3
+2025-12-22 10:41:12.988 [http-nio-8087-exec-10] DEBUG c.e.m.s.JwtAuthenticationFilter - 商家工作令牌跳过版本号检查: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant
+2025-12-22 10:41:12.988 [http-nio-8087-exec-10] DEBUG c.e.m.s.JwtAuthenticationFilter - 令牌验证通过: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant, tokenType=3, jti=ff4796cb-ca12-4bcf-9866-aeb232701e87
+2025-12-22 10:41:12.990 [http-nio-8087-exec-10] INFO  c.e.m.s.ReservationTemplateServiceImpl - 查询预约模板：storeId=7c32821f-2476-4a75-89fc-61f19cf4d75c
+2025-12-22 10:41:17.152 [http-nio-8087-exec-2] DEBUG c.e.m.s.JwtAuthenticationFilter - 解析业务令牌: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant, tokenType=3
+2025-12-22 10:41:17.153 [http-nio-8087-exec-2] DEBUG c.e.m.s.JwtAuthenticationFilter - 商家工作令牌跳过版本号检查: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant
+2025-12-22 10:41:17.154 [http-nio-8087-exec-2] DEBUG c.e.m.s.JwtAuthenticationFilter - 令牌验证通过: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant, tokenType=3, jti=ff4796cb-ca12-4bcf-9866-aeb232701e87
+2025-12-22 10:41:17.155 [http-nio-8087-exec-2] INFO  c.e.m.s.ReservationResourceServiceImpl - 查询资源列表：storeId=7c32821f-2476-4a75-89fc-61f19cf4d75c, keyword=null, page=1, pageSize=20
+2025-12-22 10:43:36.122 [http-nio-8087-exec-3] DEBUG c.e.m.s.JwtAuthenticationFilter - 解析业务令牌: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=MERCHANT, tokenType=1
+2025-12-22 10:43:36.130 [http-nio-8087-exec-3] DEBUG c.e.m.s.JwtAuthenticationFilter - 令牌验证通过: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=MERCHANT, tokenType=1, jti=b1df224d-a576-44cf-8bf1-81c08c2db339
+2025-12-22 10:43:36.132 [http-nio-8087-exec-3] INFO  c.e.m.service.UserService - 查询用户信息: userId=8e2064c9-6526-4200-b026-1bda50d06707
+2025-12-22 10:43:43.122 [http-nio-8087-exec-4] DEBUG c.e.m.s.JwtAuthenticationFilter - 解析业务令牌: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=MERCHANT, tokenType=1
+2025-12-22 10:43:43.123 [http-nio-8087-exec-4] DEBUG c.e.m.s.JwtAuthenticationFilter - 令牌验证通过: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=MERCHANT, tokenType=1, jti=b1df224d-a576-44cf-8bf1-81c08c2db339
+2025-12-22 10:43:43.124 [http-nio-8087-exec-4] INFO  c.e.m.service.UserService - 查询用户信息: userId=8e2064c9-6526-4200-b026-1bda50d06707
+2025-12-22 10:43:55.127 [http-nio-8087-exec-5] DEBUG c.e.m.s.JwtAuthenticationFilter - 解析业务令牌: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=MERCHANT, tokenType=1
+2025-12-22 10:43:55.128 [http-nio-8087-exec-5] DEBUG c.e.m.s.JwtAuthenticationFilter - 令牌验证通过: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=MERCHANT, tokenType=1, jti=b1df224d-a576-44cf-8bf1-81c08c2db339
+2025-12-22 10:43:55.129 [http-nio-8087-exec-5] INFO  c.e.m.service.UserService - 查询用户信息: userId=8e2064c9-6526-4200-b026-1bda50d06707
+2025-12-22 10:44:15.125 [http-nio-8087-exec-6] DEBUG c.e.m.s.JwtAuthenticationFilter - 解析业务令牌: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=MERCHANT, tokenType=1
+2025-12-22 10:44:15.127 [http-nio-8087-exec-6] DEBUG c.e.m.s.JwtAuthenticationFilter - 令牌验证通过: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=MERCHANT, tokenType=1, jti=b1df224d-a576-44cf-8bf1-81c08c2db339
+2025-12-22 10:44:15.129 [http-nio-8087-exec-6] INFO  c.e.m.service.UserService - 查询用户信息: userId=8e2064c9-6526-4200-b026-1bda50d06707
+2025-12-22 10:49:23.127 [http-nio-8087-exec-8] DEBUG c.e.m.s.JwtAuthenticationFilter - 解析业务令牌: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=MERCHANT, tokenType=1
+2025-12-22 10:49:23.130 [http-nio-8087-exec-8] DEBUG c.e.m.s.JwtAuthenticationFilter - 令牌验证通过: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=MERCHANT, tokenType=1, jti=b1df224d-a576-44cf-8bf1-81c08c2db339
+2025-12-22 10:49:23.136 [http-nio-8087-exec-8] INFO  c.e.m.service.UserService - 查询用户信息: userId=8e2064c9-6526-4200-b026-1bda50d06707
+2025-12-22 10:49:32.127 [http-nio-8087-exec-9] DEBUG c.e.m.s.JwtAuthenticationFilter - 解析业务令牌: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=MERCHANT, tokenType=1
+2025-12-22 10:49:32.127 [http-nio-8087-exec-9] DEBUG c.e.m.s.JwtAuthenticationFilter - 令牌验证通过: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=MERCHANT, tokenType=1, jti=b1df224d-a576-44cf-8bf1-81c08c2db339
+2025-12-22 10:49:32.127 [http-nio-8087-exec-9] INFO  c.e.m.service.UserService - 查询用户信息: userId=8e2064c9-6526-4200-b026-1bda50d06707
+2025-12-22 10:52:43.991 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-12-22 10:52:44.546 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-12-22 10:52:44.566 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-12-22 10:52:44.573 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2025-12-22 10:52:44.578 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2025-12-22 10:52:59.054 [main] INFO  c.e.m.MemberManagementApplication - Starting MemberManagementApplication using Java 17.0.17 with PID 21924 (D:\1.postgraduate\Ecards\EcardsV1\member-management\target\classes started by zlkyyds in D:\1.postgraduate\Ecards\EcardsV1\member-management)
+2025-12-22 10:52:59.054 [main] DEBUG c.e.m.MemberManagementApplication - Running with Spring Boot v3.4.11, Spring v6.2.12
+2025-12-22 10:52:59.054 [main] INFO  c.e.m.MemberManagementApplication - No active profile set, falling back to 1 default profile: "default"
+2025-12-22 10:53:00.425 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-12-22 10:53:00.433 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-12-22 10:53:00.841 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 396 ms. Found 16 JPA repository interfaces.
+2025-12-22 10:53:00.851 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-12-22 10:53:00.861 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2025-12-22 10:53:00.892 [main] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.ecards.member_management.repository.AdminOperationLogRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2025-12-22 10:53:00.892 [main] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.ecards.member_management.repository.AdminRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2025-12-22 10:53:00.892 [main] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.ecards.member_management.repository.McardStatusLogRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2025-12-22 10:53:00.892 [main] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.ecards.member_management.repository.MemberCardRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2025-12-22 10:53:00.892 [main] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.ecards.member_management.repository.MemberCardTypeRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2025-12-22 10:53:00.902 [main] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.ecards.member_management.repository.MerchantAuditRecordRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2025-12-22 10:53:00.902 [main] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.ecards.member_management.repository.MerchantExtendRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2025-12-22 10:53:00.902 [main] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.ecards.member_management.repository.PointsRecordRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2025-12-22 10:53:00.902 [main] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.ecards.member_management.repository.RegistrationCardRecordRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2025-12-22 10:53:00.902 [main] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.ecards.member_management.repository.ReservationRecordRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2025-12-22 10:53:00.902 [main] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.ecards.member_management.repository.ReservationResourceRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2025-12-22 10:53:00.902 [main] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.ecards.member_management.repository.ReservationTemplateRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2025-12-22 10:53:00.902 [main] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.ecards.member_management.repository.StoreRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2025-12-22 10:53:00.902 [main] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.ecards.member_management.repository.TransactionRecordRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2025-12-22 10:53:00.902 [main] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.ecards.member_management.repository.UserRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2025-12-22 10:53:00.910 [main] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.ecards.member_management.repository.WorkRelationRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2025-12-22 10:53:00.910 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 38 ms. Found 0 Redis repository interfaces.
+2025-12-22 10:53:01.962 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8087 (http)
+2025-12-22 10:53:01.993 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-12-22 10:53:01.993 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.48]
+2025-12-22 10:53:02.128 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-12-22 10:53:02.129 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 3014 ms
+2025-12-22 10:53:02.468 [main] INFO  org.redisson.Version - Redisson 3.24.3
+2025-12-22 10:53:02.952 [redisson-netty-2-5] INFO  o.r.c.p.MasterPubSubConnectionPool - 1 connections initialized for localhost/127.0.0.1:6379
+2025-12-22 10:53:02.998 [redisson-netty-2-24] INFO  o.r.c.pool.MasterConnectionPool - 10 connections initialized for localhost/127.0.0.1:6379
+2025-12-22 10:53:03.600 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-12-22 10:53:03.682 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.6.33.Final
+2025-12-22 10:53:03.730 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2025-12-22 10:53:04.082 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-12-22 10:53:04.129 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2025-12-22 10:53:04.338 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@1e4bf55b
+2025-12-22 10:53:04.341 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2025-12-22 10:53:04.407 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-12-22 10:53:04.431 [main] INFO  o.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0.26
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-12-22 10:53:05.893 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-12-22 10:53:06.721 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-12-22 10:53:07.074 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-12-22 10:53:07.617 [main] DEBUG c.e.m.s.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
+2025-12-22 10:53:07.617 [main] DEBUG c.e.m.f.AdminJwtAuthenticationFilter - Filter 'adminJwtAuthenticationFilter' configured for use
+2025-12-22 10:53:10.362 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-12-22 10:53:10.406 [main] WARN  o.s.b.a.s.s.UserDetailsServiceAutoConfiguration - 
+
+Using generated security password: 5b752181-129f-44b4-9b78-c1bf66e29ae7
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2025-12-22 10:53:10.436 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2025-12-22 10:53:10.914 [main] INFO  o.s.b.a.e.web.EndpointLinksResolver - Exposing 1 endpoint beneath base path '/actuator'
+2025-12-22 10:53:11.942 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8087 (http) with context path '/'
+2025-12-22 10:53:11.955 [main] INFO  c.e.m.MemberManagementApplication - Started MemberManagementApplication in 13.437 seconds (process running for 14.038)
+2025-12-22 10:53:12.117 [main] INFO  c.e.m.initializer.AdminInitializer - 管理员系统已初始化，跳过超管创建（当前管理员数量: 1）
+2025-12-22 11:00:06.019 [http-nio-8087-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-12-22 11:00:06.020 [http-nio-8087-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2025-12-22 11:00:06.021 [http-nio-8087-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2025-12-22 11:00:06.256 [http-nio-8087-exec-1] DEBUG c.e.m.s.JwtAuthenticationFilter - 解析业务令牌: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=MERCHANT, tokenType=1
+2025-12-22 11:00:06.327 [http-nio-8087-exec-1] DEBUG c.e.m.s.JwtAuthenticationFilter - 令牌验证通过: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=MERCHANT, tokenType=1, jti=b1df224d-a576-44cf-8bf1-81c08c2db339
+2025-12-22 11:00:06.354 [http-nio-8087-exec-1] INFO  c.e.m.service.UserService - 查询用户信息: userId=8e2064c9-6526-4200-b026-1bda50d06707
+2025-12-22 11:00:07.526 [http-nio-8087-exec-5] DEBUG c.e.m.s.JwtAuthenticationFilter - 解析业务令牌: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=MERCHANT, tokenType=1
+2025-12-22 11:00:07.544 [http-nio-8087-exec-5] DEBUG c.e.m.s.JwtAuthenticationFilter - 令牌验证通过: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=MERCHANT, tokenType=1, jti=b1df224d-a576-44cf-8bf1-81c08c2db339
+2025-12-22 11:00:07.565 [http-nio-8087-exec-5] DEBUG c.e.m.a.MerchantPermissionAspect - 检查商户活跃状态: userId=8e2064c9-6526-4200-b026-1bda50d06707
+2025-12-22 11:00:07.591 [http-nio-8087-exec-5] DEBUG c.e.m.a.MerchantPermissionAspect - 从数据库获取certification并缓存: userId=8e2064c9-6526-4200-b026-1bda50d06707, certification=1
+2025-12-22 11:00:07.592 [http-nio-8087-exec-5] INFO  c.e.m.controller.StoreController - 接收到店铺列表查询请求：商户ID=11f53977-2114-4d4c-8685-b46303f75e76
+2025-12-22 11:00:07.592 [http-nio-8087-exec-5] INFO  c.e.m.service.StoreService - 查询店铺列表：商户ID=11f53977-2114-4d4c-8685-b46303f75e76
+2025-12-22 11:00:11.869 [http-nio-8087-exec-2] DEBUG c.e.m.s.JwtAuthenticationFilter - 解析业务令牌: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant, tokenType=3
+2025-12-22 11:00:11.871 [http-nio-8087-exec-2] DEBUG c.e.m.s.JwtAuthenticationFilter - 商家工作令牌跳过版本号检查: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant
+2025-12-22 11:00:11.871 [http-nio-8087-exec-2] DEBUG c.e.m.s.JwtAuthenticationFilter - 令牌验证通过: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant, tokenType=3, jti=ff4796cb-ca12-4bcf-9866-aeb232701e87
+2025-12-22 11:00:11.875 [http-nio-8087-exec-2] INFO  c.e.m.s.ReservationTemplateServiceImpl - 查询预约模板：storeId=7c32821f-2476-4a75-89fc-61f19cf4d75c
+2025-12-22 11:00:16.593 [http-nio-8087-exec-4] DEBUG c.e.m.s.JwtAuthenticationFilter - 解析业务令牌: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant, tokenType=3
+2025-12-22 11:00:16.595 [http-nio-8087-exec-4] DEBUG c.e.m.s.JwtAuthenticationFilter - 商家工作令牌跳过版本号检查: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant
+2025-12-22 11:00:16.596 [http-nio-8087-exec-4] DEBUG c.e.m.s.JwtAuthenticationFilter - 令牌验证通过: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant, tokenType=3, jti=ff4796cb-ca12-4bcf-9866-aeb232701e87
+2025-12-22 11:00:16.597 [http-nio-8087-exec-4] INFO  c.e.m.s.ReservationTemplateServiceImpl - 查询预约模板：storeId=7c32821f-2476-4a75-89fc-61f19cf4d75c
+2025-12-22 11:00:17.510 [http-nio-8087-exec-7] DEBUG c.e.m.s.JwtAuthenticationFilter - 解析业务令牌: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant, tokenType=3
+2025-12-22 11:00:17.512 [http-nio-8087-exec-7] DEBUG c.e.m.s.JwtAuthenticationFilter - 商家工作令牌跳过版本号检查: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant
+2025-12-22 11:00:17.513 [http-nio-8087-exec-7] DEBUG c.e.m.s.JwtAuthenticationFilter - 令牌验证通过: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant, tokenType=3, jti=ff4796cb-ca12-4bcf-9866-aeb232701e87
+2025-12-22 11:00:17.518 [http-nio-8087-exec-7] INFO  c.e.m.s.ReservationResourceServiceImpl - 查询资源列表：storeId=7c32821f-2476-4a75-89fc-61f19cf4d75c, keyword=null, page=1, pageSize=20
+2025-12-22 12:49:51.663 [http-nio-8087-exec-9] DEBUG c.e.m.s.JwtAuthenticationFilter - 解析自动登录令牌: userId=8e2064c9-6526-4200-b026-1bda50d06707, jti=9e0fa523-7c49-4e62-b471-7c13d68bd384
+2025-12-22 12:49:51.671 [http-nio-8087-exec-9] DEBUG c.e.m.s.JwtAuthenticationFilter - 自动登录令牌版本验证通过: userId=8e2064c9-6526-4200-b026-1bda50d06707, tokenVersion=0
+2025-12-22 12:49:51.672 [http-nio-8087-exec-9] DEBUG c.e.m.s.JwtAuthenticationFilter - 设置自动登录令牌认证信息: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=AUTO_LOGIN_USER
+2025-12-22 12:49:51.673 [http-nio-8087-exec-9] DEBUG c.e.m.s.JwtAuthenticationFilter - 令牌验证通过: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=AUTO_LOGIN_USER, tokenType=5, jti=9e0fa523-7c49-4e62-b471-7c13d68bd384
+2025-12-22 12:49:51.678 [http-nio-8087-exec-9] INFO  c.e.m.controller.UserController - 收到小程序自动登录请求: deviceId=85686a86945899685888883a65e65856, autoLoginToken=eyJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl92ZXJzaW9uIjowLCJyZW5ld190aW1lcyI6MCwiZGV2aWNlX2lkIjoiODU2ODZhODY5NDU4OTk2ODU4ODg4ODNhNjVlNjU4NTYiLCJ1c2VyX2lkIjoiOGUyMDY0YzktNjUyNi00MjAwLWIwMjYtMWJkYTUwZDA2NzA3IiwibGFzdF9yZW5ld190aW1lIjoxNzY2MzY2NTk1MDI0LCJhbGxvd19yZW5ldyI6dHJ1ZSwidG9rZW5fdHlwZSI6NSwibG9naW5faXAiOiIwOjA6MDowOjA6MDowOjEiLCJwbGF0Zm9ybSI6Ik1JTklfUFJPR1JBTSIsImp0aSI6IjllMGZhNTIzLTdjNDktNGU2Mi1iNDcxLTdjMTNkNjhiZDM4NCIsImlhdCI6MTc2NjM2NjU5NSwiZXhwIjoxNzY2Mzk1Mzk1fQ.H90N9SAQWzX6ZYzKGyqrtCfL_doEv3bNp3nmox2F3Ng
+2025-12-22 12:49:51.689 [http-nio-8087-exec-9] INFO  c.e.m.service.TokenRedisService - 自动登录令牌使用次数递增: userId=8e2064c9-6526-4200-b026-1bda50d06707, platform=MINI_PROGRAM, deviceId=85686a86945899685888883a65e65856, count=1
+2025-12-22 12:49:51.689 [http-nio-8087-exec-9] INFO  c.e.m.service.TokenService - 自动登录令牌使用: userId=8e2064c9-6526-4200-b026-1bda50d06707, 当前使用次数=1/3, jti=9e0fa523-7c49-4e62-b471-7c13d68bd384
+2025-12-22 12:49:51.699 [http-nio-8087-exec-9] INFO  c.e.m.service.TokenRedisService - 已清除用户令牌版本号缓存: userId=8e2064c9-6526-4200-b026-1bda50d06707
+2025-12-22 12:49:51.700 [http-nio-8087-exec-9] INFO  c.e.m.service.TokenService - 登录时清除令牌版本缓存，确保获取最新版本: userId=8e2064c9-6526-4200-b026-1bda50d06707
+2025-12-22 12:49:51.704 [http-nio-8087-exec-9] DEBUG c.e.m.service.TokenService - 自动登录场景，跳过商家状态校验: merchantId=11f53977-2114-4d4c-8685-b46303f75e76
+2025-12-22 12:49:51.731 [http-nio-8087-exec-9] INFO  c.e.m.service.TokenService - 生成普通令牌成功: userId=8e2064c9-6526-4200-b026-1bda50d06707, jti=15aacb4c-c71e-4d2e-8935-92b6fe853ddb
+2025-12-22 12:49:53.202 [http-nio-8087-exec-8] DEBUG c.e.m.s.JwtAuthenticationFilter - 解析业务令牌: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=MERCHANT, tokenType=1
+2025-12-22 12:49:53.208 [http-nio-8087-exec-8] DEBUG c.e.m.s.JwtAuthenticationFilter - 令牌验证通过: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=MERCHANT, tokenType=1, jti=15aacb4c-c71e-4d2e-8935-92b6fe853ddb
+2025-12-22 12:49:53.211 [http-nio-8087-exec-8] DEBUG c.e.m.a.MerchantPermissionAspect - 检查商户活跃状态: userId=8e2064c9-6526-4200-b026-1bda50d06707
+2025-12-22 12:49:53.216 [http-nio-8087-exec-8] DEBUG c.e.m.a.MerchantPermissionAspect - 从数据库获取certification并缓存: userId=8e2064c9-6526-4200-b026-1bda50d06707, certification=1
+2025-12-22 12:49:53.217 [http-nio-8087-exec-8] INFO  c.e.m.controller.StoreController - 接收到店铺列表查询请求：商户ID=11f53977-2114-4d4c-8685-b46303f75e76
+2025-12-22 12:49:53.217 [http-nio-8087-exec-8] INFO  c.e.m.service.StoreService - 查询店铺列表：商户ID=11f53977-2114-4d4c-8685-b46303f75e76
+2025-12-22 12:49:53.320 [http-nio-8087-exec-3] DEBUG c.e.m.s.JwtAuthenticationFilter - 解析业务令牌: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=MERCHANT, tokenType=1
+2025-12-22 12:49:53.322 [http-nio-8087-exec-3] DEBUG c.e.m.s.JwtAuthenticationFilter - 令牌验证通过: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=MERCHANT, tokenType=1, jti=15aacb4c-c71e-4d2e-8935-92b6fe853ddb
+2025-12-22 12:49:53.381 [http-nio-8087-exec-3] INFO  c.e.m.service.TokenService - 商家获取工作令牌: userId=8e2064c9-6526-4200-b026-1bda50d06707, merchantId=11f53977-2114-4d4c-8685-b46303f75e76, storeId=7c32821f-2476-4a75-89fc-61f19cf4d75c
+2025-12-22 12:49:53.385 [http-nio-8087-exec-3] INFO  c.e.m.service.TokenService - 生成工作令牌成功: userId=8e2064c9-6526-4200-b026-1bda50d06707, storeId=7c32821f-2476-4a75-89fc-61f19cf4d75c, role=merchant, tokenVersion=0, jti=7f41307e-16dd-4bae-bd52-f57ac3e20b61
+2025-12-22 12:49:55.383 [http-nio-8087-exec-10] DEBUG c.e.m.s.JwtAuthenticationFilter - 解析业务令牌: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant, tokenType=3
+2025-12-22 12:49:55.383 [http-nio-8087-exec-10] DEBUG c.e.m.s.JwtAuthenticationFilter - 商家工作令牌跳过版本号检查: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant
+2025-12-22 12:49:55.385 [http-nio-8087-exec-10] DEBUG c.e.m.s.JwtAuthenticationFilter - 令牌验证通过: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant, tokenType=3, jti=7f41307e-16dd-4bae-bd52-f57ac3e20b61
+2025-12-22 12:49:55.386 [http-nio-8087-exec-10] INFO  c.e.m.s.ReservationTemplateServiceImpl - 查询预约模板：storeId=7c32821f-2476-4a75-89fc-61f19cf4d75c
+2025-12-22 12:49:56.641 [http-nio-8087-exec-1] DEBUG c.e.m.s.JwtAuthenticationFilter - 解析业务令牌: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant, tokenType=3
+2025-12-22 12:49:56.642 [http-nio-8087-exec-1] DEBUG c.e.m.s.JwtAuthenticationFilter - 商家工作令牌跳过版本号检查: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant
+2025-12-22 12:49:56.644 [http-nio-8087-exec-1] DEBUG c.e.m.s.JwtAuthenticationFilter - 令牌验证通过: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant, tokenType=3, jti=7f41307e-16dd-4bae-bd52-f57ac3e20b61
+2025-12-22 12:49:56.645 [http-nio-8087-exec-1] INFO  c.e.m.s.ReservationResourceServiceImpl - 查询资源列表：storeId=7c32821f-2476-4a75-89fc-61f19cf4d75c, keyword=null, page=1, pageSize=20
+2025-12-22 12:51:23.144 [http-nio-8087-exec-2] DEBUG c.e.m.s.JwtAuthenticationFilter - 解析业务令牌: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant, tokenType=3
+2025-12-22 12:51:23.144 [http-nio-8087-exec-2] DEBUG c.e.m.s.JwtAuthenticationFilter - 商家工作令牌跳过版本号检查: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant
+2025-12-22 12:51:23.144 [http-nio-8087-exec-2] DEBUG c.e.m.s.JwtAuthenticationFilter - 令牌验证通过: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant, tokenType=3, jti=7f41307e-16dd-4bae-bd52-f57ac3e20b61
+2025-12-22 12:51:23.147 [http-nio-8087-exec-2] INFO  c.e.m.s.ReservationTemplateServiceImpl - 查询预约模板：storeId=7c32821f-2476-4a75-89fc-61f19cf4d75c
+2025-12-22 12:51:23.998 [http-nio-8087-exec-4] DEBUG c.e.m.s.JwtAuthenticationFilter - 解析业务令牌: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant, tokenType=3
+2025-12-22 12:51:23.999 [http-nio-8087-exec-4] DEBUG c.e.m.s.JwtAuthenticationFilter - 商家工作令牌跳过版本号检查: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant
+2025-12-22 12:51:23.999 [http-nio-8087-exec-4] DEBUG c.e.m.s.JwtAuthenticationFilter - 令牌验证通过: userId=8e2064c9-6526-4200-b026-1bda50d06707, role=merchant, tokenType=3, jti=7f41307e-16dd-4bae-bd52-f57ac3e20b61
+2025-12-22 12:51:24.002 [http-nio-8087-exec-4] INFO  c.e.m.s.ReservationResourceServiceImpl - 查询资源列表：storeId=7c32821f-2476-4a75-89fc-61f19cf4d75c, keyword=null, page=1, pageSize=20

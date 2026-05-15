@@ -1,0 +1,44 @@
+/**
+ * 滚动同步WXS模块
+ * 在渲染层直接操作DOM，实现表头行列与单元格的丝滑同步滚动
+ */
+
+/**
+ * 滚动事件处理函数
+ * @param {Object} event - 滚动事件对象
+ * @param {Object} ownerInstance - 组件实例
+ */
+function onScroll(event, ownerInstance) {
+  var scrollLeft = event.detail.scrollLeft || 0;
+  var scrollTop = event.detail.scrollTop || 0;
+  
+  // 获取表头行和表头列的实例
+  var headerRow = ownerInstance.selectComponent('.header-row-container');
+  var headerCol = ownerInstance.selectComponent('.header-col-container');
+  
+  // 使用transform实现同步，性能最优
+  if (headerRow) {
+    headerRow.setStyle({
+      'transform': 'translateX(' + (-scrollLeft) + 'px)',
+      '-webkit-transform': 'translateX(' + (-scrollLeft) + 'px)'
+    });
+  }
+  
+  if (headerCol) {
+    headerCol.setStyle({
+      'transform': 'translateY(' + (-scrollTop) + 'px)',
+      '-webkit-transform': 'translateY(' + (-scrollTop) + 'px)'
+    });
+  }
+  
+  // 通知JS记录滚动位置（用于自动滚动计算）
+  ownerInstance.callMethod('recordScrollPosition', {
+    scrollTop: scrollTop,
+    scrollLeft: scrollLeft
+  });
+}
+
+// 导出模块
+module.exports = {
+  onScroll: onScroll
+};

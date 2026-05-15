@@ -1,0 +1,209 @@
+<!--pages/cards-detail/cards-detail.wxml-->
+<view class="page-container">
+  <!-- 加载状态 -->
+  <view class="loading-container" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <block wx:else>
+    <!-- 顶部会员卡展示区域 -->
+    <view class="card-display-section">
+      <card-display 
+        width="{{680}}" 
+        cardBgc="{{cardDetail.cardBgc}}" 
+        cardMask="{{cardDetail.cardMask}}" />
+      
+      <!-- 卡片上的信息层 -->
+      <view class="card-overlay">
+        <view class="card-name-row">
+          <text class="overlay-card-name">{{cardDetail.cardTypeName}}</text>
+          <text class="overlay-status {{cardDetail.status === 1 ? 'status-normal' : cardDetail.status === 3 ? 'status-frozen' : 'status-other'}}">
+            {{cardDetail.statusName}}
+          </text>
+        </view>
+        <text class="overlay-store">{{cardDetail.storeName}}</text>
+      </view>
+    </view>
+
+    <!-- 数值信息卡片 -->
+    <view class="value-card card">
+      <view class="value-grid">
+        <!-- 余额 -->
+        <view class="value-item" wx:if="{{cardDetail.cardTtype === 1 || cardDetail.balance > 0}}">
+          <text class="value-label">账户余额</text>
+          <text class="value-number">¥{{cardDetail.balance || '0.00'}}</text>
+        </view>
+        <!-- 次数 -->
+        <view class="value-item" wx:if="{{cardDetail.cardTtype === 2 || cardDetail.times > 0}}">
+          <text class="value-label">剩余次数</text>
+          <text class="value-number">{{cardDetail.times || 0}}<text class="value-unit">次</text></text>
+        </view>
+        <!-- 积分 -->
+        <view class="value-item">
+          <text class="value-label">当前积分</text>
+          <text class="value-number">{{cardDetail.points || 0}}</text>
+        </view>
+        <!-- 到期时间 -->
+        <view class="value-item">
+          <text class="value-label">到期时间</text>
+          <text class="value-number small">{{expireTimeFormatted}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 卡片详情信息 -->
+    <view class="detail-card card">
+      <view class="section-title">卡片信息</view>
+      
+      <view class="info-list">
+        <view class="info-item">
+          <text class="info-label">卡种名称</text>
+          <text class="info-value">{{cardDetail.cardTypeName}}</text>
+        </view>
+        <view class="info-item">
+          <text class="info-label">卡种类型</text>
+          <text class="info-value">{{cardDetail.cardTtypeName}}</text>
+        </view>
+        <view class="info-item">
+          <text class="info-label">所属店铺</text>
+          <text class="info-value">{{cardDetail.storeName}}</text>
+        </view>
+        <view class="info-item">
+          <text class="info-label">所属商家</text>
+          <text class="info-value">{{cardDetail.merchantName || '--'}}</text>
+        </view>
+        <view class="info-item">
+          <text class="info-label">开卡时间</text>
+          <text class="info-value">{{openCardTimeFormatted}}</text>
+        </view>
+        <view class="info-item" wx:if="{{cardDetail.activateTime}}">
+          <text class="info-label">激活时间</text>
+          <text class="info-value">{{activateTimeFormatted}}</text>
+        </view>
+        <view class="info-item">
+          <text class="info-label">跨店通用</text>
+          <text class="info-value">{{cardDetail.crossStore === 1 ? '是' : '否'}}</text>
+        </view>
+      </view>
+
+      <!-- 卡种描述 -->
+      <view class="description-section" wx:if="{{cardDetail.description}}">
+        <text class="description-title">卡种说明</text>
+        <text class="description-content">{{cardDetail.description}}</text>
+      </view>
+    </view>
+
+    <!-- 操作区域 -->
+    <view class="action-card card">
+      <view class="section-title">卡片操作</view>
+      
+      <view class="action-list">
+        <!-- 交易记录（积分卡不显示） -->
+        <view class="action-item" wx:if="{{cardDetail.cardTtype !== 4}}" bindtap="goToTransRecords">
+          <view class="action-icon trans-icon">
+            <text class="icon-text">📊</text>
+          </view>
+          <view class="action-info">
+            <text class="action-name">交易记录</text>
+            <text class="action-desc">查看该卡的交易记录</text>
+          </view>
+          <text class="action-arrow">›</text>
+        </view>
+
+        <!-- 积分记录 -->
+        <view class="action-item" bindtap="goToPointsRecords">
+          <view class="action-icon points-icon">
+            <text class="icon-text">⭐</text>
+          </view>
+          <view class="action-info">
+            <text class="action-name">积分记录</text>
+            <text class="action-desc">查看该卡的积分记录</text>
+          </view>
+          <text class="action-arrow">›</text>
+        </view>
+
+        <!-- 冻结/解冻按钮 -->
+        <view class="action-item" wx:if="{{cardDetail.status === 1 || cardDetail.status === 2}}" bindtap="showFreezeModal">
+          <view class="action-icon freeze-icon">
+            <text class="icon-text">❄️</text>
+          </view>
+          <view class="action-info">
+            <text class="action-name">冻结会员卡</text>
+            <text class="action-desc">冻结后将无法消费、充值</text>
+          </view>
+          <text class="action-arrow">›</text>
+        </view>
+
+        <view class="action-item" wx:if="{{cardDetail.status === 3}}" bindtap="showUnfreezeModal">
+          <view class="action-icon unfreeze-icon">
+            <text class="icon-text">🔓</text>
+          </view>
+          <view class="action-info">
+            <text class="action-name">解冻会员卡</text>
+            <text class="action-desc">解冻后可正常使用</text>
+          </view>
+          <text class="action-arrow">›</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 底部安全间距 -->
+    <view class="bottom-safe"></view>
+  </block>
+</view>
+
+<!-- 冻结原因弹窗 -->
+<view class="modal-mask" wx:if="{{showFreezePopup}}" bindtap="hideFreezeModal">
+  <view class="modal-container" catchtap="preventBubble">
+    <view class="modal-header">
+      <text class="modal-title">冻结会员卡</text>
+      <text class="modal-close" bindtap="hideFreezeModal">×</text>
+    </view>
+    <view class="modal-body">
+      <text class="modal-hint">请输入冻结原因（1-50字）</text>
+      <textarea 
+        class="freeze-reason-input"
+        placeholder="请输入冻结原因..."
+        value="{{freezeReason}}"
+        bindinput="onFreezeReasonInput"
+        maxlength="50"
+        auto-height="{{false}}"
+      />
+      <text class="char-count">{{freezeReason.length}}/50</text>
+    </view>
+    <view class="modal-footer">
+      <button class="modal-btn cancel-btn" bindtap="hideFreezeModal">取消</button>
+      <button class="modal-btn confirm-btn" bindtap="handleFreeze" disabled="{{freezeReason.length < 1 || freezeReason.length > 50}}">确认冻结</button>
+    </view>
+  </view>
+</view>
+
+<!-- 解冻原因弹窗 -->
+<view class="modal-mask" wx:if="{{showUnfreezePopup}}" bindtap="hideUnfreezeModal">
+  <view class="modal-container" catchtap="preventBubble">
+    <view class="modal-header">
+      <text class="modal-title">解冻会员卡</text>
+      <text class="modal-close" bindtap="hideUnfreezeModal">×</text>
+    </view>
+    <view class="modal-body">
+      <text class="modal-hint">请输入解冻原因（选填，最多50字）</text>
+      <textarea 
+        class="freeze-reason-input"
+        placeholder="请输入解冻原因（选填）..."
+        value="{{unfreezeReason}}"
+        bindinput="onUnfreezeReasonInput"
+        maxlength="50"
+        auto-height="{{false}}"
+      />
+      <text class="char-count">{{unfreezeReason.length}}/50</text>
+    </view>
+    <view class="modal-footer">
+      <button class="modal-btn cancel-btn" bindtap="hideUnfreezeModal">取消</button>
+      <button class="modal-btn confirm-btn unfreeze-confirm-btn" bindtap="handleUnfreeze" disabled="{{unfreezeReason.length > 50}}">确认解冻</button>
+    </view>
+  </view>
+</view>
+
+<!-- 自定义消息组件 -->
+<custom-toast id="customToast" message="{{toastMessage}}" type="{{toastType}}" animation-type="{{toastAnimationType}}" show="{{showToast}}" />

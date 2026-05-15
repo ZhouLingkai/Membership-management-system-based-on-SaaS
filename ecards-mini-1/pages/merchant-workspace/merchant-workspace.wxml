@@ -1,0 +1,307 @@
+<!--pages/merchant-workspace/merchant-workspace.wxml-->
+<wxs module="scrollSync" src="./scroll-sync.wxs"></wxs>
+<!-- 自定义Toast组件 -->
+<custom-toast id="customToast"></custom-toast>
+<view class="page-container">
+    <!-- 自定义顶部导航栏 -->
+    <view class="custom-navbar" style="padding-top: {{statusBarHeight}}rpx;">
+        <view class="navbar-content" style="height: {{navBarHeight}}rpx;" bindtap="toggleStoreCard">
+            <!-- 文字头像 -->
+            <view class="store-avatar-text" wx:if="{{currentStore}}" style="background-color: {{currentStore.avatarBgColor}};">
+                <text style="color: {{currentStore.avatarTextColor}};">{{currentStore.avatarText}}</text>
+            </view>
+            <view class="store-avatar-text store-avatar-empty" wx:else>
+                <text>店铺</text>
+            </view>
+            <text class="store-name">{{currentStore.name || '请选择店铺'}}</text>
+            <text class="dropdown-arrow">▼</text>
+        </view>
+    </view>
+
+    <!-- 遮罩层 -->
+    <view class="mask-layer" wx:if="{{showStoreCard}}" bindtap="hideStoreCard"></view>
+
+    <!-- 店铺选择卡片 -->
+    <view class="store-card" wx:if="{{showStoreCard}}" style="top: {{totalNavHeight}}rpx;">
+        <view class="card-header">
+            <text class="card-title">选择店铺</text>
+            <text class="close-icon" bindtap="hideStoreCard">×</text>
+        </view>
+
+        <!-- 二维码名片 -->
+        <view class="qr-card-item" bindtap="handleQRCard">
+            <image class="qr-icon" src="/assets/icons/qr-code.png" mode="aspectFit"></image>
+            <text class="qr-text">二维码名片</text>
+            <text class="arrow-right">></text>
+        </view>
+
+        <!-- 店铺列表 -->
+        <scroll-view class="store-list" scroll-y="{{true}}" style="max-height: {{storeListMaxHeight}}rpx;">
+            <!-- 加载中状态 -->
+            <view class="store-list-loading" wx:if="{{storeListLoading}}">
+                <text>加载中...</text>
+            </view>
+            <!-- 空状态 -->
+            <view class="store-list-empty" wx:elif="{{storeList.length === 0}}">
+                <text>暂无店铺</text>
+            </view>
+            <!-- 店铺列表项 -->
+            <block wx:else>
+                <view class="store-item" wx:for="{{storeList}}" wx:key="id" bindtap="selectStore" data-store="{{item}}">
+                    <!-- 文字头像 -->
+                    <view class="store-item-avatar-text" style="background-color: {{item.avatarBgColor}};">
+                        <text style="color: {{item.avatarTextColor}};">{{item.avatarText}}</text>
+                    </view>
+                    <text class="store-item-name">{{item.name}}</text>
+                    <image class="check-icon" src="/assets/icons/check.png" mode="aspectFit" wx:if="{{currentStore && item.id === currentStore.id}}"></image>
+                </view>
+            </block>
+        </scroll-view>
+    </view>
+
+    <!-- 功能切换Tab -->
+    <view class="tab-switch-container" style="top: {{totalNavHeight}}rpx;">
+        <view class="tab-switch-item {{activeTab === 'workspace' ? 'active' : ''}}" bindtap="switchTab" data-tab="workspace">
+            <text class="tab-text">工作中心</text>
+            <view class="tab-underline"></view>
+        </view>
+        <view class="tab-switch-item {{activeTab === 'reservation' ? 'active' : ''}}" bindtap="switchTab" data-tab="reservation">
+            <text class="tab-text">预约系统</text>
+            <view class="tab-underline"></view>
+        </view>
+    </view>
+
+    <!-- 工作中心内容 - 新版工具箱 -->
+<view class="workspace-content" style="padding-top: {{totalNavHeight + 110}}rpx;" wx:if="{{activeTab === 'workspace'}}">
+  <!-- 顶部筛选栏 -->
+  <view class="filter-bar">
+    <!-- 左侧标签筛选 -->
+    <scroll-view class="filter-tags-scroll" scroll-x="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
+      <view class="filter-tags">
+        <view class="filter-tag {{currentFilter === 'all' ? 'active' : ''}}" bindtap="onFilterTap" data-filter="all">全部</view>
+        <view class="filter-tag {{currentFilter === '前台' ? 'active' : ''}}" bindtap="onFilterTap" data-filter="前台">前台</view>
+        <view class="filter-tag {{currentFilter === '后台' ? 'active' : ''}}" bindtap="onFilterTap" data-filter="后台">后台</view>
+        <view class="filter-tag {{currentFilter === '预约' ? 'active' : ''}}" bindtap="onFilterTap" data-filter="预约">预约</view>
+        <view class="filter-tag {{currentFilter === '经营' ? 'active' : ''}}" bindtap="onFilterTap" data-filter="经营">经营</view>
+      </view>
+    </scroll-view>
+    <!-- 右侧视图切换 -->
+    <view class="view-switch">
+      <view class="switch-btn {{viewMode === 'list' ? 'active' : ''}}" bindtap="onViewModeTap" data-mode="list">
+        <image src="/assets/workspace/view-list.png" mode="aspectFit"></image>
+      </view>
+      <view class="switch-btn {{viewMode === 'grid' ? 'active' : ''}}" bindtap="onViewModeTap" data-mode="grid">
+        <image src="/assets/workspace/view-grid.png" mode="aspectFit"></image>
+      </view>
+    </view>
+  </view>
+
+  <!-- 一列模式（详细模式） -->
+  <view class="tools-list" wx:if="{{viewMode === 'list'}}">
+    <view class="tool-item-list" wx:for="{{filteredTools}}" wx:key="action" bindtap="handleToolTap" data-action="{{item.action}}">
+      <view class="tool-icon-wrapper" style="background: {{item.iconBg}};">
+        <image class="tool-icon" src="{{item.icon}}" mode="aspectFit"></image>
+      </view>
+      <view class="tool-info">
+        <view class="tool-header">
+          <text class="tool-name">{{item.name}}</text>
+          <view class="tool-labels">
+            <text class="tool-label" wx:for="{{item.labelsArray}}" wx:for-item="label" wx:key="*this">{{label}}</text>
+          </view>
+        </view>
+        <text class="tool-desc">{{item.describe}}</text>
+      </view>
+      <view class="tool-arrow">
+        <text class="arrow-icon">›</text>
+      </view>
+    </view>
+    <!-- 空状态 -->
+    <view class="empty-tools" wx:if="{{filteredTools.length === 0}}">
+      <text class="empty-text">暂无相关工具</text>
+    </view>
+  </view>
+
+  <!-- 四列模式（简单模式） -->
+  <view class="tools-grid" wx:if="{{viewMode === 'grid'}}">
+    <view class="tool-item-grid" wx:for="{{filteredTools}}" wx:key="action" bindtap="handleToolTap" data-action="{{item.action}}">
+      <view class="tool-icon-wrapper-grid" style="background: {{item.iconBg}};">
+        <image class="tool-icon-grid" src="{{item.icon}}" mode="aspectFit"></image>
+      </view>
+      <text class="tool-name-grid">{{item.name}}</text>
+    </view>
+    <!-- 空状态 -->
+    <view class="empty-tools-grid" wx:if="{{filteredTools.length === 0}}">
+      <text class="empty-text">暂无相关工具</text>
+    </view>
+  </view>
+
+  <!-- 底部占位 -->
+  <view class="tools-bottom-placeholder"></view>
+</view>
+
+
+    <!-- 预约系统内容 -->
+    <view class="reservation-container" style="padding-top: {{totalNavHeight + 80}}rpx;" wx:if="{{activeTab === 'reservation'}}">
+        <!-- 空状态提示 -->
+        <view class="empty-state" wx:if="{{!reservationData || !processedResources || processedResources.length === 0}}">
+            <text class="empty-text">{{emptyMessage}}</text>
+        </view>
+
+        <!-- 预约表格 -->
+        <view class="reservation-table-wrapper" wx:else>
+            <!-- 左上角日期单元格 - 固定定位，最高层级 -->
+            <view class="corner-cell" style="top: {{totalNavHeight + 80}}rpx; width: {{sizeConfig.headerColWidth}}rpx; height: {{sizeConfig.headerRowHeight}}rpx;" bindtap="showDatePicker">
+                <text class="corner-date" style="font-size: {{sizeConfig.p3}}rpx;">{{displayDate.monthDay}}</text>
+                <view class="corner-year-row">
+                    <text class="corner-year" style="font-size: {{sizeConfig.p3}}rpx;">{{displayDate.year}}</text>
+                    <image class="corner-icon" style="width: {{sizeConfig.p3}}rpx; height: {{sizeConfig.p3}};" src="../../assets/icon-u/shift.png" mode="aspectFit"></image>
+                </view>
+            </view>
+
+            <!-- 表头行 - 吸顶，使用overflow:hidden裁剪 + transform同步 -->
+            <view class="header-row-wrapper" style="top: {{totalNavHeight + 80}}rpx; left: {{sizeConfig.headerColWidth}}rpx; height: {{sizeConfig.headerRowHeight}}rpx;">
+                <view class="header-row-container" animation="{{headerRowAnimation}}" style="height: {{sizeConfig.headerRowHeight}}rpx; width: {{tableBodyWidth}}rpx;">
+                    <view class="header-row" style="height: {{sizeConfig.headerRowHeight}}rpx; width: {{tableBodyWidth}}rpx;">
+                        <view class="header-cell" wx:for="{{reservationData.timeList}}" wx:key="index" wx:for-item="timeSlot" wx:for-index="colIndex" style="width: {{sizeConfig.headerRowWidth}}rpx; height: {{sizeConfig.headerRowHeight}}rpx;">
+                            <text class="header-index" style="font-size: {{sizeConfig.p4}}rpx;">{{colIndex + 1}}</text>
+                            <text class="header-time-start" style="font-size: {{sizeConfig.p3}}rpx;">{{timeSlot.start}}</text>
+                            <text class="header-time-end" style="font-size: {{sizeConfig.p3}}rpx;">{{timeSlot.end}}</text>
+                        </view>
+                    </view>
+                </view>
+            </view>
+
+            <!-- 表头列 - 吸左，使用overflow:hidden裁剪 + transform同步 -->
+            <view class="header-col-wrapper {{showBottomForm ? 'with-form' : ''}}" style="top: {{totalNavHeight + 80 + sizeConfig.headerRowHeight}}rpx; width: {{sizeConfig.headerColWidth}}rpx;">
+                <view class="header-col-container" animation="{{headerColAnimation}}">
+                    <view class="header-col">
+                        <view class="col-cell" wx:for="{{processedResources}}" wx:key="resourceId" wx:for-item="resource" wx:for-index="rowIndex" style="width: {{sizeConfig.headerColWidth}}rpx; height: {{sizeConfig.headerColHeight}}rpx;" bindtap="showResourceDetail" data-resource="{{resource}}">
+                            <text class="col-name-line1" style="font-size: {{sizeConfig.p3}}rpx;">{{resource.displayName.line1}}</text>
+                            <text class="col-name-line2" style="font-size: {{sizeConfig.p4}}rpx;" wx:if="{{resource.displayName.line2}}">{{resource.displayName.line2}}</text>
+                        </view>
+                    </view>
+                </view>
+            </view>
+
+            <!-- 表格主体 - 唯一可滚动区域，通过WXS同步表头 -->
+            <scroll-view id="tableBodyScroll" class="table-body-scroll {{showBottomForm ? 'with-form' : ''}}" scroll-x="{{true}}" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}" bounces="{{false}}" scroll-top="{{tableScrollTop}}" scroll-left="{{tableScrollLeft}}" scroll-with-animation="{{true}}" bindscroll="{{scrollSync.onScroll}}" bindscrollend="onScrollEnd" style="top: {{totalNavHeight + 80 + sizeConfig.headerRowHeight}}rpx; left: {{sizeConfig.headerColWidth}}rpx;">
+                <view class="table-body" style="width: {{tableBodyWidth}}rpx;">
+                    <!-- 遍历资源行 -->
+                    <view class="table-row" wx:for="{{processedResources}}" wx:key="resourceId" wx:for-item="resource" wx:for-index="rowIndex" style="height: {{sizeConfig.headerColHeight}}rpx;">
+                        <!-- 遍历时间列 -->
+                        <view class="table-cell {{cellMatrix[rowIndex][colIndex].status}} {{cellMatrix[rowIndex][colIndex].isSelected ? 'selected' : ''}} {{cellMatrix[rowIndex][colIndex].isAdjacent ? 'adjacent-hint' : ''}}" wx:for="{{reservationData.timeList}}" wx:key="index" wx:for-item="timeSlot" wx:for-index="colIndex" style="width: {{sizeConfig.headerRowWidth}}rpx; height: {{sizeConfig.headerColHeight}}rpx;" bindtap="onCellTap" data-row="{{rowIndex}}" data-col="{{colIndex}}" data-resource-id="{{resource.resourceId}}" data-time-slot="{{timeSlot.original}}" data-first-col="{{cellMatrix[rowIndex][colIndex].firstCol}}">
+
+                            <!-- 已预约/占用/停用的单元格 - 只在首单元格渲染，拉伸覆盖后续单元格 -->
+                            <view class="cell-block type-{{cellMatrix[rowIndex][colIndex].operateType}}" wx:if="{{cellMatrix[rowIndex][colIndex].status === 'reserved' && cellMatrix[rowIndex][colIndex].isFirst}}" style="width: {{cellMatrix[rowIndex][colIndex].spanWidth}}rpx;">
+                                <text class="cell-text" style="font-size: {{sizeConfig.p4}}rpx;">{{cellMatrix[rowIndex][colIndex].displayText}}</text>
+                            </view>
+
+                            <!-- 可预约的单元格 -->
+                            <view class="cell-available" wx:if="{{cellMatrix[rowIndex][colIndex].status === 'available'}}">
+                                <text class="cell-text-available" style="font-size: {{sizeConfig.p4}}rpx;">可预约</text>
+                            </view>
+
+                            <!-- 已过期的单元格（灰色，不可点击） -->
+                            <view class="cell-expired" wx:if="{{cellMatrix[rowIndex][colIndex].status === 'expired'}}">
+                                <text class="cell-text-expired" style="font-size: {{sizeConfig.p4}}rpx;">已过期</text>
+                            </view>
+                        </view>
+                        <!-- 右侧占位，提供留白 -->
+                        <view style="width: 18rpx; height: 100%; flex-shrink: 0;"></view>
+                    </view>
+                    <!-- 底部占位，防止被tabBar遮挡 -->
+                    <view class="table-bottom-placeholder"></view>
+                </view>
+            </scroll-view>
+        </view>
+
+        <!-- 底部占位组件 -->
+        <view class="tabbar-placeholder {{showBottomForm ? 'with-form' : ''}}"></view>
+
+        <!-- 底部选择表单 - 始终存在，通过class控制显示以支持动画 -->
+        <view class="bottom-form {{showBottomForm ? 'show' : ''}}">
+            <view class="form-info">
+                <text class="form-resource-name">{{selectedResourceName}}</text>
+                <scroll-view class="form-slots-scroll" scroll-x="{{true}}">
+                    <view class="form-slots">
+                        <view class="slot-tag" wx:for="{{selectedTimeSlots}}" wx:key="index">{{item}}</view>
+                    </view>
+                </scroll-view>
+            </view>
+            <view class="form-actions">
+                <button class="btn-occupy" bindtap="handleOfflineOccupy">线下占用</button>
+                <button class="btn-disable" bindtap="handleResourceDisable">资源停用</button>
+            </view>
+        </view>
+    </view>
+
+    <!-- 已预约详情弹窗 -->
+    <view class="detail-modal-mask" wx:if="{{showDetailModal}}" bindtap="hideDetailModal">
+        <view class="detail-modal type-{{detailInfo.operateType}}" catchtap="">
+            <view class="modal-header">
+                <text class="modal-title">{{detailInfo.operateTypeText}}</text>
+                <text class="modal-close" bindtap="hideDetailModal">×</text>
+            </view>
+            <view class="modal-body">
+                <view class="modal-row">
+                    <text class="modal-label">时间段</text>
+                    <text class="modal-value">{{detailInfo.startTime}} ~ {{detailInfo.endTime}}</text>
+                </view>
+                <view class="modal-row" wx:if="{{detailInfo.userPhone}}">
+                    <text class="modal-label">联系电话</text>
+                    <text class="modal-value">{{detailInfo.userPhone}}</text>
+                </view>
+                <view class="modal-row" wx:if="{{detailInfo.remark}}">
+                    <text class="modal-label">备注</text>
+                    <text class="modal-value">{{detailInfo.remark}}</text>
+                </view>
+            </view>
+        </view>
+    </view>
+
+    <!-- 资源详情弹窗 -->
+    <view class="detail-modal-mask" wx:if="{{showResourceModal}}" bindtap="hideResourceModal">
+        <view class="detail-modal resource-modal" catchtap="">
+            <view class="modal-header">
+                <text class="modal-title">资源详情</text>
+                <text class="modal-close" bindtap="hideResourceModal">×</text>
+            </view>
+            <view class="modal-body">
+                <view class="modal-row">
+                    <text class="modal-label">资源名称</text>
+                    <text class="modal-value">{{resourceDetailInfo.resourceName}}</text>
+                </view>
+                <view class="modal-row" wx:if="{{resourceDetailInfo.resourceRestriction}}">
+                    <text class="modal-label">最少预约时间</text>
+                    <text class="modal-value">{{resourceDetailInfo.resourceRestriction.minContinuousTime}}分钟</text>
+                </view>
+                <view class="modal-row" wx:if="{{resourceDetailInfo.resourceRestriction}}">
+                    <text class="modal-label">最长预约时间</text>
+                    <text class="modal-value">{{resourceDetailInfo.resourceRestriction.maxContinuousTime}}分钟</text>
+                </view>
+                <view class="modal-row" wx:if="{{resourceDetailInfo.resourceRestriction}}">
+                    <text class="modal-label">单价</text>
+                    <text class="modal-value">{{resourceDetailInfo.resourceRestriction.unitPrice}}元</text>
+                </view>
+            </view>
+        </view>
+    </view>
+
+    <!-- 日期选择器弹窗 -->
+    <view class="detail-modal-mask" wx:if="{{showDatePickerModal}}" bindtap="hideDatePicker">
+        <view class="date-picker-modal" catchtap="">
+            <view class="modal-header">
+                <text class="modal-title">选择日期</text>
+                <text class="modal-close" bindtap="hideDatePicker">×</text>
+            </view>
+            <view class="date-picker-body">
+                <view class="date-item {{item.disabled ? 'disabled' : ''}} {{item.date === selectedQueryDate ? 'selected' : ''}}" wx:for="{{availableDates}}" wx:key="date" bindtap="onDateItemTap" data-date="{{item.date}}" data-disabled="{{item.disabled}}">
+                    <text class="date-text">{{item.display}}</text>
+                    <text class="date-weekday">{{item.weekday}}</text>
+                </view>
+            </view>
+        </view>
+    </view>
+
+    <view class="pos-box"></view>
+</view>

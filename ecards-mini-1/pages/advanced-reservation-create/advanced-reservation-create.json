@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "创建预约模板",
+  "usingComponents": {
+    "custom-toast": "/components/custom-toast/custom-toast"
+  }
+}

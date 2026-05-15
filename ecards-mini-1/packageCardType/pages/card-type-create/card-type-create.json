@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "创建卡种",
+  "usingComponents": {
+    "custom-toast": "/components/custom-toast/custom-toast"
+  }
+}

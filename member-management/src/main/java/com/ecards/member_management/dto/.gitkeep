@@ -1,0 +1,4 @@
+# DTO层
+用于存放数据传输对象（Data Transfer Object）
+包括请求参数对象（Request DTO）和响应数据对象（Response DTO）
+

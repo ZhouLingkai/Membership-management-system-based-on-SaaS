@@ -1,0 +1,394 @@
+<!--pages/bind-employee/bind-employee.wxml-->
+<view class="page-container">
+  <!-- 店铺信息卡片 -->
+  <view class="store-card">
+    <view class="store-header">
+      <text class="store-icon">🏪</text>
+      <view class="store-info">
+        <text class="store-name">{{storeName || '未知店铺'}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 工作令牌状态 -->
+  <view class="token-section">
+    <view class="section-title">
+      <text class="title-icon">🔑</text>
+      <text>工作令牌状态</text>
+    </view>
+    <view class="token-status {{hasWorkToken ? 'success' : 'warning'}}">
+      <text class="status-icon">{{hasWorkToken ? '✓' : '○'}}</text>
+      <text class="status-text">{{hasWorkToken ? '已获取工作令牌' : '正在获取工作令牌...'}}</text>
+    </view>
+  </view>
+
+  <!-- 员工列表 -->
+  <view class="employee-section">
+    <view class="section-header">
+      <view class="section-title">
+        <text class="title-icon">👥</text>
+        <text>已绑定员工</text>
+      </view>
+      <view class="employee-count">共 {{totalEmployees}} 人</view>
+    </view>
+
+    <!-- 员工列表 -->
+    <view class="employee-list" wx:if="{{employeeList.length > 0}}">
+      <view 
+        class="employee-item" 
+        wx:for="{{employeeList}}" 
+        wx:key="staffId"
+        data-staffid="{{item.staffId}}"
+        bindtap="onEmployeeClick"
+      >
+        <view class="employee-avatar {{item.staffRole === 'STORE_MANAGER' ? 'manager' : ''}}">
+          <text>{{item.staffName ? item.staffName[0] : '员'}}</text>
+        </view>
+        <view class="employee-info">
+          <view class="employee-name-row">
+            <text class="employee-name">{{item.staffName || '未命名员工'}}</text>
+            <view class="role-badge {{item.staffRole === 'STORE_MANAGER' ? 'manager' : 'staff'}}">
+              <view class="role-badge-text">{{item.staffRole === 'STORE_MANAGER' ? '店长' : '员工'}}</view>
+            </view>
+          </view>
+          <text class="employee-phone">{{item.staffPhone || '暂无手机号'}}</text>
+          <text class="employee-entry-time">入职: {{item.entryTime || '未知'}}</text>
+        </view>
+        <view class="employee-arrow">
+          <text class="arrow-icon">›</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 加载状态 -->
+    <view class="loading-state" wx:if="{{loading}}">
+      <text class="loading-text">加载中...</text>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{!loading && employeeList.length === 0}}">
+      <text class="empty-icon">👤</text>
+      <text class="empty-text">暂无绑定员工</text>
+      <text class="empty-hint">点击下方按钮添加员工</text>
+    </view>
+
+    <!-- 加载更多提示 -->
+    <view class="load-more" wx:if="{{employeeList.length > 0 && !hasMore}}">
+      <text class="load-more-text">— 已加载全部 —</text>
+    </view>
+  </view>
+
+  <!-- 绑定员工按钮 -->
+  <view class="action-section">
+    <button class="bind-btn" bindtap="onBindEmployee" disabled="{{!hasWorkToken}}">
+      <text class="btn-icon">+</text>
+      <text>绑定新员工</text>
+    </button>
+  </view>
+
+  <!-- ==================== 员工详情弹窗 ==================== -->
+  <view class="modal-overlay" wx:if="{{showDetailModal}}" bindtap="closeDetailModal">
+    <view class="modal-container detail-modal" catchtap="stopPropagation">
+      <!-- 弹窗头部 -->
+      <view class="modal-header">
+        <text class="modal-title">员工详情</text>
+        <view class="modal-close" bindtap="closeDetailModal">
+          <text>✕</text>
+        </view>
+      </view>
+
+      <!-- 员工信息 -->
+      <view class="detail-content" wx:if="{{currentEmployee}}">
+        <!-- 可滚动的信息区域 -->
+        <scroll-view class="detail-scroll-area" scroll-y enhanced show-scrollbar="{{false}}">
+          <!-- 头像和基本信息 -->
+          <view class="detail-avatar-section">
+            <view class="detail-avatar {{currentEmployee.staffRole === 'STORE_MANAGER' ? 'manager' : ''}}">
+              <text>{{currentEmployee.staffName ? currentEmployee.staffName[0] : '员'}}</text>
+            </view>
+            <view class="detail-basic">
+              <text class="detail-name">{{currentEmployee.staffName || '未命名员工'}}</text>
+              <view class="detail-role-badge {{currentEmployee.staffRole === 'STORE_MANAGER' ? 'manager' : 'staff'}}">
+                <view class="detail-role-badge-text">{{currentEmployee.staffRole === 'STORE_MANAGER' ? '店长' : '普通员工'}}</view>
+              </view>
+            </view>
+          </view>
+
+          <!-- 详细信息列表 -->
+          <view class="detail-info-list">
+            <view class="detail-info-item">
+              <text class="info-label">手机号</text>
+              <text class="info-value">{{currentEmployee.staffPhone || '暂无'}}</text>
+            </view>
+            <view class="detail-info-item">
+              <text class="info-label">入职时间</text>
+              <text class="info-value">{{currentEmployee.entryTime || '未知'}}</text>
+            </view>
+            <view class="detail-info-item">
+              <text class="info-label">最后登录</text>
+              <text class="info-value">{{currentEmployee.lastLoginTime || '未登录'}}</text>
+            </view>
+            
+            <!-- 可编辑字段 -->
+            <view class="detail-info-item editable">
+              <text class="info-label">员工姓名</text>
+              <input 
+                wx:if="{{isEditing}}"
+                class="info-input"
+                value="{{editForm.staffName}}"
+                data-field="staffName"
+                bindinput="onEditInput"
+                placeholder="请输入员工姓名"
+                maxlength="20"
+              />
+              <text wx:else class="info-value">{{currentEmployee.staffName || '未设置'}}</text>
+            </view>
+            
+            <view class="detail-info-item editable">
+              <text class="info-label">备注</text>
+              <textarea 
+                wx:if="{{isEditing}}"
+                class="info-textarea"
+                value="{{editForm.remark}}"
+                data-field="remark"
+                bindinput="onEditInput"
+                placeholder="请输入备注信息"
+                maxlength="100"
+                auto-height
+              />
+              <text wx:else class="info-value">{{currentEmployee.remark || '暂无备注'}}</text>
+            </view>
+          </view>
+        </scroll-view>
+
+        <!-- 固定在底部的操作按钮 -->
+        <view class="detail-actions-fixed">
+          <block wx:if="{{!isEditing}}">
+            <button class="action-btn edit-btn" bindtap="toggleEditMode">编辑信息</button>
+            <button class="action-btn permission-btn" bindtap="openPermissionModal">调整权限</button>
+          </block>
+          <block wx:else>
+            <button class="action-btn cancel-btn" bindtap="toggleEditMode">取消</button>
+            <button class="action-btn save-btn" bindtap="saveEmployeeInfo">保存</button>
+          </block>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- ==================== 添加员工弹窗（步骤表单） ==================== -->
+  <view class="modal-overlay" wx:if="{{showAddModal}}" bindtap="closeAddModal">
+    <view class="modal-container add-modal" catchtap="stopPropagation">
+      <!-- 弹窗头部 -->
+      <view class="modal-header">
+        <text class="modal-title">绑定新员工</text>
+        <view class="modal-close" bindtap="closeAddModal">
+          <text>✕</text>
+        </view>
+      </view>
+
+      <!-- 头部：步骤指示器 -->
+      <view class="step-header">
+        <view class="step-indicators">
+          <view class="step-item {{addCurrentStep >= 0 ? 'active' : ''}} {{addCurrentStep > 0 ? 'done' : ''}}">
+            <view class="step-num">1</view>
+            <text class="step-label">基本信息</text>
+          </view>
+          <view class="step-line {{addCurrentStep > 0 ? 'active' : ''}}"></view>
+          <view class="step-item {{addCurrentStep >= 1 ? 'active' : ''}} {{addCurrentStep > 1 ? 'done' : ''}}">
+            <view class="step-num">2</view>
+            <text class="step-label">角色权限</text>
+          </view>
+          <view class="step-line {{addCurrentStep > 1 ? 'active' : ''}}"></view>
+          <view class="step-item {{addCurrentStep >= 2 ? 'active' : ''}}">
+            <view class="step-num">3</view>
+            <text class="step-label">确认提交</text>
+          </view>
+        </view>
+      </view>
+      
+      <!-- 中间：表单内容区（可滚动） -->
+      <scroll-view class="step-body" scroll-y enhanced show-scrollbar="{{false}}" scroll-top="{{scrollTop}}">
+        <!-- 步骤1：基本信息 -->
+        <view class="step-content" wx:if="{{addCurrentStep === 0}}">
+          <view class="form-item required">
+            <text class="form-label">员工姓名</text>
+            <input 
+              class="form-input"
+              value="{{addForm.staffName}}"
+              data-field="staffName"
+              bindinput="onAddInput"
+              placeholder="请输入员工姓名"
+              maxlength="20"
+            />
+          </view>
+
+          <view class="form-item required">
+            <text class="form-label">手机号</text>
+            <input 
+              class="form-input"
+              type="number"
+              value="{{addForm.staffPhone}}"
+              data-field="staffPhone"
+              bindinput="onAddInput"
+              placeholder="请输入员工手机号（11位）"
+              maxlength="11"
+            />
+          </view>
+
+          <view class="form-item required">
+            <text class="form-label">邀请码</text>
+            <input 
+              class="form-input"
+              value="{{addForm.staffInviteCode}}"
+              data-field="staffInviteCode"
+              bindinput="onAddInput"
+              placeholder="请输入员工邀请码"
+            />
+          </view>
+        </view>
+        
+        <!-- 步骤2：角色权限 -->
+        <view class="step-content" wx:if="{{addCurrentStep === 1}}">
+          <view class="form-item">
+            <text class="form-label">员工角色<text class="required-star">*</text></text>
+            <view class="role-radio-group">
+              <view 
+                class="role-radio-item" 
+                data-value="STAFF"
+                bindtap="onRoleChange">
+                <view class="radio-circle {{addForm.staffRole === 'STAFF' ? 'checked' : ''}}">
+                  <text wx:if="{{addForm.staffRole === 'STAFF'}}">✓</text>
+                </view>
+                <text class="radio-label">普通员工</text>
+              </view>
+              <view 
+                class="role-radio-item" 
+                data-value="STORE_MANAGER"
+                bindtap="onRoleChange">
+                <view class="radio-circle {{addForm.staffRole === 'STORE_MANAGER' ? 'checked' : ''}}">
+                  <text wx:if="{{addForm.staffRole === 'STORE_MANAGER'}}">✓</text>
+                </view>
+                <text class="radio-label">店长</text>
+              </view>
+            </view>
+          </view>
+          
+          <view class="form-item">
+            <text class="form-label">权限设置 <text class="permission-hint">（勾选需要授予的权限）</text></text>
+            <view class="permission-list">
+              <view 
+                class="permission-item" 
+                wx:for="{{addForm.staffRole === 'STORE_MANAGER' ? permissionOptions.manager : permissionOptions.employee}}" 
+                wx:key="key"
+                data-key="{{item.key}}"
+                bindtap="onPermissionChange">
+                <view class="checkbox {{item.checked ? 'checked' : ''}}">
+                  <text wx:if="{{item.checked}}">✓</text>
+                </view>
+                <text class="permission-label">{{item.label}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+        
+        <!-- 步骤3：确认提交 -->
+        <view class="step-content" wx:if="{{addCurrentStep === 2}}">
+          <view class="form-item">
+            <text class="form-label">备注信息</text>
+            <textarea 
+              class="form-textarea"
+              value="{{addForm.remark}}"
+              data-field="remark"
+              bindinput="onAddInput"
+              placeholder="请输入备注信息（选填）"
+              maxlength="100"
+              auto-height
+            />
+          </view>
+          
+          <!-- 信息预览 -->
+          <view class="confirm-preview">
+            <view class="preview-title">信息确认</view>
+            <view class="preview-item">
+              <text class="preview-label">员工姓名</text>
+              <text class="preview-value">{{addForm.staffName}}</text>
+            </view>
+            <view class="preview-item">
+              <text class="preview-label">手机号</text>
+              <text class="preview-value">{{addForm.staffPhone}}</text>
+            </view>
+            <view class="preview-item">
+              <text class="preview-label">邀请码</text>
+              <text class="preview-value">{{addForm.staffInviteCode}}</text>
+            </view>
+            <view class="preview-item">
+              <text class="preview-label">员工角色</text>
+              <text class="preview-value">{{addForm.staffRole === 'STORE_MANAGER' ? '店长' : '普通员工'}}</text>
+            </view>
+            <view class="preview-item">
+              <text class="preview-label">授予权限</text>
+              <text class="preview-value">{{selectedPermissionNames || '无'}}</text>
+            </view>
+          </view>
+        </view>
+      </scroll-view>
+      
+      <!-- 底部：操作按钮 -->
+      <view class="step-footer">
+        <view class="step-actions" wx:if="{{addCurrentStep === 0}}">
+          <button class="action-btn primary-btn" bindtap="goToNextStep">下一步</button>
+        </view>
+        <view class="step-actions" wx:if="{{addCurrentStep === 1}}">
+          <button class="action-btn secondary-btn" bindtap="goToPrevStep">上一步</button>
+          <button class="action-btn primary-btn" bindtap="goToNextStep">下一步</button>
+        </view>
+        <view class="step-actions" wx:if="{{addCurrentStep === 2}}">
+          <button class="action-btn secondary-btn" bindtap="goToPrevStep">上一步</button>
+          <button class="action-btn submit-btn" bindtap="submitAddEmployee">确认绑定</button>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- ==================== 权限编辑弹窗 ==================== -->
+  <view class="modal-overlay" wx:if="{{showPermissionModal}}" bindtap="closePermissionModal">
+    <view class="modal-container permission-modal" catchtap="stopPropagation">
+      <!-- 弹窗头部 -->
+      <view class="modal-header">
+        <text class="modal-title">调整权限</text>
+        <view class="modal-close" bindtap="closePermissionModal">
+          <text>✕</text>
+        </view>
+      </view>
+
+      <!-- 权限表单 -->
+      <view class="permission-form">
+        <view class="permission-title">
+          {{currentEmployee.staffRole === 'STORE_MANAGER' ? '店长权限' : '员工权限'}}
+        </view>
+        
+        <view class="permission-list">
+          <view 
+            class="permission-item" 
+            wx:for="{{editPermissions}}" 
+            wx:key="key"
+            data-key="{{item.key}}"
+            bindtap="onEditPermissionChange">
+            <view class="checkbox {{item.checked ? 'checked' : ''}}">
+              <text wx:if="{{item.checked}}">✓</text>
+            </view>
+            <text class="permission-label">{{item.label}}</text>
+          </view>
+        </view>
+        
+        <view class="permission-hint">勾选需要授予的权限，不勾选则无该权限</view>
+        
+        <button class="submit-btn" bindtap="savePermission">保存权限</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 自定义Toast组件 -->
+  <custom-toast id="customToast" />
+</view>

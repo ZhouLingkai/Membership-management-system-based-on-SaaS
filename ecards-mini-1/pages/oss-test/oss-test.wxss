@@ -1,0 +1,384 @@
+/* pages/oss-test/oss-test.wxss */
+.container {
+  padding: 20rpx;
+  background: #f5f5f5;
+  min-height: 100vh;
+}
+
+/* 区块样式 */
+.section {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0,0,0,0.05);
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20rpx;
+  padding-bottom: 20rpx;
+  border-bottom: 1rpx solid #eee;
+}
+
+.sub-title {
+  font-size: 26rpx;
+  color: #666;
+  margin-bottom: 10rpx;
+  display: block;
+}
+
+/* 检查列表 */
+.check-list {
+  margin-bottom: 20rpx;
+}
+
+.check-item {
+  display: flex;
+  align-items: center;
+  padding: 16rpx 0;
+  font-size: 28rpx;
+}
+
+.check-item.success {
+  color: #52c41a;
+}
+
+.check-item.error {
+  color: #ff4d4f;
+}
+
+.check-item.pending {
+  color: #999;
+}
+
+.check-icon {
+  width: 40rpx;
+  font-size: 32rpx;
+  margin-right: 16rpx;
+}
+
+/* 按钮样式 */
+.test-btn, .upload-btn, .clear-btn {
+  margin-top: 20rpx;
+  background: linear-gradient(135deg, #1976d2, #42a5f5);
+  color: #fff;
+  border: none;
+  border-radius: 8rpx;
+  font-size: 28rpx;
+  padding: 20rpx 0;
+}
+
+.test-btn[disabled], .upload-btn[disabled] {
+  background: #ccc;
+  color: #999;
+}
+
+.upload-btn.disabled {
+  background: #91d5ff;
+}
+
+.clear-btn {
+  background: linear-gradient(135deg, #ff4d4f, #ff7875);
+}
+
+/* STS信息 */
+.sts-info {
+  margin-top: 20rpx;
+  padding: 20rpx;
+  background: #f6ffed;
+  border: 1rpx solid #b7eb8f;
+  border-radius: 8rpx;
+}
+
+/* 信息行 */
+.info-row {
+  display: flex;
+  padding: 10rpx 0;
+  font-size: 24rpx;
+  word-break: break-all;
+}
+
+.info-row .label {
+  color: #666;
+  min-width: 160rpx;
+  flex-shrink: 0;
+}
+
+.info-row .value {
+  color: #333;
+  flex: 1;
+}
+
+.info-row .value.copyable {
+  color: #1976d2;
+  text-decoration: underline;
+}
+
+/* 上传区域 */
+.upload-area {
+  width: 100%;
+  height: 300rpx;
+  border: 2rpx dashed #d9d9d9;
+  border-radius: 12rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fafafa;
+  margin-bottom: 20rpx;
+  overflow: hidden;
+}
+
+.upload-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #999;
+}
+
+.upload-icon {
+  font-size: 80rpx;
+  line-height: 1;
+  color: #d9d9d9;
+}
+
+.upload-text {
+  font-size: 26rpx;
+  margin-top: 10rpx;
+}
+
+.preview-image {
+  width: 100%;
+  height: 100%;
+}
+
+/* 图片信息 */
+.image-info {
+  padding: 20rpx;
+  background: #f0f0f0;
+  border-radius: 8rpx;
+  margin-bottom: 20rpx;
+}
+
+/* 进度条 */
+.progress-bar {
+  width: 100%;
+  height: 10rpx;
+  background: #e8e8e8;
+  border-radius: 5rpx;
+  margin-top: 20rpx;
+  overflow: hidden;
+}
+
+.progress-inner {
+  height: 100%;
+  background: linear-gradient(90deg, #1976d2, #42a5f5);
+  border-radius: 5rpx;
+  transition: width 0.3s;
+}
+
+/* 上传结果 */
+.upload-result {
+  margin-top: 20rpx;
+  padding: 16rpx;
+  border-radius: 8rpx;
+  font-size: 26rpx;
+  text-align: center;
+}
+
+.upload-result.success {
+  background: #f6ffed;
+  color: #52c41a;
+  border: 1rpx solid #b7eb8f;
+}
+
+.upload-result.error {
+  background: #fff2f0;
+  color: #ff4d4f;
+  border: 1rpx solid #ffccc7;
+}
+
+/* OSS展示区域 */
+.oss-display {
+  margin-top: 20rpx;
+}
+
+.storage-info {
+  padding: 20rpx;
+  background: #e6f7ff;
+  border: 1rpx solid #91d5ff;
+  border-radius: 8rpx;
+  margin-bottom: 20rpx;
+}
+
+.oss-thumbnail {
+  margin-bottom: 20rpx;
+}
+
+.thumbnail-image {
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: 8rpx;
+  border: 1rpx solid #d9d9d9;
+  margin-top: 10rpx;
+}
+
+.url-info {
+  margin-top: 20rpx;
+}
+
+.url-text {
+  display: block;
+  font-size: 22rpx;
+  color: #1976d2;
+  word-break: break-all;
+  padding: 16rpx;
+  background: #f5f5f5;
+  border-radius: 8rpx;
+  margin-top: 10rpx;
+}
+
+.loading-hint {
+  text-align: center;
+  color: #999;
+  padding: 40rpx;
+  font-size: 26rpx;
+}
+
+/* 调试区域 */
+.debug-btns {
+  margin-top: 20rpx;
+}
+
+.debug-btn {
+  background: linear-gradient(135deg, #722ed1, #9254de);
+  color: #fff;
+  border: none;
+  border-radius: 8rpx;
+  font-size: 26rpx;
+  padding: 16rpx 0;
+}
+
+.debug-hint {
+  margin-top: 20rpx;
+  padding: 20rpx;
+  background: #fffbe6;
+  border: 1rpx solid #ffe58f;
+  border-radius: 8rpx;
+}
+
+.debug-hint text {
+  display: block;
+  font-size: 24rpx;
+  color: #ad8b00;
+  line-height: 1.8;
+}
+
+/* pathType 配置区域 */
+.path-type-config {
+  margin: 20rpx 0;
+  padding: 20rpx;
+  background: #f0f5ff;
+  border: 1rpx solid #adc6ff;
+  border-radius: 8rpx;
+}
+
+.config-label {
+  font-size: 26rpx;
+  color: #333;
+  font-weight: 500;
+  margin-bottom: 10rpx;
+}
+
+.path-type-input {
+  background: #fff;
+  border: 1rpx solid #d9d9d9;
+  border-radius: 6rpx;
+  padding: 16rpx 20rpx;
+  font-size: 28rpx;
+  margin-bottom: 16rpx;
+}
+
+.path-type-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin-bottom: 16rpx;
+}
+
+.path-type-tags .tag {
+  padding: 8rpx 20rpx;
+  background: #fff;
+  border: 1rpx solid #d9d9d9;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  color: #666;
+}
+
+.path-type-tags .tag.active {
+  background: #1890ff;
+  border-color: #1890ff;
+  color: #fff;
+}
+
+.path-type-tags .tag.error {
+  background: #fff1f0;
+  border-color: #ffa39e;
+  color: #cf1322;
+}
+
+.path-type-hint {
+  padding: 12rpx;
+  background: #fffbe6;
+  border-radius: 6rpx;
+}
+
+.path-type-hint text {
+  display: block;
+  font-size: 22rpx;
+  color: #ad8b00;
+  line-height: 1.6;
+}
+
+/* 按钮行 */
+.btn-row {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 20rpx;
+}
+
+.btn-row .test-btn {
+  flex: 1;
+  margin: 0;
+}
+
+.btn-row .clear-btn {
+  flex: 0 0 auto;
+  padding: 0 30rpx;
+  background: #ff4d4f;
+  color: #fff;
+  border: none;
+  border-radius: 8rpx;
+  font-size: 26rpx;
+}
+
+/* 手动测试区域 */
+.manual-test {
+  margin-top: 20rpx;
+}
+
+.manual-result {
+  margin-top: 20rpx;
+  padding: 20rpx;
+  background: #f9f9f9;
+  border-radius: 12rpx;
+}
+
+.manual-error {
+  margin-top: 16rpx;
+  padding: 16rpx;
+  background: #fff2f0;
+  border-radius: 8rpx;
+}

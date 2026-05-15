@@ -1,0 +1,80 @@
+<view class="container">
+	<view class="section">
+		<view class="title">时间工具 time-util</view>
+		<view class="row">
+			<input class="input" placeholder="输入时间戳（毫秒/秒）" type="number" bindinput="onChangeTs" value="{{tsInput}}" />
+		</view>
+		<view class="row btns">
+			<button size="mini" bindtap="fmtDate">格式化为日期</button>
+			<button size="mini" bindtap="fmtTime">格式化为时间</button>
+			<button size="mini" bindtap="fmtDatetime">格式化为日期时间</button>
+		</view>
+		<view class="row">
+			<text class="result">{{tsFormatResult}}</text>
+		</view>
+		<view class="row btns">
+			<button size="mini" bindtap="getNow">获取当前时间戳</button>
+			<button size="mini" bindtap="after3Days">3天后时间戳</button>
+		</view>
+		<view class="row">
+			<input class="input" placeholder="输入日期时间字符串（2025-11-10 08:30:00）" bindinput="onChangeStr" value="{{dtInput}}" />
+		</view>
+		<view class="row btns">
+			<button size="mini" bindtap="strToTs">字符串转时间戳</button>
+		</view>
+		<view class="row">
+			<text class="result">{{strToTsResult}}</text>
+		</view>
+	</view>
+
+	<view class="section">
+		<view class="title">验证工具 validator-util</view>
+		<view class="row">
+			<input class="input" placeholder="手机号" bindinput="onChangePhone" value="{{phone}}" />
+		</view>
+		<view class="row">
+			<input class="input" placeholder="邮箱" bindinput="onChangeEmail" value="{{email}}" />
+		</view>
+		<view class="row">
+			<input class="input" placeholder="密码" password="true" bindinput="onChangePwd" value="{{password}}" />
+		</view>
+		<view class="row">
+			<input class="input" placeholder="身份证号（可选）" bindinput="onChangeId" value="{{idcard}}" />
+		</view>
+		<view class="row btns">
+			<button size="mini" bindtap="checkAll">校验全部</button>
+		</view>
+		<view class="row">
+			<text class="result">{{validateResult}}</text>
+		</view>
+	</view>
+
+	<view class="section">
+		<view class="title">存储工具 storage-utils</view>
+		<view class="row">
+			<input class="input" placeholder="key（≤16含前缀）" bindinput="onChangeStoreKey" value="{{storeKey}}" />
+		</view>
+		<view class="row">
+			<input class="input" placeholder="value（自动序列化）" bindinput="onChangeStoreVal" value="{{storeVal}}" />
+		</view>
+		<view class="row">
+			<input class="input" placeholder="过期秒数（默认30天）" type="number" bindinput="onChangeExpire" value="{{expireSec}}" />
+		</view>
+		<view class="row btns">
+			<button size="mini" bindtap="setAsync">异步 set</button>
+			<button size="mini" bindtap="getAsync">异步 get</button>
+			<button size="mini" bindtap="removeAsync">异步 remove</button>
+			<button size="mini" bindtap="clearAsync">异步 clear</button>
+		</view>
+		<view class="row btns">
+			<button size="mini" bindtap="setSync">同步 set</button>
+			<button size="mini" bindtap="getSync">同步 get</button>
+			<button size="mini" bindtap="removeSync">同步 remove</button>
+			<button size="mini" bindtap="clearSync">同步 clear</button>
+		</view>
+		<view class="row">
+			<text class="result">{{storageResult}}</text>
+		</view>
+	</view>
+</view>
+

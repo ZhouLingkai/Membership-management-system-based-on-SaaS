@@ -1,0 +1,735 @@
+<!-- pages/card-type-update/card-type-update.wxml -->
+<view class="page-container">
+    <custom-toast id="customToast" />
+
+    <!-- Tab切换 -->
+    <view class="tab-bar">
+        <view class="tab-item {{currentTab === 'basic' ? 'active' : ''}}" bindtap="switchTab" data-tab="basic">
+            <text class="tab-icon">📝</text>
+            <text class="tab-text">基础信息修改</text>
+        </view>
+        <view class="tab-item {{currentTab === 'design' ? 'active' : ''}}" bindtap="switchTab" data-tab="design">
+            <text class="tab-icon">🎨</text>
+            <text class="tab-text">卡片设计修改</text>
+        </view>
+    </view>
+
+    <!-- 基础信息模块 -->
+    <view wx:if="{{currentTab === 'basic'}}" class="tab-content">
+        <!-- 基本信息卡片 -->
+        <view class="form-card">
+            <view class="card-title">
+                <text class="card-icon">📝</text>
+                <text>基本信息</text>
+            </view>
+            <view class="form-item">
+                <text class="form-label">卡种类型</text>
+                <view class="form-readonly">
+                    <text class="readonly-icon">{{cardTypeIcon}}</text>
+                    <text class="readonly-value">{{cardTypeName}}</text>
+                    <text class="readonly-hint">（不可修改）</text>
+                </view>
+            </view>
+            <view class="form-item required">
+                <text class="form-label">卡种名称<text class="required-star">*</text></text>
+                <input class="form-input" value="{{form.cardTypeName}}" data-field="cardTypeName" bindinput="onInput" placeholder="请输入卡种名称（2-40字）" maxlength="40" />
+            </view>
+            
+            <view class="form-item">
+                <text class="form-label">卡种描述</text>
+                <textarea class="form-textarea" value="{{form.description}}" data-field="description" bindinput="onInput" placeholder="请输入卡种描述（选填，最多500字）" maxlength="500" auto-height />
+            </view>
+        </view>
+        <!-- 预设充值项目卡片（余额卡、次数卡、时效卡显示） -->
+        <view class="form-card" wx:if="{{showPresetRecharge}}">
+            <view class="card-title">
+                <text class="card-icon">💵</text>
+                <text>预设充值项目</text>
+            </view>
+
+            <view class="preset-list">
+                <view class="preset-item" wx:for="{{presetRechargeList}}" wx:key="index">
+                    <view class="preset-header">
+                        <text class="preset-index">项目 {{index + 1}}</text>
+                        <view class="preset-remove" bindtap="removeRechargeItem" data-index="{{index}}">
+                            <text>删除</text>
+                        </view>
+                    </view>
+                    <view class="preset-form">
+                        <view class="preset-row">
+                            <text class="preset-label">项目名称<text class="required-star">*</text></text>
+                            <input class="preset-input" value="{{item.itemName}}" data-index="{{index}}" data-field="itemName" data-type="recharge" bindinput="onPresetInput" placeholder="如：充值100元" maxlength="50" />
+                        </view>
+                        <view class="preset-row">
+                            <text class="preset-label">{{presetAmountLabel}}<text class="required-star">*</text></text>
+                            <input class="preset-input" type="digit" value="{{item.amount}}" data-index="{{index}}" data-field="amount" data-type="recharge" bindinput="onPresetInput" placeholder="{{presetAmountPlaceholder}}" />
+                        </view>
+                        <view class="preset-row">
+                            <text class="preset-label">项目描述</text>
+                            <input class="preset-input" value="{{item.itemDesc}}" data-index="{{index}}" data-field="itemDesc" data-type="recharge" bindinput="onPresetInput" placeholder="如：首充赠送10元（选填）" maxlength="100" />
+                        </view>
+                    </view>
+                </view>
+            </view>
+
+            <view class="add-preset-btn" bindtap="addRechargeItem">
+                <text class="add-icon">+</text>
+                <text>添加充值项目</text>
+            </view>
+        </view>
+        <!-- 预设消费项目卡片（余额卡、次数卡显示） -->
+        <view class="form-card" wx:if="{{showPresetCost}}">
+            <view class="card-title">
+                <text class="card-icon">🛒</text>
+                <text>预设消费项目</text>
+            </view>
+
+            <view class="preset-list">
+                <view class="preset-item" wx:for="{{presetCostList}}" wx:key="index">
+                    <view class="preset-header">
+                        <text class="preset-index">项目 {{index + 1}}</text>
+                        <view class="preset-remove" bindtap="removeCostItem" data-index="{{index}}">
+                            <text>删除</text>
+                        </view>
+                    </view>
+                    <view class="preset-form">
+                        <view class="preset-row">
+                            <text class="preset-label">项目名称<text class="required-star">*</text></text>
+                            <input class="preset-input" value="{{item.itemName}}" data-index="{{index}}" data-field="itemName" data-type="cost" bindinput="onPresetInput" placeholder="如：洗车服务" maxlength="50" />
+                        </view>
+                        <view class="preset-row">
+                            <text class="preset-label">{{presetAmountLabel}}<text class="required-star">*</text></text>
+                            <input class="preset-input" type="digit" value="{{item.amount}}" data-index="{{index}}" data-field="amount" data-type="cost" bindinput="onPresetInput" placeholder="{{presetAmountPlaceholder}}" />
+                        </view>
+                        <view class="preset-row">
+                            <text class="preset-label">项目描述</text>
+                            <input class="preset-input" value="{{item.itemDesc}}" data-index="{{index}}" data-field="itemDesc" data-type="cost" bindinput="onPresetInput" placeholder="如：普通洗车一次（选填）" maxlength="100" />
+                        </view>
+                    </view>
+                </view>
+            </view>
+
+            <view class="add-preset-btn" bindtap="addCostItem">
+                <text class="add-icon">+</text>
+                <text>添加消费项目</text>
+            </view>
+        </view>
+        <!-- 其他设置卡片 -->
+        <view class="form-card">
+            <view class="card-title">
+                <text class="card-icon">⚙️</text>
+                <text>其他设置</text>
+            </view>
+
+            <view class="form-item required">
+                <text class="form-label">自动消息通知<text class="required-star">*</text></text>
+                <view class="radio-group">
+                    <view class="radio-item {{form.autoNotify === 0 ? 'active' : ''}}" data-field="autoNotify" data-value="{{0}}" bindtap="onRadioChange">
+                        <text>关闭通知</text>
+                    </view>
+                    <view class="radio-item {{form.autoNotify === 1 ? 'active' : ''}}" data-field="autoNotify" data-value="{{1}}" bindtap="onRadioChange">
+                        <text>短信通知</text>
+                    </view>
+                    <view class="radio-item {{form.autoNotify === 2 ? 'active' : ''}}" data-field="autoNotify" data-value="{{2}}" bindtap="onRadioChange">
+                        <text>订阅通知</text>
+                    </view>
+                    <view class="radio-item {{form.autoNotify === 3 ? 'active' : ''}}" data-field="autoNotify" data-value="{{3}}" bindtap="onRadioChange">
+                        <text>推送通知</text>
+                    </view>
+                </view>
+            </view>
+
+            <view class="form-item required">
+                <text class="form-label">跨店通用<text class="required-star">*</text></text>
+                <view class="radio-group">
+                    <view class="radio-item {{form.crossStore === 0 ? 'active' : ''}}" data-field="crossStore" data-value="{{0}}" bindtap="onRadioChange">
+                        <text>仅本店铺</text>
+                    </view>
+                    <view class="radio-item {{form.crossStore === 1 ? 'active' : ''}}" data-field="crossStore" data-value="{{1}}" bindtap="onRadioChange">
+                        <text>同商家跨店</text>
+                    </view>
+                </view>
+            </view>
+        </view>
+
+        <view class="submit-section">
+            <button disabled="{{!hasBasicChanges}}" bindtap="submitBasicInfo">保存基础信息</button>
+        </view>
+    </view>
+
+    <!-- 设计模块 -->
+    <view wx:if="{{currentTab === 'design'}}" class="tab-content">
+        <!-- 旧卡片展示 -->
+        <view class="old-card-section">
+            <card-display width="{{660}}" cardBgc="{{oldCardBgc}}" cardMask="{{oldCardMask}}" />
+        </view>
+
+        <view class="form-card">
+            <view class="card-title">
+                <text class="card-icon">🖼️</text>
+                <text>背景设计</text>
+            </view>
+
+            <!-- 背景类型切换 -->
+            <view class="form-item">
+                <text class="form-label">类型</text>
+                <view class="radio-group">
+                    <view class="radio-item {{bgType === 'gradient' ? 'active' : ''}}" data-field="bgType" data-value="gradient" bindtap="onRadioChange">
+                        <text>渐变色</text>
+                    </view>
+                    <view class="radio-item {{bgType === 'advanced' ? 'active' : ''}}" data-field="bgType" data-value="advanced" bindtap="onRadioChange">
+                        <text>高级</text>
+                    </view>
+                </view>
+            </view>
+            <!-- 渐变色选择 -->
+            <view wx:if="{{bgType === 'gradient'}}">
+                <!-- 渐变色类型 -->
+                <view class="form-item">
+                    <text class="form-label">渐变色</text>
+                    <view class="gradient-group">
+                        <view class="gradient-item {{bgGradient === 'darkblack' ? 'selected' : ''}}" data-field="bgGradient" data-value="darkblack" bindtap="onGradientChange">
+                            <view class="gradient-preview" style="background: linear-gradient(135deg, #111111, #222222, #111111);"></view>
+                        </view>
+                        <view class="gradient-item {{bgGradient === 'gold' ? 'selected' : ''}}" data-field="bgGradient" data-value="gold" bindtap="onGradientChange">
+                            <view class="gradient-preview" style="background: linear-gradient(135deg, #B8860B, #D4AF37);"></view>
+                        </view>
+                        <view class="gradient-item {{bgGradient === 'winered' ? 'selected' : ''}}" data-field="bgGradient" data-value="winered" bindtap="onGradientChange">
+                            <view class="gradient-preview" style="background: linear-gradient(135deg, #8B0000, #9E2B25);"></view>
+                        </view>
+                        <view class="gradient-item {{bgGradient === 'originalgold' ? 'selected' : ''}}" data-field="bgGradient" data-value="originalgold" bindtap="onGradientChange">
+                            <view class="gradient-preview" style="background: linear-gradient(135deg, #FDEB71, #F8D800);"></view>
+                        </view>
+                        <view class="gradient-item {{bgGradient === 'blue' ? 'selected' : ''}}" data-field="bgGradient" data-value="blue" bindtap="onGradientChange">
+                            <view class="gradient-preview" style="background: linear-gradient(135deg, #ABDCFF, #0396FF);"></view>
+                        </view>
+                        <view class="gradient-item {{bgGradient === 'red' ? 'selected' : ''}}" data-field="bgGradient" data-value="red" bindtap="onGradientChange">
+                            <view class="gradient-preview" style="background: linear-gradient(135deg, #FEB692, #EA5455);"></view>
+                        </view>
+                        <view class="gradient-item {{bgGradient === 'orange' ? 'selected' : ''}}" data-field="bgGradient" data-value="orange" bindtap="onGradientChange">
+                            <view class="gradient-preview" style="background: linear-gradient(135deg, #FCCF31, #F55555);"></view>
+                        </view>
+                        <view class="gradient-item {{bgGradient === 'purple' ? 'selected' : ''}}" data-field="bgGradient" data-value="purple" bindtap="onGradientChange">
+                            <view class="gradient-preview" style="background: linear-gradient(135deg, #F761A1, #8C1BAB);"></view>
+                        </view>
+                        <view class="gradient-item {{bgGradient === 'sunset' ? 'selected' : ''}}" data-field="bgGradient" data-value="sunset" bindtap="onGradientChange">
+                            <view class="gradient-preview" style="background: linear-gradient(135deg, #FFA8A8, #FCFF00);"></view>
+                        </view>
+                    </view>
+                </view>
+
+                <!-- 渐变方向 -->
+                <view class="form-item">
+                    <text class="form-label">渐变方向</text>
+                    <view class="gradient-direction-group">
+                        <view class="direction-item {{bgGradientDirection === 'horizontal' ? 'selected' : ''}}" data-field="bgGradientDirection" data-value="horizontal" bindtap="onRadioChange">
+                            <view class="direction-preview" style="background: linear-gradient(to right, #888, #ccc, #888);"></view>
+                            <text class="direction-label">水平</text>
+                        </view>
+                        <view class="direction-item {{bgGradientDirection === 'vertical' ? 'selected' : ''}}" data-field="bgGradientDirection" data-value="vertical" bindtap="onRadioChange">
+                            <view class="direction-preview" style="background: linear-gradient(to bottom, #888, #ccc, #888);"></view>
+                            <text class="direction-label">垂直</text>
+                        </view>
+                        <view class="direction-item {{bgGradientDirection === 'diagonal' ? 'selected' : ''}}" data-field="bgGradientDirection" data-value="diagonal" bindtap="onRadioChange">
+                            <view class="direction-preview" style="background: linear-gradient(135deg, #888, #ccc, #888);"></view>
+                            <text class="direction-label">对角</text>
+                        </view>
+                    </view>
+                </view>
+            </view>
+
+            <!-- 高级背景选择 -->
+            <view wx:if="{{bgType === 'advanced'}}">
+                <view class="form-item">
+                    <text class="form-label">高级背景</text>
+                    <view class="advanced-bg-group">
+                        <view class="advanced-bg-item {{bgAdvanced === 'black' ? 'selected' : ''}}" data-value="black" bindtap="onAdvancedBgChange">
+                            <image class="advanced-bg-preview" src="/packageCardType/assets/bkgd/bg_black.png" mode="aspectFill" />
+                            <text class="advanced-bg-name">黑金</text>
+                        </view>
+                        <view class="advanced-bg-item {{bgAdvanced === 'white' ? 'selected' : ''}}" data-value="white" bindtap="onAdvancedBgChange">
+                            <image class="advanced-bg-preview" src="/packageCardType/assets/bkgd/bg_white.png" mode="aspectFill" />
+                            <text class="advanced-bg-name">洁白</text>
+                        </view>
+                        <view class="advanced-bg-item {{bgAdvanced === 'red' ? 'selected' : ''}}" data-value="red" bindtap="onAdvancedBgChange">
+                            <image class="advanced-bg-preview" src="/packageCardType/assets/bkgd/bg_red.png" mode="aspectFill" />
+                            <text class="advanced-bg-name">绯红</text>
+                        </view>
+                    </view>
+                </view>
+            </view>
+
+            <!-- 自定义背景 -->
+            <view class="form-item">
+                <text class="form-label">自定义背景</text>
+                <view class="custom-bg-container">
+                    <view class="custom-bg-preview" bindtap="onUploadCustomBg">
+                        <image wx:if="{{customBgUrl}}" src="{{customBgUrl}}" mode="aspectFill" />
+                        <text wx:else class="upload-icon">+</text>
+                    </view>
+                    <view class="change-bg-btn" wx:if="{{customBgUrl}}" bindtap="onUploadCustomBg">
+                        <text>更换图片</text>
+                    </view>
+                </view>
+            </view>
+        </view>
+
+        <!-- 实时预览区（支持吸顶） -->
+        <view class="preview-section" id="previewSection">
+            <view class="preview-header">
+                <view class="section-title">
+                    <text class="title-icon">🎨</text>
+                    <text>实时预览</text>
+                </view>
+                <view class="preview-controls">
+                    <!-- 背景切换按钮（仅在预览显示时显示） -->
+                    <view class="bg-toggle" wx:if="{{showPreview}}" bindtap="onToggleBackground">
+                        <text class="bg-toggle-text">{{showBackground ? '是' : '否'}}</text>
+                    </view>
+                    <!-- 眼睛切换 -->
+                    <view class="eye-toggle" bindtap="onTogglePreview">
+                        <text class="eye-emoji">{{showPreview ? '👁️' : '🙈'}}</text>
+                    </view>
+                </view>
+            </view>
+            <view class="card-preview-wrapper" wx:if="{{showPreview}}">
+                <!-- 背景层 -->
+                <view wx:if="{{showBackground}}">
+                    <!-- 自定义背景 -->
+                    <image wx:if="{{customBgUrl}}" class="card-preview-bg-custom" src="{{customBgUrl}}" mode="aspectFill" />
+                    <!-- 渐变色背景 -->
+                    <view wx:elif="{{bgType === 'gradient'}}" class="card-preview-bg-gradient" style="{{bgGradientStyle}}"></view>
+                    <!-- 高级背景 -->
+                    <image wx:elif="{{bgType === 'advanced'}}" class="card-preview-bg-advanced" src="/packageCardType/assets/bkgd/bg_{{bgAdvanced}}.png" mode="aspectFill" />
+                </view>
+                <!-- 蒙版层 -->
+                <image wx:if="{{maskImageUrl}}" class="card-preview-mask-img" src="{{maskImageUrl}}" mode="aspectFill" />
+                <view wx:else class="preview-placeholder">
+                    <text>正在生成预览...</text>
+                </view>
+                <!-- Canvas隐藏，仅用于绘制 -->
+                <canvas type="2d" id="maskCanvas" class="mask-canvas-hidden"></canvas>
+            </view>
+        </view>
+
+        <!-- 卡面设计 -->
+        <view class="form-card">
+            <view class="card-title">
+                <text class="card-icon">🎨</text>
+                <text>卡面设计</text>
+            </view>
+
+            <!-- 1. 标题文字设置 -->
+            <view class="design-section">
+                <view class="section-subtitle">
+                    <text class="subtitle-icon">✏️</text>
+                    <text>标题文字</text>
+                </view>
+
+                <view class="form-item">
+                    <text class="form-label">文字内容</text>
+                    <input class="form-input" value="{{titleText}}" bindinput="onTitleTextInput" placeholder="请输入标题文字" maxlength="20" />
+                </view>
+
+                <view class="form-item">
+                    <text class="form-label">位置</text>
+                    <view class="radio-group">
+                        <view class="radio-item {{titlePosition === 'left-top' ? 'active' : ''}}" data-field="titlePosition" data-value="left-top" bindtap="onRadioChange">
+                            <text>左上</text>
+                        </view>
+                        <view class="radio-item {{titlePosition === 'center-top' ? 'active' : ''}}" data-field="titlePosition" data-value="center-top" bindtap="onRadioChange">
+                            <text>中上</text>
+                        </view>
+                        <view class="radio-item {{titlePosition === 'right-top' ? 'active' : ''}}" data-field="titlePosition" data-value="right-top" bindtap="onRadioChange">
+                            <text>右上</text>
+                        </view>
+                    </view>
+                </view>
+
+                <view class="form-item">
+                    <text class="form-label">颜色类型</text>
+                    <view class="radio-group">
+                        <view class="radio-item {{titleColorType === 'solid' ? 'active' : ''}}" data-field="titleColorType" data-value="solid" bindtap="onRadioChange">
+                            <text>纯色</text>
+                        </view>
+                        <view class="radio-item {{titleColorType === 'gradient' ? 'active' : ''}}" data-field="titleColorType" data-value="gradient" bindtap="onRadioChange">
+                            <text>渐变</text>
+                        </view>
+                    </view>
+                </view>
+
+                <!-- 纯色选择（仅在选择纯色时显示） -->
+                <view class="form-item" wx:if="{{titleColorType === 'solid'}}">
+                    <text class="form-label">纯色</text>
+                    <view class="color-group">
+                        <view class="color-item {{titleColor === '#111111' ? 'selected' : ''}}" style="background: #111111;" data-field="titleColor" data-value="#111111" bindtap="onColorChange"></view>
+                        <view class="color-item {{titleColor === '#fafafa' ? 'selected' : ''}}" style="background: #fafafa; border: 1px solid #ddd;" data-field="titleColor" data-value="#fafafa" bindtap="onColorChange"></view>
+                        <view class="color-item {{titleColor === '#c00000' ? 'selected' : ''}}" style="background: #c00000;" data-field="titleColor" data-value="#c00000" bindtap="onColorChange"></view>
+                        <view class="color-item {{titleColor === '#ff0000' ? 'selected' : ''}}" style="background: #ff0000;" data-field="titleColor" data-value="#ff0000" bindtap="onColorChange"></view>
+                        <view class="color-item {{titleColor === '#ffc000' ? 'selected' : ''}}" style="background: #ffc000;" data-field="titleColor" data-value="#ffc000" bindtap="onColorChange"></view>
+                        <view class="color-item {{titleColor === '#ffff00' ? 'selected' : ''}}" style="background: #ffff00;" data-field="titleColor" data-value="#ffff00" bindtap="onColorChange"></view>
+                        <view class="color-item {{titleColor === '#92d050' ? 'selected' : ''}}" style="background: #92d050;" data-field="titleColor" data-value="#92d050" bindtap="onColorChange"></view>
+                        <view class="color-item {{titleColor === '#00b050' ? 'selected' : ''}}" style="background: #00b050;" data-field="titleColor" data-value="#00b050" bindtap="onColorChange"></view>
+                        <view class="color-item {{titleColor === '#00b0f0' ? 'selected' : ''}}" style="background: #00b0f0;" data-field="titleColor" data-value="#00b0f0" bindtap="onColorChange"></view>
+                        <view class="color-item {{titleColor === '#0070c0' ? 'selected' : ''}}" style="background: #0070c0;" data-field="titleColor" data-value="#0070c0" bindtap="onColorChange"></view>
+                        <view class="color-item {{titleColor === '#002060' ? 'selected' : ''}}" style="background: #002060;" data-field="titleColor" data-value="#002060" bindtap="onColorChange"></view>
+                        <view class="color-item {{titleColor === '#7030a0' ? 'selected' : ''}}" style="background: #7030a0;" data-field="titleColor" data-value="#7030a0" bindtap="onColorChange"></view>
+                        <view class="color-item {{titleColor === '#e54c5e' ? 'selected' : ''}}" style="background: #e54c5e;" data-field="titleColor" data-value="#e54c5e" bindtap="onColorChange"></view>
+                        <view class="color-item {{titleColor === '#30c0b4' ? 'selected' : ''}}" style="background: #30c0b4;" data-field="titleColor" data-value="#30c0b4" bindtap="onColorChange"></view>
+                        <view class="color-item {{titleColor === '#44546a' ? 'selected' : ''}}" style="background: #44546a;" data-field="titleColor" data-value="#44546a" bindtap="onColorChange"></view>
+                        <view class="color-item {{titleColor === '#f2ba02' ? 'selected' : ''}}" style="background: #f2ba02;" data-field="titleColor" data-value="#f2ba02" bindtap="onColorChange"></view>
+                    </view>
+                </view>
+
+                <!-- 渐变色选择（仅在选择渐变时显示） -->
+                <view class="form-item" wx:if="{{titleColorType === 'gradient'}}">
+                    <text class="form-label">渐变色</text>
+                    <view class="gradient-group">
+                        <view class="gradient-item {{titleGradient === 'gold' ? 'selected' : ''}}" data-field="titleGradient" data-value="gold" bindtap="onGradientChange">
+                            <view class="gradient-preview" style="background: linear-gradient(to right, #FDEB71, #F8D800);">
+                                <text class="gradient-check" wx:if="{{titleGradient === 'gold'}}">✓</text>
+                            </view>
+                            <text class="gradient-name">金色</text>
+                        </view>
+                        <view class="gradient-item {{titleGradient === 'blue' ? 'selected' : ''}}" data-field="titleGradient" data-value="blue" bindtap="onGradientChange">
+                            <view class="gradient-preview" style="background: linear-gradient(to right, #ABDCFF, #0396FF);">
+                                <text class="gradient-check" wx:if="{{titleGradient === 'blue'}}">✓</text>
+                            </view>
+                            <text class="gradient-name">蓝色</text>
+                        </view>
+                        <view class="gradient-item {{titleGradient === 'red' ? 'selected' : ''}}" data-field="titleGradient" data-value="red" bindtap="onGradientChange">
+                            <view class="gradient-preview" style="background: linear-gradient(to right, #FEB692, #EA5455);">
+                                <text class="gradient-check" wx:if="{{titleGradient === 'red'}}">✓</text>
+                            </view>
+                            <text class="gradient-name">红色</text>
+                        </view>
+                        <view class="gradient-item {{titleGradient === 'orange' ? 'selected' : ''}}" data-field="titleGradient" data-value="orange" bindtap="onGradientChange">
+                            <view class="gradient-preview" style="background: linear-gradient(to right, #FCCF31, #F55555);">
+                                <text class="gradient-check" wx:if="{{titleGradient === 'orange'}}">✓</text>
+                            </view>
+                            <text class="gradient-name">橙色</text>
+                        </view>
+                        <view class="gradient-item {{titleGradient === 'purple' ? 'selected' : ''}}" data-field="titleGradient" data-value="purple" bindtap="onGradientChange">
+                            <view class="gradient-preview" style="background: linear-gradient(to right, #F761A1, #8C1BAB);">
+                                <text class="gradient-check" wx:if="{{titleGradient === 'purple'}}">✓</text>
+                            </view>
+                            <text class="gradient-name">紫色</text>
+                        </view>
+                        <view class="gradient-item {{titleGradient === 'sunset' ? 'selected' : ''}}" data-field="titleGradient" data-value="sunset" bindtap="onGradientChange">
+                            <view class="gradient-preview" style="background: linear-gradient(to right, #FFA8A8, #FCFF00);">
+                                <text class="gradient-check" wx:if="{{titleGradient === 'sunset'}}">✓</text>
+                            </view>
+                            <text class="gradient-name">日落</text>
+                        </view>
+                    </view>
+                </view>
+
+                <view class="form-item">
+                    <text class="form-label">字体</text>
+                    <view class="radio-group">
+                        <view wx:for="{{fontOptions}}" wx:key="value" class="radio-item {{titleFont === item.value ? 'active' : ''}}" data-field="titleFont" data-value="{{item.value}}" bindtap="onRadioChange">
+                            <text>{{item.label}}</text>
+                        </view>
+                    </view>
+                </view>
+
+                <view class="form-item">
+                    <text class="form-label">字体大小</text>
+                    <view class="radio-group">
+                        <view class="radio-item {{titleSize === 'small' ? 'active' : ''}}" data-field="titleSize" data-value="small" bindtap="onRadioChange">
+                            <text>小</text>
+                        </view>
+                        <view class="radio-item {{titleSize === 'medium' ? 'active' : ''}}" data-field="titleSize" data-value="medium" bindtap="onRadioChange">
+                            <text>中</text>
+                        </view>
+                        <view class="radio-item {{titleSize === 'large' ? 'active' : ''}}" data-field="titleSize" data-value="large" bindtap="onRadioChange">
+                            <text>大</text>
+                        </view>
+                        <view class="radio-item {{titleSize === 'xlarge' ? 'active' : ''}}" data-field="titleSize" data-value="xlarge" bindtap="onRadioChange">
+                            <text>特大</text>
+                        </view>
+                    </view>
+                </view>
+            </view>
+
+            <!-- 3. VIP设置 -->
+            <view class="design-section">
+                <view class="section-subtitle">
+                    <text class="subtitle-icon">⭐</text>
+                    <text>VIP标识</text>
+                </view>
+
+                <view class="form-item">
+                    <text class="form-label">显示VIP</text>
+                    <switch checked="{{showVip}}" bindchange="onVipSwitchChange" color="#3C8CE7" />
+                </view>
+
+                <block wx:if="{{showVip}}">
+                    <view class="form-item">
+                        <text class="form-label">位置</text>
+                        <view class="radio-group">
+                            <view class="radio-item {{vipPosition === 'center-left' ? 'active' : ''}}" data-field="vipPosition" data-value="center-left" bindtap="onRadioChange">
+                                <text>中左</text>
+                            </view>
+                            <view class="radio-item {{vipPosition === 'center' ? 'active' : ''}}" data-field="vipPosition" data-value="center" bindtap="onRadioChange">
+                                <text>正中</text>
+                            </view>
+                            <view class="radio-item {{vipPosition === 'center-right' ? 'active' : ''}}" data-field="vipPosition" data-value="center-right" bindtap="onRadioChange">
+                                <text>中右</text>
+                            </view>
+                        </view>
+                    </view>
+
+                    <view class="form-item">
+                        <text class="form-label">颜色类型</text>
+                        <view class="radio-group">
+                            <view class="radio-item {{vipColorType === 'solid' ? 'active' : ''}}" data-field="vipColorType" data-value="solid" bindtap="onRadioChange">
+                                <text>纯色</text>
+                            </view>
+                            <view class="radio-item {{vipColorType === 'gradient' ? 'active' : ''}}" data-field="vipColorType" data-value="gradient" bindtap="onRadioChange">
+                                <text>渐变</text>
+                            </view>
+                            <view class="radio-item {{vipColorType === 'advanced' ? 'active' : ''}}" data-field="vipColorType" data-value="advanced" bindtap="onRadioChange">
+                                <text>高级</text>
+                            </view>
+                        </view>
+                    </view>
+
+                    <!-- 纯色选择（仅在选择纯色时显示） -->
+                    <view class="form-item" wx:if="{{vipColorType === 'solid'}}">
+                        <text class="form-label">纯色</text>
+                        <view class="color-group">
+                            <view class="color-item {{vipColor === '#111111' ? 'selected' : ''}}" style="background: #111111;" data-field="vipColor" data-value="#111111" bindtap="onColorChange"></view>
+                            <view class="color-item {{vipColor === '#fafafa' ? 'selected' : ''}}" style="background: #fafafa; border: 1px solid #ddd;" data-field="vipColor" data-value="#fafafa" bindtap="onColorChange"></view>
+                            <view class="color-item {{vipColor === '#c00000' ? 'selected' : ''}}" style="background: #c00000;" data-field="vipColor" data-value="#c00000" bindtap="onColorChange"></view>
+                            <view class="color-item {{vipColor === '#ff0000' ? 'selected' : ''}}" style="background: #ff0000;" data-field="vipColor" data-value="#ff0000" bindtap="onColorChange"></view>
+                            <view class="color-item {{vipColor === '#ffc000' ? 'selected' : ''}}" style="background: #ffc000;" data-field="vipColor" data-value="#ffc000" bindtap="onColorChange"></view>
+                            <view class="color-item {{vipColor === '#ffff00' ? 'selected' : ''}}" style="background: #ffff00;" data-field="vipColor" data-value="#ffff00" bindtap="onColorChange"></view>
+                            <view class="color-item {{vipColor === '#92d050' ? 'selected' : ''}}" style="background: #92d050;" data-field="vipColor" data-value="#92d050" bindtap="onColorChange"></view>
+                            <view class="color-item {{vipColor === '#00b050' ? 'selected' : ''}}" style="background: #00b050;" data-field="vipColor" data-value="#00b050" bindtap="onColorChange"></view>
+                            <view class="color-item {{vipColor === '#00b0f0' ? 'selected' : ''}}" style="background: #00b0f0;" data-field="vipColor" data-value="#00b0f0" bindtap="onColorChange"></view>
+                            <view class="color-item {{vipColor === '#0070c0' ? 'selected' : ''}}" style="background: #0070c0;" data-field="vipColor" data-value="#0070c0" bindtap="onColorChange"></view>
+                            <view class="color-item {{vipColor === '#002060' ? 'selected' : ''}}" style="background: #002060;" data-field="vipColor" data-value="#002060" bindtap="onColorChange"></view>
+                            <view class="color-item {{vipColor === '#7030a0' ? 'selected' : ''}}" style="background: #7030a0;" data-field="vipColor" data-value="#7030a0" bindtap="onColorChange"></view>
+                            <view class="color-item {{vipColor === '#e54c5e' ? 'selected' : ''}}" style="background: #e54c5e;" data-field="vipColor" data-value="#e54c5e" bindtap="onColorChange"></view>
+                            <view class="color-item {{vipColor === '#30c0b4' ? 'selected' : ''}}" style="background: #30c0b4;" data-field="vipColor" data-value="#30c0b4" bindtap="onColorChange"></view>
+                            <view class="color-item {{vipColor === '#44546a' ? 'selected' : ''}}" style="background: #44546a;" data-field="vipColor" data-value="#44546a" bindtap="onColorChange"></view>
+                            <view class="color-item {{vipColor === '#f2ba02' ? 'selected' : ''}}" style="background: #f2ba02;" data-field="vipColor" data-value="#f2ba02" bindtap="onColorChange"></view>
+                        </view>
+                    </view>
+
+                    <!-- 渐变色选择（仅在选择渐变时显示） -->
+                    <view class="form-item" wx:if="{{vipColorType === 'gradient'}}">
+                        <text class="form-label">渐变色</text>
+                        <view class="gradient-group">
+                            <view class="gradient-item {{vipGradient === 'gold' ? 'selected' : ''}}" data-field="vipGradient" data-value="gold" bindtap="onGradientChange">
+                                <view class="gradient-preview" style="background: linear-gradient(to right, #FDEB71, #F8D800);">
+                                    <text class="gradient-check" wx:if="{{vipGradient === 'gold'}}">✓</text>
+                                </view>
+                                <text class="gradient-name">金色</text>
+                            </view>
+                            <view class="gradient-item {{vipGradient === 'blue' ? 'selected' : ''}}" data-field="vipGradient" data-value="blue" bindtap="onGradientChange">
+                                <view class="gradient-preview" style="background: linear-gradient(to right, #ABDCFF, #0396FF);">
+                                    <text class="gradient-check" wx:if="{{vipGradient === 'blue'}}">✓</text>
+                                </view>
+                                <text class="gradient-name">蓝色</text>
+                            </view>
+                            <view class="gradient-item {{vipGradient === 'red' ? 'selected' : ''}}" data-field="vipGradient" data-value="red" bindtap="onGradientChange">
+                                <view class="gradient-preview" style="background: linear-gradient(to right, #FEB692, #EA5455);">
+                                    <text class="gradient-check" wx:if="{{vipGradient === 'red'}}">✓</text>
+                                </view>
+                                <text class="gradient-name">红色</text>
+                            </view>
+                            <view class="gradient-item {{vipGradient === 'orange' ? 'selected' : ''}}" data-field="vipGradient" data-value="orange" bindtap="onGradientChange">
+                                <view class="gradient-preview" style="background: linear-gradient(to right, #FCCF31, #F55555);">
+                                    <text class="gradient-check" wx:if="{{vipGradient === 'orange'}}">✓</text>
+                                </view>
+                                <text class="gradient-name">橙色</text>
+                            </view>
+                            <view class="gradient-item {{vipGradient === 'purple' ? 'selected' : ''}}" data-field="vipGradient" data-value="purple" bindtap="onGradientChange">
+                                <view class="gradient-preview" style="background: linear-gradient(to right, #F761A1, #8C1BAB);">
+                                    <text class="gradient-check" wx:if="{{vipGradient === 'purple'}}">✓</text>
+                                </view>
+                                <text class="gradient-name">紫色</text>
+                            </view>
+                            <view class="gradient-item {{vipGradient === 'sunset' ? 'selected' : ''}}" data-field="vipGradient" data-value="sunset" bindtap="onGradientChange">
+                                <view class="gradient-preview" style="background: linear-gradient(to right, #FFA8A8, #FCFF00);">
+                                    <text class="gradient-check" wx:if="{{vipGradient === 'sunset'}}">✓</text>
+                                </view>
+                                <text class="gradient-name">日落</text>
+                            </view>
+                        </view>
+                    </view>
+
+                    <!-- 高级VIP图片选择（仅在选择高级时显示） -->
+                    <view class="form-item" wx:if="{{vipColorType === 'advanced'}}">
+                        <text class="form-label">VIP样式</text>
+                        <view class="vip-advanced-group">
+                            <view class="vip-advanced-item {{vipAdvanced === '3D' ? 'selected' : ''}}" data-value="3D" bindtap="onAdvancedVipChange">
+                                <view class="vip-preview">
+                                    <image src="/packageCardType/assets/vip/VIP-3D.png" mode="aspectFit" />
+                                </view>
+                                <text class="vip-name">3D</text>
+                            </view>
+                            <view class="vip-advanced-item {{vipAdvanced === 'black' ? 'selected' : ''}}" data-value="black" bindtap="onAdvancedVipChange">
+                                <view class="vip-preview">
+                                    <image src="/packageCardType/assets/vip/VIP-black.png" mode="aspectFit" />
+                                </view>
+                                <text class="vip-name">黑色</text>
+                            </view>
+                            <view class="vip-advanced-item {{vipAdvanced === 'blackgold' ? 'selected' : ''}}" data-value="blackgold" bindtap="onAdvancedVipChange">
+                                <view class="vip-preview">
+                                    <image src="/packageCardType/assets/vip/VIP-blackgold.png" mode="aspectFit" />
+                                </view>
+                                <text class="vip-name">黑金</text>
+                            </view>
+                            <view class="vip-advanced-item {{vipAdvanced === 'cola' ? 'selected' : ''}}" data-value="cola" bindtap="onAdvancedVipChange">
+                                <view class="vip-preview">
+                                    <image src="/packageCardType/assets/vip/VIP-cola.png" mode="aspectFit" />
+                                </view>
+                                <text class="vip-name">可乐</text>
+                            </view>
+                            <view class="vip-advanced-item {{vipAdvanced === 'gold' ? 'selected' : ''}}" data-value="gold" bindtap="onAdvancedVipChange">
+                                <view class="vip-preview">
+                                    <image src="/packageCardType/assets/vip/VIP-gold.png" mode="aspectFit" />
+                                </view>
+                                <text class="vip-name">金色</text>
+                            </view>
+                            <view class="vip-advanced-item {{vipAdvanced === 'pinkgold' ? 'selected' : ''}}" data-value="pinkgold" bindtap="onAdvancedVipChange">
+                                <view class="vip-preview">
+                                    <image src="/packageCardType/assets/vip/VIP-pinkgold.png" mode="aspectFit" />
+                                </view>
+                                <text class="vip-name">粉金</text>
+                            </view>
+                            <view class="vip-advanced-item {{vipAdvanced === 'pinkorange' ? 'selected' : ''}}" data-value="pinkorange" bindtap="onAdvancedVipChange">
+                                <view class="vip-preview">
+                                    <image src="/packageCardType/assets/vip/VIP-pinkorange.png" mode="aspectFit" />
+                                </view>
+                                <text class="vip-name">粉橙</text>
+                            </view>
+                            <view class="vip-advanced-item {{vipAdvanced === 'white' ? 'selected' : ''}}" data-value="white" bindtap="onAdvancedVipChange">
+                                <view class="vip-preview">
+                                    <image src="/packageCardType/assets/vip/VIP-white.png" mode="aspectFit" />
+                                </view>
+                                <text class="vip-name">白色</text>
+                            </view>
+                        </view>
+                    </view>
+
+                    <view class="form-item" wx:if="{{vipColorType !== 'advanced'}}">
+                        <text class="form-label">字体</text>
+                        <view class="radio-group">
+                            <view wx:for="{{fontOptions}}" wx:key="value" class="radio-item {{vipFont === item.value ? 'active' : ''}}" data-field="vipFont" data-value="{{item.value}}" bindtap="onRadioChange">
+                                <text>{{item.label}}</text>
+                            </view>
+                        </view>
+                    </view>
+
+                    <view class="form-item">
+                        <text class="form-label">字体大小</text>
+                        <view class="radio-group">
+                            <view class="radio-item {{vipSize === 'small' ? 'active' : ''}}" data-field="vipSize" data-value="small" bindtap="onRadioChange">
+                                <text>小</text>
+                            </view>
+                            <view class="radio-item {{vipSize === 'medium' ? 'active' : ''}}" data-field="vipSize" data-value="medium" bindtap="onRadioChange">
+                                <text>中</text>
+                            </view>
+                            <view class="radio-item {{vipSize === 'large' ? 'active' : ''}}" data-field="vipSize" data-value="large" bindtap="onRadioChange">
+                                <text>大</text>
+                            </view>
+                            <view class="radio-item {{vipSize === 'xlarge' ? 'active' : ''}}" data-field="vipSize" data-value="xlarge" bindtap="onRadioChange">
+                                <text>特大</text>
+                            </view>
+                        </view>
+                    </view>
+                </block>
+            </view>
+
+            <!-- 4. 图案设置 -->
+            <view class="design-section">
+                <view class="section-subtitle">
+                    <text class="subtitle-icon">🖼️</text>
+                    <text>装饰图案</text>
+                </view>
+
+                <view class="form-item">
+                    <text class="form-label">添加图案</text>
+                    <switch checked="{{showPattern}}" bindchange="onPatternSwitchChange" color="#3C8CE7" />
+                </view>
+
+                <block wx:if="{{showPattern}}">
+                    <view class="pattern-group">
+                        <view class="pattern-item {{selectedPattern === 'dragon' ? 'selected' : ''}}" data-pattern="dragon" bindtap="onSelectPattern">
+                            <view class="pattern-preview">
+                                <image src="/packageCardType/assets/mask/dragon.png" mode="aspectFit" />
+                            </view>
+                            <text class="pattern-name">龙</text>
+                        </view>
+                        <view class="pattern-item {{selectedPattern === 'diamond' ? 'selected' : ''}}" data-pattern="diamond" bindtap="onSelectPattern">
+                            <view class="pattern-preview">
+                                <image src="/packageCardType/assets/mask/diamond.png" mode="aspectFit" />
+                            </view>
+                            <text class="pattern-name">钻石</text>
+                        </view>
+                        <view class="pattern-item {{selectedPattern === 'round' ? 'selected' : ''}}" data-pattern="round" bindtap="onSelectPattern">
+                            <view class="pattern-preview">
+                                <image src="/packageCardType/assets/mask/round.png" mode="aspectFit" />
+                            </view>
+                            <text class="pattern-name">圆</text>
+                        </view>
+                    </view>
+
+                    <view class="form-item">
+                        <text class="form-label">图案位置</text>
+                        <view class="pattern-position-group">
+                            <!-- 第一行：左上、正中、右上 -->
+                            <view class="position-row">
+                                <view class="radio-item {{patternPosition === 'left-top' ? 'active' : ''}}" data-field="patternPosition" data-value="left-top" bindtap="onRadioChange">
+                                    <text>左上</text>
+                                </view>
+                                <view class="radio-item {{patternPosition === 'center' ? 'active' : ''}}" data-field="patternPosition" data-value="center" bindtap="onRadioChange">
+                                    <text>正中</text>
+                                </view>
+                                <view class="radio-item {{patternPosition === 'right-top' ? 'active' : ''}}" data-field="patternPosition" data-value="right-top" bindtap="onRadioChange">
+                                    <text>右上</text>
+                                </view>
+                            </view>
+                            <!-- 第二行：左下、右下 -->
+                            <view class="position-row">
+                                <view class="radio-item {{patternPosition === 'left-bottom' ? 'active' : ''}}" data-field="patternPosition" data-value="left-bottom" bindtap="onRadioChange">
+                                    <text>左下</text>
+                                </view>
+                                <view class="radio-item {{patternPosition === 'right-bottom' ? 'active' : ''}}" data-field="patternPosition" data-value="right-bottom" bindtap="onRadioChange">
+                                    <text>右下</text>
+                                </view>
+                            </view>
+                        </view>
+                    </view>
+
+                    <view class="form-item">
+                        <text class="form-label">图案大小</text>
+                        <view class="radio-group">
+                            <view class="radio-item {{patternSize === 'small' ? 'active' : ''}}" data-field="patternSize" data-value="small" bindtap="onRadioChange">
+                                <text>小</text>
+                            </view>
+                            <view class="radio-item {{patternSize === 'medium' ? 'active' : ''}}" data-field="patternSize" data-value="medium" bindtap="onRadioChange">
+                                <text>适中</text>
+                            </view>
+                            <view class="radio-item {{patternSize === 'large' ? 'active' : ''}}" data-field="patternSize" data-value="large" bindtap="onRadioChange">
+                                <text>大</text>
+                            </view>
+                            <view class="radio-item {{patternSize === 'xlarge' ? 'active' : ''}}" data-field="patternSize" data-value="xlarge" bindtap="onRadioChange">
+                                <text>特大</text>
+                            </view>
+                        </view>
+                    </view>
+                </block>
+            </view>
+
+        </view>
+        <view class="submit-section design-submit">
+            <button class="secondary" bindtap="submitBackground">修改背景</button>
+            <button class="primary" bindtap="submitMask">修改卡面</button>
+        </view>
+    </view>
+</view>
